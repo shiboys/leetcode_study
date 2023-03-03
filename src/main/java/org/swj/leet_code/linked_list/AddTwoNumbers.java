@@ -10,7 +10,12 @@ import java.math.BigInteger;
  *     <p>你可以假设除了数字 0 之外，这两个数都不会以 0 开头 输入：l1 = [2,4,3], l2 = [5,6,4] 输出：[7,0,8] 解释：342 + 465 = 807.
  *     输入：l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9] 输出：[8,9,9,9,0,0,0,1]
  *
- *     字符串素组的计算，都得用到 BigInteger ？？ 哎，太卷了
+ *算法思路：
+ * 1、将链表中的数字取出，放入 StringBuilder 中, 然后翻转 StringBuilder，最后转化成 BigInteger
+ * 2、将转化后的两个 BigInteger 相加得到和
+ * 3、将二者之和编程字符串形式，然后遍历字符串的每个字符，使用头插法转换成链表
+ *
+ * ps:字符串素组的计算，都得用到 BigInteger ？？ 哎，太卷了
  */
 public class AddTwoNumbers {
   public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
