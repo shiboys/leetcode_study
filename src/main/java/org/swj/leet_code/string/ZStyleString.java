@@ -81,6 +81,13 @@ public class ZStyleString {
     return String.valueOf(s.charAt(charIndex));
   }
 
+  /**
+   * 计算列数是个技术活，我改了不下 5 次才算勉强把这个列数算对，列数算不对，就会造成最终的结果字符丢失。
+   *
+   * @param stringLength 字符长度
+   * @param numRows      行数
+   * @return
+   */
   private int getColumnsCount(int stringLength, int numRows) {
     // 至少 1 列。
     if (stringLength < numRows) {
@@ -147,10 +154,128 @@ public class ZStyleString {
     return zItemSize / 2;
   }
 
+  /**
+   * 下面借他山之石，给出 3 种优化
+   * 1、使用 指针移步的方式，在二维数组中移动坐标（之前我就是想这么做，但是没有找到规律）
+   * 2、使用多个 StringBuilder的数组，取消纵坐标的移动，因为最终的打印结果没有列的信息
+   * 3、使用一种更加巧妙的位置关系算法，来定位到元素
+   */
+
+  // 移动坐标法
+  public String convert2(String s, int rowsNum) {
+    if (s == null || s.isEmpty()) {
+      return s;
+    }
+
+    int sLength = s.length();
+    // 使用这个数组列数长度，预估的，非精准的，但是确实满足要求
+    int colLength = (sLength + 1) >> 1;
+    char[][] matrixArr = new char[rowsNum][colLength];
+    matrixArr[0][0] = s.charAt(0);
+    int rowIdx = 0;
+    int colIdx = 0;
+    boolean isDown = false;
+    for (int i = 1; i < sLength; i++) {
+      if (rowIdx == 0) {
+        // 此时横坐标指针需要向下移动
+        isDown = true;
+      } else if (rowIdx == rowsNum - 1) {
+        // 此时已经到了二维数组的底部，需要改变移动反向
+        isDown = false;
+      }
+
+      if (isDown) {
+        // 如果向下移动，则纵坐标不变，横坐标增加
+        rowIdx++;
+      } else {
+        // 向上移动
+        rowIdx--;
+        // colIdx 纵坐标指针总是增加，因为列数总是在增加
+        colIdx++;
+      }
+      //找到位置，放置元素
+      matrixArr[rowIdx][colIdx] = s.charAt(i);
+    }
+
+    StringBuilder stringBuilder = new StringBuilder(sLength);
+    for (int i = 0; i < rowsNum; i++) {
+      for (int j = 0; j < colLength; j++) {
+        char currChar = matrixArr[i][j];
+        if (currChar == '\0') { // 如果是空元素，则跳过
+          continue;
+        }
+        stringBuilder.append(currChar);
+      }
+    }
+
+    return stringBuilder.toString();
+  }
+
+  public String convert3(String s, int rowsNum) {
+    if (s == null || s.isEmpty()) {
+      return s;
+    } else if (s.length() <= 1 || rowsNum <= 1 || s.length() < rowsNum) {
+      return s;
+    }
+
+    int sLength = s.length();
+    StringBuilder[] stringBuilderArray = new StringBuilder[rowsNum];
+    for (int i = 0; i < rowsNum; i++) {
+      stringBuilderArray[i] = new StringBuilder(sLength);
+    }
+    boolean isDown = false;
+    int rowIdx = 0;
+    stringBuilderArray[0].append(s.charAt(0));
+    for (int i = 1; i < sLength; i++) {
+      // rowIndex 归为0 时，则需要向下遍历
+      if (rowIdx == 0) {
+        isDown = true;
+      } else if (rowIdx == rowsNum - 1) {
+        isDown = false;
+      }
+      if (isDown) {
+        rowIdx++;
+      } else {
+        rowIdx--;
+      }
+      // 这里使用 StringBuilder 做打平操作，就没有列的概念了
+      stringBuilderArray[rowIdx].append(s.charAt(i));
+    }
+    // 这里使用第 1 个合并后的所有 builder
+    StringBuilder resultBuilder = stringBuilderArray[0];
+    for (int i = 1; i < stringBuilderArray.length; i++) {
+      resultBuilder.append(stringBuilderArray[i].toString());
+    }
+    return resultBuilder.toString();
+  }
+
+  public String convert4(String s, int rowsNum) {
+    if (s == null || s.isEmpty()) {
+      return s;
+    } else if (s.length() <= 1 || rowsNum <= 1 || s.length() < rowsNum) {
+      return s;
+    }
+    int sLength = s.length();
+    StringBuilder stringBuilder = new StringBuilder(s.length());
+    // 一个周期的长度
+    int periodLength = getZItemsSize(rowsNum);
+    for (int i = 0; i < rowsNum; i++) {
+      for (int j = 0; j + i < sLength; j += periodLength) {
+        // 每行每列都有字符的列
+        stringBuilder.append(s.charAt(j + i));
+        // 如果 i 不在行首或者行尾,其没有越界，第 i 个字符和 第 periodLength-i 个字符，一个 Z 字周期内有 2 个字符
+        if (i != 0 && i != rowsNum - 1 && (j + periodLength - i) < sLength) {
+          stringBuilder.append(s.charAt(j + (periodLength - i)));
+        }
+      }
+    }
+    return stringBuilder.toString();
+  }
+
   public static void main(String[] args) {
     String s1 = "PAYPALISHIRING";
     ZStyleString zStyleString = new ZStyleString();
-    System.out.println(zStyleString.convert("PAYPALISHIRING", 3));
+/*    System.out.println(zStyleString.convert("PAYPALISHIRING", 3));
     System.out.println(zStyleString.convert("PAYPALISHIRING", 4));
     System.out.println(zStyleString.convert("A", 1));
     System.out.println(zStyleString.convert("AB", 1));
@@ -158,8 +283,33 @@ public class ZStyleString {
     System.out.println(zStyleString.convert("AB", 4));
     System.out.println(zStyleString.convert("AB", 3));
     System.out.println(zStyleString.convert("ABC", 3));
-    System.out.println(zStyleString.convert("ABCDE", 4));
-    System.out.println(zStyleString.convert("PAYPALISHIRING", 5));
+    */
+    System.out.println(zStyleString.convert4("ABCDE", 4));
+    System.out.println(zStyleString.convert4("PAYPALISHIRING", 5));
+
+    System.out.println(Integer.numberOfLeadingZeros(1));
+    System.out.println(Integer.numberOfLeadingZeros(2));
+
+   /* System.out.println(resizeStamp(1));
+    System.out.println(resizeStamp(2));*/
+    System.out.println(resizeStamp(4));
+    int shift=16;
+    int rs;
+    System.out.println((rs=resizeStamp(shift)));
+
+
+    System.out.println(rs << RESIZE_STAMP_SHIFT);
+
+    System.out.println(-3 == ~(2));
+    System.out.println(~(2));
 
   }
+
+  static final int resizeStamp(int n) {
+    return Integer.numberOfLeadingZeros(n) | (1 << (RESIZE_STAMP_BITS - 1));
+
+  }
+
+  private static int RESIZE_STAMP_BITS = 16;
+  private static final int RESIZE_STAMP_SHIFT = 32 - RESIZE_STAMP_BITS;
 }
