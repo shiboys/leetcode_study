@@ -20,9 +20,10 @@ import java.util.Comparator;
 public class LongestIncreasingSubsequence {
     /**
      * dp[i] 定义为 表示以 nums[i] 这个数结尾的最长递增子序列的长度
-     * 0 1 2 3 4 5
+     *      0 1 2 3 4 5
      * nums 1 4 3 4 2 3
-     * dp 1 2 2 3 2 3
+     * dp   1 2 2 3 2 ？
+     *                max(1+1,2+1) 就是从前面的 2 起则为 1，从最前面的 1 起则为 2，
      * 观察上面这个数组，发现 nums[5]=3,要怎么算 dp[5] 那？
      * 既然是递增子序列，我们只要找到前面哪些结尾比 3 小的子序列，然后把 3 接到这些子序列的末尾，就可以形成一个新的
      * 递增自序列，而这个新的子序列的长度加 1
@@ -63,7 +64,7 @@ public class LongestIncreasingSubsequence {
         // 新建一个跟 nums 长度一直的堆顶，堆顶的元素个数最坏情况跟 nums 的长度一致。
         // top 的元素默认初始化为 0
         int[] top = new int[nums.length];
-        int pile = 0; // 默认的堆为 0
+        int pile = 0; // 默认的堆为 0,对相当于数组的 top 堆顶有元素个数的 length
         // 将 nums 数组中的数字看作扑克牌
         for (int pork : nums) {
             // 将 top 数组的 0-pile 区间看作是堆顶的二分区间
@@ -81,7 +82,7 @@ public class LongestIncreasingSubsequence {
                 }
             }
             // 没有找到合适的牌堆，如果二分法遍历没有开始或者遍历完也没有找到 pork 的位置，则新增一个堆
-            if (left == pile) {
+            if (left == pile) { // left > 0 说明且 left == pile 说明left 索引 此时已经在新堆上了
                 pile++;
             }
             // 将堆顶的该位置设置为当前的 pork，也就是覆盖操作，覆盖之后，只能看到当前 pork
@@ -125,8 +126,10 @@ public class LongestIncreasingSubsequence {
 
     public static void main(String[] args) {
         int[] arr = new int[] { 10, 9, 2, 5, 3, 7, 101, 18 };
+        int[] arr2 = new int[] { 6,3,5,10,11,2,9,14,13,7,4,8,12 };
         LongestIncreasingSubsequence instance = new LongestIncreasingSubsequence();
-        // System.out.println(instance.lengthOfLIS(arr));
+        System.out.println(instance.lengthOfLIS(arr));
+        System.out.println(instance.lengthOfLIS(arr2));
         int [][] arrays = new int[][] {
             new int[] {5,4},
             new int[] {6,4},
