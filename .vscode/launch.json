@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "DistinctSubSequence",
+            "request": "launch",
+            "mainClass": "org.swj.leet_code.algorithm.dynamic_program.subsequence.DistinctSubSequence",
+            "projectName": "leetcode_study"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

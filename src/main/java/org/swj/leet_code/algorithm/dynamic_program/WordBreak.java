@@ -1,15 +1,17 @@
 package org.swj.leet_code.algorithm.dynamic_program;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * @author shiweijie
  * @version 1.0.0
  * @since 2023/07/31 21:07
- *        单词拆分 leetcode 第 139 和 140 题
+ *        单词拆分 leetcode 第 139 和 140 题。这里的拆分和
  *        本篇同时给出「遍历」和「分解问题」两种思路。其中「遍历」的思路扩展延伸一下就是回溯算法，「分解问题」的思路可以扩展成动态规划算法。
  *        题目要求：
  *        给一个字符串 s 和一个字符串列表 wordDict 作为字典。请判断是否可以利用字典中出现的单词拼接处 s。
@@ -83,6 +85,7 @@ public class WordBreak {
             return;
         }
         // 回溯算法框架/核心
+        // 这里的小优化，将 wordDict 转化为 hashSet ，该循环可以降维 set.contains(prefix)
         for (String word : wordDict) {
             // word 是否匹配字符串 s[i...] 的前缀
             if (i + word.length() <= s.length() &&
@@ -98,12 +101,27 @@ public class WordBreak {
         }
     }
 
+    /**
+     * 回溯算法的优缺点：
+     * 递归函数的时间复杂度的粗略估算方法时用递归函数调用次数(递归树的节点数) * 递归函数本身的复杂度
+     * 对于上述回溯法而言，递归树的每个节点其实就是对 s 进行一次切割，那么最坏情况下 s 能有多少种切割那？长度为 N 的字符串 s 中
+     * 有 n-1 个「缝隙」可供切割，每个缝隙可以选择「切」或者「不切」，所以 s 最多有 O(2^N) 个节点(比如 abc有有 2 个缝隙 有2^2=4
+     * 中切法，
+     * 分别为 a b c,ab c,a bc, abc 这 4 种)。
+     * 当然，实际情况肯定会好一些，比较存在剪枝的逻辑，但是从最坏的角度来看，递归树的节点个数确实是指数级的。
+     * 
+     * 回溯算法的时间复杂度是多少？主要的时间消耗是遍历 wordDict 寻找匹配 s[i..] 的前缀时间
+     * 设 wordDict 的长度为 M，字符串 s 的长度为 N，那么这段代码的最坏时间复杂度是 O(MN)(for 循环 O(M),Java 的
+     * Substring 方法 O(n),
+     * 所以宗的时间复杂度为 O(2^N * MN))
+     */
+
     public static void main(String[] args) {
         // testBasicBackTrack();
         WordBreak instance = new WordBreak();
         String s = "applepenapple";
         String[] arr = new String[] { "apple", "pen" };
-        System.out.println(instance.wordBreak_bt(s, Arrays.asList(arr)));
+        System.out.println(instance.wordBreak_dp(s, Arrays.asList(arr)));
     }
 
     private static void testBasicBackTrack() {
@@ -124,5 +142,43 @@ public class WordBreak {
                 System.out.println();
             }
         }
+    }
+
+    private Set<String> wordSet;
+    private int[] memo;
+
+    boolean dp(String s, int i) {
+        // base case
+        if (i == s.length()) {
+            return true;
+        }
+        // 防止冗余计算
+        if (memo[i] != -1) {
+            return true;
+        }
+        // 遍历 s[i..] 的所有前缀
+        for (int k = 1; k + i <= s.length(); k++) {
+            String prefix = s.substring(i, i + k);
+            // 看哪些前缀存在 wordSet 中
+            if (wordSet.contains(prefix)) {
+                boolean subProblem = dp(s, i + prefix.length());
+                // 找到一个单词匹配 s[i..i+k]
+                // 只要 s[i+len..] 可以被必配出来，则 s[i..] 就能被整体匹配成功
+                if (subProblem) { // 从 prefix 到 subProblem 都匹配成功，则 i 位置整体匹配成功
+                    memo[i] = 1;
+                    return true;
+                }
+            }
+        }
+        // s[i..] 无法从字典中被拼出一个
+        memo[i] = 0;
+        return false;
+    }
+
+    boolean wordBreak_dp(String s, List<String> wordDict) {
+        this.wordSet = new HashSet(wordDict);
+        memo = new int[s.length()];
+        Arrays.fill(memo, -1);
+        return dp(s, 0);
     }
 }

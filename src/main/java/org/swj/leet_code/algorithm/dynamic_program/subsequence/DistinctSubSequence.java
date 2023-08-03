@@ -182,6 +182,15 @@ public class DistinctSubSequence {
         return dp[m][n];
     }
 
+    /**
+     * 从后往前循环。等于是从前往后递归，
+     * 但是 dp 的思想仍然是 dp[i][j] = dp[i+1][j+1] + dp[i+1][j]
+     * 也就是 如果当前 s[i]=t[j], 则 dp 向后传递，要么 dp[i+1][j+1],要么 t[j] 保持不动
+     * 让 s[i+1] 来匹配
+     * @param s
+     * @param t
+     * @return
+     */
     int dp_array2(String s, String t) {
         int m = s.length();
         int n = t.length();
@@ -196,7 +205,7 @@ public class DistinctSubSequence {
                     dp[i][j] = 0;
                 } else {
                     if (s.charAt(i) == t.charAt(j)) {
-                        //
+                        // 上面 dp 递归的循环版本，也是两种情况累加
                         dp[i][j] = dp[i + 1][j + 1] + dp[i+1][j];
                     } else {
                         dp[i][j] = dp[i+1][j];

@@ -43,6 +43,34 @@ public class MinPathSum {
     }
 
     /**
+     * 阿里算法面试手册是
+     * dp[i,j]=min(dp[i+1,j],dp[i,j+1])+m[i,j] 从小到大推导
+     * 从 0,0 到 i,j
+     * 
+     * @param grid
+     * @param i
+     * @param j
+     * @return
+     */
+    int dp2(int[][] grid, int i, int j) {
+        // base case
+        // 走到 target node
+        if (i == grid.length - 1 && j == grid[0].length - 1) {
+            return grid[i][j];
+        }
+        if (i >= grid.length || j >= grid[0].length) {
+            return Integer.MAX_VALUE;
+        }
+
+        if (memo[i][j] != -1) {
+            return memo[i][j];
+        }
+        memo[i][j] = grid[i][j] +
+                Math.min(dp2(grid, i + 1, j), dp2(grid, i, j + 1));
+        return memo[i][j];
+    }
+
+    /**
      * 使用 dp 数组+循环的方式实现，而不是使用 dp 函数递归调用
      * 
      * @param grid
@@ -68,7 +96,7 @@ public class MinPathSum {
                 dp[i][j] = grid[i][j] + Math.min(dp[i - 1][j], dp[i][j - 1]); // 两种走路方式，取最小的
             }
         }
-        return dp[m-1][n-1];
+        return dp[m - 1][n - 1];
     }
 
     public int minPathSum(int[][] grid) {
@@ -81,14 +109,30 @@ public class MinPathSum {
         return dp(grid, m - 1, n - 1);
     }
 
+    public int minPathSum2(int[][] grid) {
+        memo = new int[grid.length][grid[0].length];
+        Arrays.stream(memo).forEach(subArray -> {
+            Arrays.fill(subArray, -1);
+        });
+        return dp2(grid, 0, 0);
+    }
+
     public static void main(String[] args) {
         int[][] arr = new int[][] {
                 new int[] { 1, 3, 1 },
                 new int[] { 1, 5, 1 },
                 new int[] { 4, 2, 1 }
         };
+        int[][] arr2 = new int[][] {
+                new int[] { 4, 1, 5, 3 },
+                new int[] { 3, 2, 7, 7 },
+                new int[] { 6, 5, 2, 8 },
+                new int[] { 8, 9, 4, 5 }
+        };
+
         MinPathSum instance = new MinPathSum();
         // System.out.println(instance.minPathSum(arr));
-        System.out.println(instance.minPathSumByDp(arr));
+        // System.out.println(instance.minPathSumByDp(arr));
+        System.out.println(instance.minPathSum2(arr2));
     }
 }
