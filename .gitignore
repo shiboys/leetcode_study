@@ -1,3 +1,5 @@
 # Created by .ignore support plugin (hsz.mobi)
 /.idea/
 /leetcode_study.iml
+/target/
+src/test/
