@@ -119,6 +119,13 @@ public class WordBreak {
     public static void main(String[] args) {
         // testBasicBackTrack();
         WordBreak instance = new WordBreak();
+        // testSimpleWordBreak(instance);
+        String s = "catsanddog";
+        List<String> wordDict = Arrays.asList("cat", "cats", "and", "sand", "dog");
+        System.out.println(instance.wordBreakReturnResultByDp(s, wordDict));
+    }
+
+    private static void testSimpleWordBreak(WordBreak instance) {
         String s = "applepenapple";
         String[] arr = new String[] { "apple", "pen" };
         System.out.println(instance.wordBreak_dp(s, Arrays.asList(arr)));
@@ -147,6 +154,14 @@ public class WordBreak {
     private Set<String> wordSet;
     private int[] memo;
 
+    /**
+     * 回溯法即便我们如何优化，总的时间复杂度依然是指数级的 O(2^N * N^2),是无法通过所有测试用例
+     * 那么问题出在哪那？请参考 note.md 有关 回溯和动态规划实现 word break 章节部分
+     * 
+     * @param s
+     * @param i
+     * @return
+     */
     boolean dp(String s, int i) {
         // base case
         if (i == s.length()) {
@@ -180,5 +195,91 @@ public class WordBreak {
         memo = new int[s.length()];
         Arrays.fill(memo, -1);
         return dp(s, 0);
+    }
+
+    /**
+     * leet code 140 单词拆分 II
+     * 给定一个字符串 s 和一个字符串字典 wordDict, 在字符串 s 中增加空格来构建一个句子，使得句子中所有的单词都在词典中。
+     * 一人一个顺序返回所有这些可能的句子。
+     * 注意：词典中的痛殴一个单词可能在分段中被重复使用多次
+     * 示例1：
+     * 输入 s="catsanddog", wordDict=["cat","cats","and","sand","dog"]
+     * 输出:["cats and dog","cat sand dog"]
+     */
+
+    List<String> matchResultList;
+
+    public List<String> wordBreakAndReturnResultByTraceBack(String s, List<String> wordDict) {
+        matchResultList = new LinkedList<>();
+        backTrackList.clear();
+        this.wordDict = wordDict;
+        backTrackWithResult(s, 0);
+        return matchResultList;
+    }
+
+    // 回溯法框架
+    void backTrackWithResult(String s, int i) {
+        // base case
+        if (i == s.length()) { // 匹配到整个 s 字符串，把匹配成功的所有单词 串起来放入 result 集合中
+            matchResultList.add(String.join(" ", backTrackList));
+            return;
+        }
+        // 回溯算法核心框架
+        for (String word : wordDict) {
+            if (i + word.length() <= s.length() &&
+                    s.subSequence(i, i + word.length()).equals(word)) {
+                // 找到一个匹配的单词, 加入回溯集合
+                backTrackList.add(word);
+                // 回溯，进入回溯树的下一层，继续匹配 s[i+len]
+                backTrackWithResult(s, i + word.length());
+                // 把加入的匹配单词从回溯集合中弹出
+                backTrackList.removeLast();
+            }
+        }
+    }
+
+    /**
+     * dp 动态规划法解决 字符串匹配
+     */
+
+    List<String>[] memoResult;
+
+    /**
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public List<String> wordBreakReturnResultByDp(String s, List<String> wordDict) {
+        wordSet = new HashSet<>(wordDict);
+        // memoResult = new List[s.length()];
+        memoResult = (List<String>[]) java.lang.reflect.Array.newInstance(List.class, s.length());
+        return dpReturnReuslt(s, 0);
+    }
+
+    List<String> dpReturnReuslt(String s, int i) {
+        LinkedList<String> res = new LinkedList<>();
+        if (i == s.length()) {
+            res.add("");
+            return res;
+        }
+        if (memoResult[i] != null) {
+            return memoResult[i];
+        }
+        for (int k = 1;  i+k <= s.length(); k++) {
+            String prefix = s.substring(i, i+k);
+            if (wordSet.contains(prefix)) {
+                List<String> subProblem = dpReturnReuslt(s, i + k);
+                for (String sub : subProblem) {
+                    // 这里就没有了 回溯的 子集合 join 的过程
+                    if (sub.isEmpty()) { // 消除不必要的空格
+                        res.add(prefix);
+                    } else {
+                        res.add(prefix + " " + sub); // 将各个 prefix 拼接起来
+                    }
+                }
+            }
+        }
+        memoResult[i] = res;
+        return res;
     }
 }
