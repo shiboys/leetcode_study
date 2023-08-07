@@ -6,6 +6,34 @@
     "configurations": [
         {
             "type": "java",
+            "name": "LongestIncreasingSubsequence",
+            "request": "launch",
+            "mainClass": "org.swj.leet_code.algorithm.dynamic_programming.subsequence.LongestIncreasingSubsequence",
+            "projectName": "leetcode_study"
+        },
+        {
+            "type": "java",
+            "name": "MinEditingDistance",
+            "request": "launch",
+            "mainClass": "org.swj.leet_code.algorithm.dynamic_programming.subsequence.MinEditingDistance",
+            "projectName": "leetcode_study"
+        },
+        {
+            "type": "java",
+            "name": "LongestPalindromeSubSeq",
+            "request": "launch",
+            "mainClass": "org.swj.leet_code.algorithm.dynamic_programming.subsequence.LongestPalindromeSubSeq",
+            "projectName": "leetcode_study"
+        },
+        {
+            "type": "java",
+            "name": "LongestCommonSubSeq",
+            "request": "launch",
+            "mainClass": "org.swj.leet_code.algorithm.dynamic_program.subsequence.LongestCommonSubSeq",
+            "projectName": "leetcode_study"
+        },
+        {
+            "type": "java",
             "name": "LongestPalindromeSubSeq",
             "request": "launch",
             "mainClass": "org.swj.leet_code.algorithm.dynamic_program.subsequence.LongestPalindromeSubSeq",
