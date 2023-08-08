@@ -1,5 +1,6 @@
-package org.swj.leet_code.algorithm.dynamic_programming;
+package org.swj.leet_code.algorithm.dynamic_programming.basic_skill;
 
+import java.lang.annotation.Retention;
 import java.util.Arrays;
 
 /**
@@ -15,7 +16,7 @@ public class CoinChange {
 
     /**
      * 采用递归方法的动态规划法，由子问题得出当前问题的解法
-     * dp 的定义为 coins 为不同种类/价值的硬币,amout 为需要凑出的目前钱数，dp 函数的返回值
+     * dp 的定义为 coins 为不同种类/价值的硬币,amount 为需要凑出的目前钱数，dp 函数的返回值
      * 表示最少 需要 dp(...）个硬币才能凑出目标钱数
      * 
      * @param coins
@@ -125,7 +126,72 @@ public class CoinChange {
 
     public static void main(String[] args) {
         CoinChange coinChange = new CoinChange();
-        System.out.println(coinChange.coinChangeL(new int[] { 1, 2, 5 }, 24));
+        System.out.println(coinChange.coinChange2(new int[] { 1, 2, 5 }, 24, true));
     }
 
+    int coinChange2(int[] coins, int amount, boolean dpOrTable) {
+        if (dpOrTable) {
+            memo = new int[amount + 1];
+            Arrays.fill(memo, 10001);
+            return coinChangeWithDpMemo(coins, amount);
+        } else {
+            return coinChangeWithDpTable(coins, amount);
+        }
+    }
+
+    /**
+     * 在写一遍硬币最小分配个数，使用动态规划函数
+     * 
+     * @param coins
+     * @param amount
+     * @return
+     */
+    int coinChangeWithDpMemo(int[] coins, int amount) {
+        if (amount == 0) {
+            return 0;
+        }
+        if (amount < 0) {
+            return -1;
+        }
+        // 0 <= amount <= 10^4
+        if (memo[amount] != 10001) {
+            return memo[amount];
+        }
+        int res = Integer.MAX_VALUE;
+        for (int coin : coins) {
+            int subProblem = coinChangeWithDpMemo(coins, amount - coin);
+            if (subProblem < 0) {
+                continue;
+            }
+            res = Math.min(res, subProblem + 1);
+        }
+        memo[amount] = (res == Integer.MAX_VALUE ? -1 : res);
+        return memo[amount];
+    }
+
+    /**
+     * 采用 dp table 方式求解找零钱，自底向上方式
+     * 
+     * @param coins
+     * @param amount
+     * @return
+     */
+    int coinChangeWithDpTable(int[] coins, int amount) {
+        int[] dp = new int[amount + 1];
+        // dp 元素的最大数不可能超过 amount + 1，因为就算按照最低的1零钱，最多也就 amount 个。
+        Arrays.fill(dp, amount + 1);
+        // base case
+
+        dp[0] = 0;
+        for (int i = 1; i <= amount; i++) {
+            for (int coin : coins) {
+                if (i < coin) {
+                    continue;
+                }
+                int subProblem = i - coin;
+                dp[i] = Math.min(dp[i], 1 + subProblem);
+            }
+        }
+        return dp[amount];
+    }
 }

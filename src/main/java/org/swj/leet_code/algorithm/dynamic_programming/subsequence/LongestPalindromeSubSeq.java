@@ -149,8 +149,7 @@ public class LongestPalindromeSubSeq {
     System.out.println(instance.minInsertion(s));
     System.out.println(instance.minInsertion2(s));
     s = "bbbab";
-    System.out.println(instance.minInsertion(s));
-    System.out.println(instance.minInsertion2(s));
+    System.out.println(instance.longestPalindromeSubseqDpDoubleArray(s));
     System.out.println(instance.longestPalindromeSubSeqNoDp(s));
     s="leetcode"; // ece 是回文子序列
     System.out.println(instance.longestPalindromeSubseqDpDoubleArray(s));

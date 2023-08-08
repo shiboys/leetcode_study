@@ -6,6 +6,27 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CoinChange",
+            "request": "launch",
+            "mainClass": "org.swj.leet_code.algorithm.dynamic_programming.basic_skill.CoinChange",
+            "projectName": "leetcode_study"
+        },
+        {
+            "type": "java",
+            "name": "LongestCommonSubSeq",
+            "request": "launch",
+            "mainClass": "org.swj.leet_code.algorithm.dynamic_programming.subsequence.LongestCommonSubSeq",
+            "projectName": "leetcode_study"
+        },
+        {
+            "type": "java",
+            "name": "MaxSubArray",
+            "request": "launch",
+            "mainClass": "org.swj.leet_code.algorithm.dynamic_programming.subsequence.MaxSubArray",
+            "projectName": "leetcode_study"
+        },
+        {
+            "type": "java",
             "name": "LongestIncreasingSubsequence",
             "request": "launch",
             "mainClass": "org.swj.leet_code.algorithm.dynamic_programming.subsequence.LongestIncreasingSubsequence",

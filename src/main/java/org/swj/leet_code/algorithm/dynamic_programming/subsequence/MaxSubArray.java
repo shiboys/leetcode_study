@@ -1,4 +1,6 @@
-package org.swj.leet_code.algorithm.dynamic_programming;
+package org.swj.leet_code.algorithm.dynamic_programming.subsequence;
+
+import java.util.Arrays;
 
 /**
  * @author shiweijie
@@ -11,13 +13,13 @@ package org.swj.leet_code.algorithm.dynamic_programming;
 public class MaxSubArray {
 
     /**
-     * 其实这道题也适合用滑动窗口，滑动窗口会单独列出一个类来讲解，滑动窗口是专门用来处理子串/子数组的问题IDE
+     * 其实这道题也适合用滑动窗口，滑动窗口是专门用来处理子串/子数组的问题的
      * 这里不就是子数组的问题吗？
      * 想用滑动窗口，想问自己几个问题：
      * 1、什么时候应该扩大窗口
      * 2、什么时候应该缩小窗口
      * 3、什么时候更新答案
-     * 滑动窗口对 nums 包含负数也是可以用滑动窗口表示的的
+     * 滑动窗口对 nums 包含负数也是可以用滑动窗口表示的
      * 
      * 我们可以在窗口内元素之和大于 0 的时候扩大窗口，在窗口内元素之和小于 0 的时候缩小窗口，在每次移动窗口的时候更新答案。
      */
@@ -26,7 +28,8 @@ public class MaxSubArray {
         int window_left = 0;
         int window_right = 0;
         int curSum = 0;
-        int maxSum = 0;
+        // maxSum 不能初始化为 0 ，否则如果 array=[-1], 则结果就是错误的，必须初始化为数组的第一个元素
+        int maxSum = array[0];
         for (int i = 0; i < array.length; i++) {
             // 计算窗口内元素的sum
             curSum += array[window_right];
@@ -81,31 +84,10 @@ public class MaxSubArray {
             dp[i] = Math.max(arr[i], arr[i] + dp[i - 1]);
         }
         // 获取 dp 数组中的最大子数组之和
+        // return Arrays.stream(dp).max().getAsInt();
         int res = Integer.MIN_VALUE;
         for (int dpVal : dp) {
             res = Math.max(res, dpVal);
-        }
-        return res;
-    }
-
-    /**
-     * 上面的解法时间复杂度是 O(n),空间复杂度也是O(n)，较暴力解法已经很优秀了，不过注意到 dp[i] 仅仅和 dp[i-1] 的状态有关
-     * 那么我们可以将 dp 压缩甚至替换掉，进一步优化空间复杂度。
-     * 这里优化完了之后，就跟 firstMac 中的 剑指 offer 之
-     * com.swj.ics.dataStructure.array.MaxSumOfSeqSubArray 这个就是完全相同的解法了
-     * 
-     * @param arr
-     * @return
-     */
-    int maxSumWithDpi(int[] arr) {
-        int curSum = arr[0];// dp[i-1]
-        int maxSum = 0, res = maxSum;
-        for (int i = 1; i < arr.length; i++) {
-            // dp[i]=max(nums[i],nums[i]+dp[i-1])
-            maxSum = Math.max(arr[i], arr[i] + curSum);
-            curSum = maxSum;
-            // 顺带将最大值取出
-            res = maxSum;
         }
         return res;
     }
@@ -115,6 +97,33 @@ public class MaxSubArray {
         int[] arr = new int[] { -3, 1, 3, -1, 2, -4, 2 };
         // System.out.println(instance.maxSumOfSubArray(arr));
         System.out.println(instance.maxSumWithDp(arr));
+        System.out.println(instance.maxSubArraySumNoDp(arr));
     }
 
+    /**
+     * 上面的解法时间复杂度是 O(n),空间复杂度也是O(n)，较暴力解法已经很优秀了，不过注意到 dp[i] 仅仅和 dp[i-1] 的状态有关
+     * 那么我们可以将 dp 压缩甚至替换掉，进一步优化空间复杂度。
+     * 下面是 剑指 offer 中同类方法的解法
+     * com.swj.ics.dataStructure.array.MaxSumOfSeqSubArray 这个就是完全相同的解法了
+     * 子数组之和大于 0 就加上 nums[i], 否则就等于 nums[i]
+     * 也就是供公司合并，A 公司扣除债务后有盈利则合并 B 公司，否则 A 公司破产清零，然后加入 B 公司成为 B 公司一部分
+     * 
+     * @param nums
+     * @return
+     */
+    int maxSubArraySumNoDp(int[] nums) {
+        int curSum = nums[0];
+        // 这里是个 bug，在数组只有一个元素的时候，没能正确初始化 maxSum，尴尬了
+        // int maxSum = 0;
+        int maxSum = curSum;
+        for (int i = 1, len = nums.length; i < len; i++) {
+            if (curSum > 0) {
+                curSum += nums[i];
+            } else {
+                curSum = nums[i];
+            }
+            maxSum = Math.max(maxSum, curSum);
+        }
+        return maxSum;
+    }
 }

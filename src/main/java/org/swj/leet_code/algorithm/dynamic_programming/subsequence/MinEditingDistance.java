@@ -110,10 +110,12 @@ public class MinEditingDistance {
         int[][] dp = new int[m + 1][n + 1];
         // base case
         // 相当于 dp 递归的 if(j<0) {return i+1;}
+        // 第二个字符串从空字符串改为第一个字符串需要几步，很明显需要 i 步
         for (int i = 0; i <= m; i++) {
             dp[i][0] = i;
         }
         // 相当于 dp 函数递归的 if(i<0) {return j+1;}
+        // 同理第一个字符从空字符改为第二个字符需要几步，需要 j 步
         for (int j = 0; j <= n; j++) {
             dp[0][j] = j;
         }

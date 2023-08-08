@@ -1,6 +1,13 @@
 package org.swj.leet_code.algorithm.dynamic_programming.subsequence;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @author shiweijie
@@ -45,9 +52,10 @@ public class LongestCommonSubSeq {
     String s1 = "zabcde";
     String s2 = "acez";
     System.out.println(lcs.longestCommonSubSequence2(s1, s2));
-    s1="delete";
-    s2="leet";
-    System.out.println(lcs.minimumDeleteSum(s1,s2));
+    System.out.println(lcs.getLcsContent(s1, s2));
+    s1 = "delete";
+    s2 = "leet";
+    System.out.println(lcs.minimumDeleteSum(s1, s2));
   }
 
   /**
@@ -69,9 +77,11 @@ public class LongestCommonSubSeq {
      * 当 S1[j-1] == S2[i-1] , dp[i][j] = dp[i-1][j-1] +1; // 自底向上
      * 
      * 当 S1[j-1] != S2[i-1] , dp[i][j] = max(dp[i][j-1],dp[i-1][j])
+     * 跟最小编辑距离的逻辑判断完全相同，执行逻辑不同而已
      */
     for (int i = 1; i <= m; i++) {
       for (int j = 1; j <= n; j++) {
+        // 编辑距离也是相同的逻辑 if s1[i-1] == s2[j-1] then dp[i][j]=f(dp[i-1][j-1])
         if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
           dp[i][j] = 1 + dp[i - 1][j - 1];
         } else {
@@ -90,9 +100,10 @@ public class LongestCommonSubSeq {
   /**
    * 函数定义为 s1[i..] 和 s2[j..] 的最大删除 ascii 和
    * Input: s1 = "sea", s2 = "eat"
-     Output: 231
-     Input: s1 = "delete", s2 = "leet"
-     Output: 403
+   * Output: 231
+   * Input: s1 = "delete", s2 = "leet"
+   * Output: 403
+   * 
    * @param s1
    * @param i
    * @param s2
@@ -126,11 +137,43 @@ public class LongestCommonSubSeq {
       res += dpMinDelSum(s1, i + 1, s2, j + 1);
     } else {
       // 否则求 ascii 删除和最小的
-      res += Math.min(s1.charAt(i) + dpMinDelSum(s1, i + 1, s2, j), 
-      s2.charAt(j) + dpMinDelSum(s1, i, s2, j + 1)
-      );
+      res += Math.min(s1.charAt(i) + dpMinDelSum(s1, i + 1, s2, j),
+          s2.charAt(j) + dpMinDelSum(s1, i, s2, j + 1));
     }
     memo[i][j] = res;
     return memo[i][j];
+  }
+
+  /**
+   * 获取最长公共子序列的内容
+   * 用 动态规划可以求出最长 LCS 的长度，但是内容目前好像求不出来，只能反推 ？坑爹了
+   * @param s1
+   * @param s2
+   * @return
+   */
+  Set<Character> getLcsContent(String s1, String s2) {
+    int m = s1.length();
+    int n = s2.length();
+    Set<LcsChar> rs = new HashSet<>();
+    int[][] dp = new int[m + 1][n + 1];
+    for (int i = 1; i <= m; i++) {
+      for (int j = 1; j <= n; j++) {
+        if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
+          rs.add(new LcsChar(s1.charAt(i - 1), i - 1));
+          dp[i][j] = 1 + dp[i - 1][j - 1];
+        } else {
+          dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]);
+        }
+      }
+    }
+    return rs.stream().map(x -> x.ch).collect(Collectors.toSet());
+  }
+
+  @EqualsAndHashCode
+  @AllArgsConstructor
+  @NoArgsConstructor
+  class LcsChar {
+    char ch;
+    int idx;
   }
 }
