@@ -1,4 +1,4 @@
-package org.swj.leet_code.algorithm.dynamic_programming.subsequence;
+package org.swj.leet_code.algorithm.dynamic_programming.basic_skill;
 
 import java.util.Arrays;
 
@@ -6,12 +6,12 @@ import java.util.Arrays;
  * @author shiweijie
  * @version 1.0.0
  * @since 2023/08/02 19:14
- *        不同的子序列
+ *        不同的子序列。其实就是子序列的个数
  *        leetcode 115
  *        给 2 个字符串 s 和 t，统计并返回在 s 中子序列 t 出现的个数。
  *        示例1：
  *        s="babgbag",t="bag"
- *        输出为 5.因为有 5 中得到 bag 的方案。
+ *        输出为 5.因为有 5 种得到 bag 的方案。
  */
 public class DistinctSubSequence {
     int[][] memo;
@@ -53,16 +53,6 @@ public class DistinctSubSequence {
     /**
      * 定义：s[i..]的子序列中 t[j..] 出现的次数为 dp(s,i,t,j)
      * 接下来思考如何利用 dp 函数将大问题分解成小问题，即如何写出状态转移方程进行穷举
-     * 回顾一下之前讲的排列组合的「球盒模型」，这里是不是很类似。t 中若干字符就好像若干盒子，s 中的若干字符就好像若干小球。
-     * 你需要做的就是将所有盒子都装入小球。所以这里就有两种穷举思路，分别是站在 t 的视角和(盒子选择小球)和站在 s 的视角(小球选择盒子)
-     *
-     * 视角一，站在 t 的视角进行穷举：
-     * 我们的原题是求 s[0..] 的所有子序列中 t[0..] 出现的次数，那么可以先看 t[0] 在 s 中的什么位置，假设 s[2],s[6] 是字符
-     * t[0]
-     * 那么问题就转化成了在 s[2..] 和 s[6..] 的所有子序列中计算 t[1..]出现的次数
-     * 写成比较篇数学的形式的状态转移方程：
-     * dp(s,i,t,j) = SUM(s,k+1,t,j+1) where s[k]=t[j] and k>=i。
-     * 具体的代码如下：
      * 
      * @param s
      * @param i
@@ -88,7 +78,7 @@ public class DistinctSubSequence {
         // 执行状态转移方程
         int res = 0;
         // 在 s[i...] 中寻找 k，使得 s[k] == t[j]
-        for (int k = i; k < s.length(); k++) {
+        for (int k = i; k < s.length(); k++) { // k 最好是从 1 开始
             if (s.charAt(k) == t.charAt(j)) {
                 // 累加结果
                 res += dp(s, k + 1, t, j + 1);
@@ -101,12 +91,13 @@ public class DistinctSubSequence {
     public static void main(String[] args) {
         DistinctSubSequence instance = new DistinctSubSequence();
         String s = "rabbbit", t = "rabbit";
-        System.out.println(instance.dp_array2(s, t));
+        System.out.println(instance.dp_array(s, t));
+        s="babgbag" ;
+         t= "xyz";
+         System.out.println(instance.dp_array2(s, t));
     }
 
     /**
-     * 这道题就解决了，不过效率不高，我们可以粗略估算一下这个算的时间复杂度上限，其中 M，N 分别表示 s,t 的长度，算法的「状态」
-     * 就是 dp 函数参数 i,j 的组合
      * 有关复杂度的讨论请查看考 note.md 有关动态规划&排列组合的算法复杂度计算
      */
 
@@ -145,14 +136,11 @@ public class DistinctSubSequence {
      */
 
     /**
-     * 使用 dp 数组的解法，这个是我参考 leetcode 的解法后结合 labuladong 的解法
+     * 使用 dp 数组的解法，这个是我参考 leetcode 的解法
      * leetcode 的dp方程是 dp[i][j] = dp[i-1][j-1] + dp[i-1][j] where s[i-1]=t[j-1]
      * dp[i][j]= dp[i-1][j] where s[i-1] != t[i-1]
-     * leetcode 的解法是字符串从后向前匹配，
-     * 我这里采用 if s[i] == t[j] then dp[i][j] = dp[i+1][j+1] + dp[i+1][j] else dp[i][j]
-     * = dp[i+1][j] 的解法更容易理解
-     * 我这里仍然采用 labuladong 的字符串从前往后匹配
-     * 
+     * leetcode 的解法是字符串从后向前匹配，按照方向是自底向上迭代。
+     * leetcode 这个方法太难理解了。
      * @param s
      * @param t
      * @return
@@ -165,13 +153,14 @@ public class DistinctSubSequence {
         for (int i = 0; i <= m; i++) {
             for (int j = 0; j <= n; j++) {
                 // base case 
-                if (j == 0) {
+                if (j == 0) { // 这个的意思跟递归判断 j==n 是一样的，就是表示匹配到一个完整的子序列
                     dp[i][j] = 1;
                 } else if (i==0) { // 防止溢出. 也可以理解为 s 为空字符串 
                     dp[i][j] = 0;
                 } else {
+                    // 因为 dp 的 i 和 j 比字符串的索引位偏移 1 位，所以要使用 i-1 和 j-1
                     if (s.charAt(i-1) == t.charAt(j-1)) {
-                        // 仍然是 j 不懂，i 回退一步，有关参考图如下 note.md 所示
+                        // 仍然是 j 不动，i 回退一步，有关参考图如下 note.md 所示
                         dp[i][j] = dp[i - 1][j - 1] + dp[i-1][j];
                     } else {
                         dp[i][j] = dp[i-1][j];
@@ -187,6 +176,9 @@ public class DistinctSubSequence {
      * 但是 dp 的思想仍然是 dp[i][j] = dp[i+1][j+1] + dp[i+1][j]
      * 也就是 如果当前 s[i]=t[j], 则 dp 向后传递，要么 dp[i+1][j+1],要么 t[j] 保持不动
      * 让 s[i+1] 来匹配
+     * 我这里采用 if s[i] == t[j] then dp[i][j] = dp[i+1][j+1] + dp[i+1][j] else dp[i][j]
+     * = dp[i+1][j] 的解法更容易理解
+     * 我这里仍然采用 labuladong 的字符串从前往后匹配。自顶向下
      * @param s
      * @param t
      * @return
@@ -199,7 +191,7 @@ public class DistinctSubSequence {
         for (int i = m; i >= 0; i--) {
             for (int j = n; j >= 0; j--) {
                 // base case 
-                if (j == n) {
+                if (j == n) { // 要匹配的 t 为 空字符串，
                     dp[i][j] = 1;
                 } else if (i==m) { // 防止溢出. 也可以理解为 s 为空字符串 
                     dp[i][j] = 0;

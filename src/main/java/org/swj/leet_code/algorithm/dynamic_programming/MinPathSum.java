@@ -1,4 +1,4 @@
-package org.swj.leet_code.algorithm.dynamic_programming.subsequence;
+package org.swj.leet_code.algorithm.dynamic_programming;
 
 import java.util.Arrays;
 

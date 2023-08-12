@@ -1,4 +1,4 @@
-package org.swj.leet_code.algorithm.dynamic_programming;
+package org.swj.leet_code.algorithm.dynamic_programming.basic_skill;
 
 import java.util.Arrays;
 import java.util.HashSet;
