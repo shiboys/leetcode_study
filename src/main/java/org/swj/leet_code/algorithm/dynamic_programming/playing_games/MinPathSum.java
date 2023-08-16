@@ -1,4 +1,4 @@
-package org.swj.leet_code.algorithm.dynamic_programming;
+package org.swj.leet_code.algorithm.dynamic_programming.playing_games;
 
 import java.util.Arrays;
 
@@ -134,5 +134,6 @@ public class MinPathSum {
         // System.out.println(instance.minPathSum(arr));
         // System.out.println(instance.minPathSumByDp(arr));
         System.out.println(instance.minPathSum2(arr2));
+        //System.out.println(instance.minPathSum2(arr2));
     }
 }
