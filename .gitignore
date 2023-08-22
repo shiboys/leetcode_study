@@ -6,3 +6,5 @@ src/test/
 /target/
 /.vscode/
 /target/classes/
+*.DS_Store
+/*.DS_Store

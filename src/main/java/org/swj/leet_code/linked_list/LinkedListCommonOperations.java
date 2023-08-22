@@ -308,6 +308,26 @@ public class LinkedListCommonOperations {
         return pNodeA;
     }
 
+    /**
+     * 移除有序链表的重复元素
+     * 
+     * @param head
+     * @return
+     */
+    ListNode deleteDuplicateNode(ListNode head) {
+        ListNode fast = head, slow = head;
+        while (fast != null) {
+            if (slow.val != fast.val) {
+                slow.next = fast;
+                slow = slow.next;
+            }
+            fast = fast.next;
+        }
+        // 断开与后面重复元素的连接
+        slow.next = null;
+        return head;
+    }
+
     public static void main(String[] args) {
         LinkedListCommonOperations instance = new LinkedListCommonOperations();
 
@@ -332,7 +352,13 @@ public class LinkedListCommonOperations {
 
         // testIsCycle(instance);
         // testFirstCycleNode(instance);
-        testIntersectionNode(instance);
+        // testIntersectionNode(instance);
+        ListNode duplicateNode = ListNodeUtil.convertToNodeListFromArray(new int[] { 0, 0, 1, 1, 1, 2, 2, 3, 3, 4 });
+
+        ListNode distinctHead = instance.deleteDuplicateNode(duplicateNode);
+        System.out.println("remove duplicated node:");
+        ListNodeUtil.printLinkedNode(distinctHead);
+
     }
 
     private static void testIsCycle(LinkedListCommonOperations instance) {
@@ -406,7 +432,7 @@ public class LinkedListCommonOperations {
             System.out.println("link A2 is not intersected with link B2");
         }
 
-        if( null != null) {
+        if (null != null) {
             System.out.println("null != null");
         } else if (null == null) {
             System.out.println("null == null");

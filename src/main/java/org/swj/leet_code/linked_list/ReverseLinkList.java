@@ -1,8 +1,5 @@
 package org.swj.leet_code.linked_list;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
 /**
  * @author shiweijie
  * @version 1.0.0

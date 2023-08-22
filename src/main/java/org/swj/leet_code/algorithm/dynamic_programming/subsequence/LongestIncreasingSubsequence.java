@@ -70,11 +70,15 @@ public class LongestIncreasingSubsequence {
             // 将 top 数组的 0-pile 区间看作是堆顶的二分区间
             int left = 0;
             int right = pile;
-            while (left < right) {
+            while (left < right) { // 根据阿东二分法分析的规律得出，这里使用 < 是因为 right = pile 即堆数，而不是 pile -1,元素放在哪个堆上是 i-1。
+                // 因此每次搜索的区间是 [left,pile) 左闭右开。而终止条件是 left == right。
                 int middle = left + (right - left) / 2;
                 if (top[middle] > pork) {
                     right = middle; // 此处跟二分法稍微有些区别，这里为 middle，而不是 middle - 1，
                     // 是因为下面使用了 left 变量作为堆顶元素的访问下标，为了使 left 计算正确
+                    // 之所以这里让 right = middle, 是因为在这个扑克牌的逻辑中，当前 pork 只能落在比它大的且是最左边的元素上。
+                    // 所以比 pork 小的话, 左指针 left 可以 ++，定位到最后一个比它大的元素时和跟他相等的元素时，right 右指针需要在此停住
+                    // 以满足停在手中的扑克牌最左侧的上面的要求，请查看考 md 文件中的扑克牌摆放示意图
                 } else if (top[middle] < pork) {
                     left = middle + 1;
                 } else {
