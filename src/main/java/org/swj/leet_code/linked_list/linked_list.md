@@ -90,7 +90,7 @@ ListNode reverseBetween(ListNode head, int m, int n) {
 
 ![每 k 个元素反转链表](../algorithm/dynamic_programming/imgs/reverse_per_k_1.png)
 
-如果我们射吧把前 2 个节点反转，那么后面的那些节点怎么处理？后面的这些节点也是一条链表，而且规模(长度)比原来的这条链表小，这就叫**子问题**。
+如果我们先把前 2 个节点反转，那么后面的那些节点怎么处理？后面的这些节点也是一条链表，而且规模(长度)比原来的这条链表小，这就叫**子问题**。
 
 ![每 k 个元素反转链表2](../algorithm/dynamic_programming/imgs/reverse_per_k_2.png)
 

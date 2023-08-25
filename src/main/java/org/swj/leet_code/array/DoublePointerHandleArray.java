@@ -2,6 +2,7 @@ package org.swj.leet_code.array;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 /**
@@ -58,21 +59,6 @@ public class DoublePointerHandleArray {
         for (; pos < nums.length; pos++) {
             nums[pos] = 0;
         }
-    }
-
-    int binarySearch(int[] nums, int target) {
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = (left + right) / 2;
-            if (target == nums[mid]) {
-                return mid;
-            } else if (target > nums[mid]) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
-        return -1;
     }
 
     int[] twoSum(int[] nums, int target) {
@@ -156,44 +142,72 @@ public class DoublePointerHandleArray {
         return res;
     }
 
-
+    int[] advantageCount(int[] nums1, int[] nums2) {
+        // 齐王的马，将其战力和比赛排位封装进一个数组中
+        int n = nums2.length;
+        int[] res = new int[n];
+        // 小顶堆倒叙排列就成了大顶堆
+        PriorityQueue<int[]> pqqw = new PriorityQueue<>((o1, o2) -> {
+            // 按照战力倒序排列
+            return o2[1] - o1[1];
+        });
+        for (int i = 0, len = nums2.length; i < len; i++) {
+            pqqw.offer(new int[] { i, nums2[i] });
+        }
+        // 田忌的马排序
+        Arrays.sort(nums1);
+        int left = 0, right = nums1.length - 1;
+        while (!pqqw.isEmpty()) {
+            int[] qh = pqqw.poll();
+            int i = qh[0], hp = qh[1]; // hp:horse power
+            if (hp < nums1[right]) { // 打得过
+                res[i] = nums1[right];
+                right--;
+            } else { // 打不过，送人头
+                res[i] = nums1[left];
+                left++;
+            }
+        }
+        return res;
+    }
 
     public static void main(String[] args) {
         int[] arr = new int[] { 1, 1, 2 };
         DoublePointerHandleArray instance = new DoublePointerHandleArray();
-        System.out.println(instance.removeDuplicates(arr));
+        // System.out.println(instance.removeDuplicates(arr));
 
-        arr = new int[] { 0, 0, 1, 1, 1, 2, 2, 3, 3, 4 };
-        System.out.println(instance.removeDuplicates(arr));
+        // arr = new int[] { 0, 0, 1, 1, 1, 2, 2, 3, 3, 4 };
+        // System.out.println(instance.removeDuplicates(arr));
 
-        arr = new int[] { 3, 2, 2, 3 };
-        System.out.println(instance.removeElement(arr, 3));
+        // arr = new int[] { 3, 2, 2, 3 };
+        // System.out.println(instance.removeElement(arr, 3));
 
-        arr = new int[] { 0, 1, 2, 2, 3, 0, 4, 2 };
-        System.out.println(instance.removeElement(arr, 2));
+        // arr = new int[] { 0, 1, 2, 2, 3, 0, 4, 2 };
+        // System.out.println(instance.removeElement(arr, 2));
 
-        arr = new int[] { 0, 1, 2, 2, 3, 0, 4, 2 };
-        instance.moveZeros(arr);
-        System.out.println(Arrays.toString(arr));
+        // arr = new int[] { 0, 1, 2, 2, 3, 0, 4, 2 };
+        // instance.moveZeros(arr);
+        // System.out.println(Arrays.toString(arr));
 
-        arr = new int[] { 2, 7, 11, 15 };
-        System.out.println(Arrays.toString(instance.twoSum(arr, 9)));
+        // arr = new int[] { 2, 7, 11, 15 };
+        // System.out.println(Arrays.toString(instance.twoSum(arr, 9)));
 
-        String s = "my leetcode";
-        char[] sArr = s.toCharArray();
-        instance.reverseString(sArr);
-        System.out.println(Arrays.toString(sArr));
+        // String s = "my leetcode";
+        // char[] sArr = s.toCharArray();
+        // instance.reverseString(sArr);
+        // System.out.println(Arrays.toString(sArr));
 
-        s = "as上海自来水来自海上ha";
-        System.out.println(instance.longestPalindromeSubstring(s));
-        s = "google is a good searching engine.";
-        System.out.println(instance.longestPalindromeSubstring(s));
+        // s = "as上海自来水来自海上ha";
+        // System.out.println(instance.longestPalindromeSubstring(s));
+        // s = "google is a good searching engine.";
+        // System.out.println(instance.longestPalindromeSubstring(s));
 
-        Random rand  = new Random();
-        rand.nextInt(10);
+        // Random rand = new Random();
+        // rand.nextInt(10);
 
-        HashMap map  = new HashMap<>();
-        map.compute(map, null);
+        arr = new int[] {12,24,8,32};
+        int [] arrq = new int[] {13,25,32,11};
+        System.out.println(Arrays.toString(instance.advantageCount(arr, arrq)));
     }
 
 }

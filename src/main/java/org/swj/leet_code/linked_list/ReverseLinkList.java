@@ -83,10 +83,10 @@ public class ReverseLinkList {
     }
 
     /**
-     * 将 nodeA 与 NodeB 的前一个节点之间的所有节点反转，区间为左臂右开 [nodeA,nodeB) 也就是不包括 nodeB。
+     * 将 nodeA 与 NodeB 的前一个节点之间的所有节点反转，区间为左闭右开 [nodeA,nodeB) 也就是不包括 nodeB。
      * 
      * @param nodeA
-     * @param nodeB
+     * @param nodeB 闭区间节点，不包含 nodeB
      * @return
      */
     ListNode reverseNodeBetweenByLoop(ListNode nodeA, ListNode nodeB) {
@@ -120,6 +120,7 @@ public class ReverseLinkList {
         ListNode reversedHead = reverseNodeBetweenByLoop(p, n);
         // 开始 n-1 轮的递归，新的 head 为
         // 注意 n 节点的指针并没有被改变，n 仍然指向第 k+1 个节点，所以这里可用使用 n 作为下次递归的新的起点
+        // 翻转后，p 在翻转后的子链表的尾结点
         p.next = reverseKGroup(n, k);
 
         return reversedHead;
