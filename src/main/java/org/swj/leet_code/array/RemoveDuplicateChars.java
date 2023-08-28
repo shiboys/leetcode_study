@@ -6,7 +6,7 @@ import java.util.Stack;
  * @author shiweijie
  * @version 1.0.0
  * @since 2023/08/25 14:27
- *        数组去重 leetcode 
+ *        数组去重 leetcode
  */
 public class RemoveDuplicateChars {
     String removeDuplicateLetters(String s) {
@@ -72,18 +72,20 @@ public class RemoveDuplicateChars {
             if (inStack[ch]) {
                 continue;
             }
-            while (!stack.isEmpty() && (currCh = stack.peek()) > ch && counter[currCh] > 0) {
+            while (!stack.isEmpty() && (currCh = stack.peek()) > ch) {
                 // 后面的字符不会再出现当前字符，当前栈顶字符不能被弹出
+                if (counter[currCh] == 0) {
+                    break;
+                }
                 // 否则当前栈顶字符可以被弹出
-                stack.pop();
-                inStack[currCh] = false;
+                inStack[stack.pop()] = false;
             }
             stack.push(ch);
             inStack[ch] = true;
         }
-        
+
         StringBuilder sb = new StringBuilder();
-        while(!stack.isEmpty()) {
+        while (!stack.isEmpty()) {
             sb.append(stack.pop());
         }
         return sb.reverse().toString();
@@ -93,7 +95,7 @@ public class RemoveDuplicateChars {
         String s = "bcabc";
         RemoveDuplicateChars instance = new RemoveDuplicateChars();
         System.out.println(instance.removeDupliatLetters2(s));
-        s="cbacdcbc";
+        s = "cbacdcbc";
         System.out.println(instance.removeDuplicateLetters3(s));
     }
 
