@@ -216,7 +216,7 @@ public class LinkedListCommonOperations {
     /*
      * 两个链表是否相交，leetcode 160 题
      * 给你输入两个链表的头结点 headA 和 headB，这两个链表可能存在相交。
-     * 如果相交，你的算法返回那个交点；如果没有相加哦，则返回 null。
+     * 如果相交，你的算法返回那个交点；如果没有相交，则返回 null。
      * 如下例子
      * A: a1->a2->c1->c2
      * B: b1->b2->b3->c1->c2
@@ -240,12 +240,12 @@ public class LinkedListCommonOperations {
             longHead = longHead.next;
         }
         ListGenericNode<T> pNodeA = headA, pNodeB = headB;
-        // 如果 shortHead 链表更长，则 pNodeA 开始迭代
+        // 如果 shortHead 链表更长，则 pNodeA 开始迭代，A(shortHead) 链表先走
         while (shortHead.next != null) {
             pNodeA = pNodeA.next;
             shortHead = shortHead.next;
         }
-        // 如果 longHead 更长，则 pNodeB 开始迭代
+        // 如果 longHead 更长，则 pNodeB 开始迭代, B(longHead) 链表先走
         while (longHead.next != null) {
             longHead = longHead.next;
             pNodeB = pNodeB.next;
