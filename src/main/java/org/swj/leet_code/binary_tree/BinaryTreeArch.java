@@ -291,12 +291,17 @@ public class BinaryTreeArch {
      * @param root
      */
     public static void printBinaryTreeSimple(TreeNode root) {
+        doPrintBinaryTreeSimple(root);
+        System.out.println();
+    }
+
+    static void doPrintBinaryTreeSimple(TreeNode root) {
         if (root == null) {
             return;
         }
         System.out.print(root.val + " ");
-        printBinaryTreeSimple(root.left);
-        printBinaryTreeSimple(root.right);
+        doPrintBinaryTreeSimple(root.left);
+        doPrintBinaryTreeSimple(root.right);
     }
 
     /**
