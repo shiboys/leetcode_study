@@ -262,7 +262,7 @@ Prim 算法不需要事先对所有的边排序，而是利用优先级队列动
 
 好，现在已经找到了最小生成树的第一条边(边 `AB`), 然后呢，如何安排下一次「切分」？
 
-按照 Prim 算法的逻辑，澳门接下来可以围绕 `A` 和 `B` 这两个节点做切分：
+按照 Prim 算法的逻辑，我们接下来可以围绕 `A` 和 `B` 这两个节点做切分：
 
 ![prim算法的切分原理](../algorithm/dynamic_programming/imgs/prim6.png)
 
@@ -282,11 +282,12 @@ Prim 算法不需要事先对所有的边排序，而是利用优先级队列动
 
 比如回顾刚才的图，当我们直到了节点 `A, B` 的所有「横切边」（不妨表示为`cut({A,B})`), 也就是图中蓝色的边：
 
-![prim算法的切分原理](../algorithm/dynamic_programming/imgs/prim9.png)
+![prim算法的切分原理](../algorithm/dynamic_programming/imgs/prim6.png)
+
 
 是否可以快速算出 `cut({A,B,C})`，也就是节点 `A,B,C` 的所有「横切边」有哪些？
 
-![prim算法的切分原理](../algorithm/dynamic_programming/imgs/prim10.png)
+![prim算法的切分原理](../algorithm/dynamic_programming/imgs/prim8.png)
 
 是可以的，因为我们发现：
 
@@ -295,7 +296,7 @@ cut({A,B,C}) = cut({A,B}) + cut({C})
 ```
 而 `cut({C})` 就是节点 C 的所有邻边：
 
-![prim算法的切分原理](../algorithm/dynamic_programming/imgs/prim11.png)
+![prim算法的切分原理](../algorithm/dynamic_programming/imgs/prim9.png)
 
 这个特点使我们用写代码实现「切分」和处理「横切边」成为可能：
 
