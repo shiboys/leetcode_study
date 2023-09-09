@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * @author shiweijie
  * @version 1.0.0
- * @since 2023/03/02 19:09 力扣第 1 题，在一个数组中 求 两个数字之和为定值 S 的两个素组的索引
+ * @since 2023/03/02 19:09 力扣第 1 题，在一个数组中 求 两个数字之和为定值 S 的两个数组的索引
  */
 public class TwoNumberSum {
 

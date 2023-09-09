@@ -202,7 +202,7 @@ public class SerializeBinaryTree {
             return null;
         }
         TreeNode root = new TreeNode(Integer.parseInt(valStr));
-        // 先序列化右子树，在序列化左子树
+        // 先反序列化右子树，再反序列化左子树
         root.right = deserializeToTreeCodecPost(valueList);
         root.left = deserializeToTreeCodecPost(valueList);
         return root;

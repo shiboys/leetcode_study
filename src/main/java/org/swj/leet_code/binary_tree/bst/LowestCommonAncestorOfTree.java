@@ -5,6 +5,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.swj.leet_code.binary_tree.TreeNode;
+import org.swj.leet_code.binary_tree.TreeNodeP;
+
+import lombok.val;
 
 /**
  * @author shiweijie
@@ -49,6 +52,12 @@ public class LowestCommonAncestorOfTree {
         return leftTargetNode != null ? leftTargetNode : rightTargetNode;
     }
 
+    /**
+     * 若干节点的公共最小祖先
+     * @param root
+     * @param nodes
+     * @return
+     */
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode[] nodes) {
         Set<Integer> values = Arrays.stream(nodes).map(x -> x.val).collect(Collectors.toSet());
 
@@ -71,4 +80,104 @@ public class LowestCommonAncestorOfTree {
         // 继续向上回溯，向上查找最小公共祖先
         return leftTargetNode != null ? leftTargetNode : rightTargetNode;
     }
+
+    boolean foundP1 = false;
+    boolean foundP2 = false;
+
+    /**
+     * 查找 p1 和 p2 的最近公共自祖先节点，p1 和 p2 可能不存在于二叉树上，这时候应该返回 null，如果存在则返回 LCA
+     * 该解法需要借助外部变量
+     * 
+     * @param root
+     * @param p1
+     * @param p2
+     * @return
+     */
+    TreeNode lowestCommonAncestor2(TreeNode root, TreeNode p1, TreeNode p2) {
+        TreeNode node = find2(root, p1.val, p2.val);
+        if (foundP1 && foundP2) { // p1 和 p2 都找到了
+            return node;
+        }
+        // 只要有一个没找到 ，就返回 Null
+        return null;
+    }
+
+    TreeNode find2(TreeNode root, int val1, int val2) {
+        if (root == null) {
+            return null;
+        }
+        TreeNode leftNode = find2(root.left, val1, val2);
+        TreeNode rightNode = find2(root.right, val1, val2);
+
+        if (leftNode != null && rightNode != null) {
+            return root; // 找到 LCA
+        }
+        if (root.val == val1 || root.val == val2) {
+            if (root.val == val1)
+                foundP1 = true;
+            if (root.val == val2)
+                foundP2 = true;
+            return root;
+        }
+        return leftNode != null ? leftNode : rightNode;
+    }
+
+    /**
+     * 查找 bst 的最小公共祖先，leetcode 235 题
+     * 
+     * @param root
+     * @param p1
+     * @param p2
+     * @return
+     */
+    TreeNode lowestCommonAncestorOfBst(TreeNode root, TreeNode p1, TreeNode p2) {
+        if (root == null) {
+            return null;
+        }
+        int val1 = Math.min(p1.val, p1.val);
+        int val2 = Math.max(p1.val, p2.val);
+
+        return findOfBst(root, val1, val2);
+    }
+
+    TreeNode findOfBst(TreeNode root, int val1, int val2) {
+        if (root == null) {
+            return null;
+        }
+        // 比 最小值 val1 小，去又子节点查找
+        if (root.val < val1) {
+            return findOfBst(root.right, val1, val2);
+        }
+        // 比 最大值 val2 大，去左子节点查找
+        if (root.val > val2) {
+            return findOfBst(root.left, val1, val2);
+        }
+        // 这里必须是后续遍历才能根据先这个判断返回 root
+        // val1 <= root.val <= val2
+        return root;
+    }
+
+    TreeNodeP lowestCommonAncestor(TreeNodeP p, TreeNodeP q) {
+        // 通过双链表指针技巧解决
+        TreeNodeP p1 = p;
+        TreeNodeP q1 = q;
+        while (p1 != q1) {
+            // p1 走一步，如果走到根节点，则转到 q 节点
+            if (p1 == null) {
+                p1 = q;
+            } else {
+                p1 = p1.parent;
+            }
+            
+            // q1 同样走一步，如果走到 根节点，指向 p 节点
+            
+            if (q1 == null) {
+                q1 = p;
+            } else {
+                q1 = q1.parent;
+            }            
+        }
+        return p1;
+    }
+
 }
