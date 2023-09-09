@@ -150,6 +150,7 @@ public class ShortestPath {
      * leetcode 1631 题
      * 找出二维矩阵从起点(0,0) 到终点 (m-1,n-1) 的路径上的最大绝对值的最小值。
      * 也是使用 Dijkastra 解法，只是将 dj 解法从最短路径和转化为最大绝对值差
+     * 上一个是求累加和的最小值，本题是求最大绝对值的最小值
      */
     static class DijkastraMatrix {
         // 辅助数组，用来记录 从 startX,startY 到 currX,currY 的路径上的最大能量消耗(最大绝对值)
