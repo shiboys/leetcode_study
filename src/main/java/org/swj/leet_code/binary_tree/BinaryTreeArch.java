@@ -183,7 +183,11 @@ public class BinaryTreeArch {
     }
 
     List<Integer> maxLevelValListRes;
-
+    
+    /**
+     * 不依靠队列且水平的方式实现宽度优先遍历二叉树。在遍历过程中求每一层的最大值
+     * @param list
+     */
     private void traverseLevel(List<TreeNode> list) {
         if (list == null || list.isEmpty()) {
             return;

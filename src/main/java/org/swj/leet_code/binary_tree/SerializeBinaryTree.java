@@ -7,14 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import lombok.val;
-
 /**
  * 二叉树相关的序列化
  * 
  * @author shiweijie
  * @version 1.0.0
  * @since 2023/08/27 14:27
+ * todo: 空节点的序列化和反序列化好像没有撸
  */
 public class SerializeBinaryTree {
 

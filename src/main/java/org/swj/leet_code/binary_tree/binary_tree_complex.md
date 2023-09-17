@@ -1,6 +1,6 @@
 ### 构造二叉树
 
-![前序和中序构造二叉树](../algorithm/dynamic_programming/imgs/builde_binary_tree3.png)
+![前序和中序构造二叉树](../algorithm/dynamic_programming/imgs/build_binary_tree3.png)
 
 最终构造树的索引结果如下所示
 

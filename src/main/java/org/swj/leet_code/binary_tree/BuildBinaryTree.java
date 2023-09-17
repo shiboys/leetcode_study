@@ -10,6 +10,8 @@ import java.util.Map;
  *        二叉树的构造
  */
 public class BuildBinaryTree {
+    
+    Map<Integer, Integer> valToIndex;
 
     /**
      * 从前序和中序遍历结果中构造二叉树
@@ -26,17 +28,6 @@ public class BuildBinaryTree {
         return buildTreeNodeFromPreIn(preOrder, 0, preOrder.length - 1,
                 inOrder, 0, inOrder.length - 1);
     }
-
-    public TreeNode buildTreeFromPostOrderAndInOrder(int[] inOrder, int[] postOrder) {
-        valToIndex = new HashMap<>();
-        for (int i = 0; i < inOrder.length; i++) {
-            valToIndex.put(inOrder[i], i);
-        }
-        return buildTreeNodeFromPostIn(inOrder, 0, inOrder.length - 1,
-                postOrder, 0, postOrder.length - 1);
-    }
-
-    Map<Integer, Integer> valToIndex;
 
     TreeNode buildTreeNodeFromPreIn(int[] preOrder, int preStart, int preEnd,
             int[] inOrder, int inStart, int inEnd) {
@@ -56,6 +47,15 @@ public class BuildBinaryTree {
         root.right = buildTreeNodeFromPreIn(preOrder, leftLength + preStart + 1, preEnd,
                 inOrder, rootIdx + 1, inEnd);
         return root;
+    }
+
+    public TreeNode buildTreeFromPostOrderAndInOrder(int[] inOrder, int[] postOrder) {
+        valToIndex = new HashMap<>();
+        for (int i = 0; i < inOrder.length; i++) {
+            valToIndex.put(inOrder[i], i);
+        }
+        return buildTreeNodeFromPostIn(inOrder, 0, inOrder.length - 1,
+                postOrder, 0, postOrder.length - 1);
     }
 
     TreeNode buildTreeNodeFromPostIn(int[] inOrder, int inStart, int inEnd,

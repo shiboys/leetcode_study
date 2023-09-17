@@ -1,7 +1,9 @@
 package org.swj.leet_code.algorithm.dynamic_programming.basic_skill;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -57,6 +59,27 @@ public class WordBreak {
         public List<List<Integer>> getResult() {
             return res;
         }
+
+        LinkedHashSet<Integer> trackList2 = new LinkedHashSet<>();
+
+        public void basicTrack2(int[] nums) {
+            if(nums == null || nums.length <1) {
+                return ;
+            }
+            if(trackList2.size() == nums.length) {
+                res.add(new ArrayList<>(trackList2));
+            }
+            for(int num : nums) {
+                if(!trackList2.contains(num)) {
+                    trackList2.add(num);
+                    basicTrack2(nums);
+                    trackList2.remove(num);
+                }
+            }
+            int[] arr =new int[]{3,4,5};
+            //Arrays.sort(arr,);
+        }
+       
     }
 
     boolean found = false;
@@ -123,6 +146,7 @@ public class WordBreak {
         String s = "catsanddog";
         List<String> wordDict = Arrays.asList("cat", "cats", "and", "sand", "dog");
         System.out.println(instance.wordBreakReturnResultByDp(s, wordDict));
+        instance.testBasicBackTrack();
     }
 
     private static void testSimpleWordBreak(WordBreak instance) {
@@ -134,9 +158,10 @@ public class WordBreak {
     private static void testBasicBackTrack() {
         int[] nums = new int[] { 1, 2, 3 };
         BasicBackTrack backTrack = new BasicBackTrack();
-        backTrack.basicTrack(nums);
+        //backTrack.basicTrack(nums);
+        backTrack.basicTrack2(nums);
         resultList = backTrack.getResult();
-        int nextLine = 9;
+        int nextLine = 1;
         int counter = 0;
         for (List<Integer> itemList : resultList) {
             System.out.print(String.join(" ",
