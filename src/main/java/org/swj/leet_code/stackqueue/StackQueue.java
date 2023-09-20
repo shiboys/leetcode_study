@@ -86,6 +86,7 @@ public class StackQueue {
                 size--;
             }
             topEle = queue.poll();
+            queue.offer(topEle);
             return queue.poll();
         }
 

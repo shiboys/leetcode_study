@@ -3,7 +3,8 @@ package org.swj.leet_code.algorithm;
 /**
  * @author shiweijie
  * @version 1.0.0
- * @since 2023/03/03 16:29 整数反转 解题思路：跟 String to Int 有点类似，在循环中 除以 10 得到结果和mod，然后反转的数字 乘以10+余数
+ * @since 2023/03/03 16:29 
+ * 整数反转 解题思路：跟 String to Int 有点类似，在循环中 除以 10 得到结果和mod，然后反转的数字 乘以10+余数
  */
 public class InverseIntegerNumber {
 

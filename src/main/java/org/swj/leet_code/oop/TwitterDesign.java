@@ -40,6 +40,9 @@ public class TwitterDesign {
      */
     public List<Integer> getNewsFeed(int userId) {
         // 使用优先级队列，将 k 个关注的人的 tweet 进行排序显示输出
+        if (!userMap.containsKey(userId)) {
+            userMap.put(userId, new User(userId));
+        }
         User currUser = userMap.get(userId);
         // 按更新时间倒叙排列
         PriorityQueue<Tweet> pq = new PriorityQueue<>((a, b) -> {
