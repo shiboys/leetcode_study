@@ -271,6 +271,11 @@ public class DfsBfsIsland {
         return subIslandsCount;
     }
 
+    /**
+     * 不同岛屿的数量，leetcode 694
+     * @param grid
+     * @return
+     */
     public int numsOfDistinctIslands(int[][] grid) {
         if (grid == null || grid.length < 1) {
             return 0;

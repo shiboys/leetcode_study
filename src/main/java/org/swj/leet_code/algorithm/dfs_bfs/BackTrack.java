@@ -271,5 +271,52 @@ public class BackTrack {
 
         nums = new int[] { 2, 3, 6, 7 };
         System.out.println(instance.combinationSum(nums, 7));
+
+        System.out.println(instance.generateParenthesis(3));
+    }
+
+    /**
+     * leetcode 22 题，一些列 n 对合法的小括号.
+     * 解法分析请参考 backTrack.md 文档描述
+     */
+    public List<String> generateParenthesis(int n) {
+        StringBuilder track = new StringBuilder();
+        List<String> res = new LinkedList<>();
+        backTrackParentheses(n, n, track, res);
+        return res;
+    }
+
+    private static final char[] PARENTHESES = new char[] { '(', ')' };
+
+    /**
+     * 
+     * @param left  左括号的需求量
+     * @param right 右括号的需求量
+     * @param track 括号字符串收集器
+     * @param res
+     */
+    void backTrackParentheses(int left, int right, StringBuilder track, List<String> res) {
+        if (right < left) { // 右括号需要的数量大于左括号，反过来就是说左括号的剩余数量多。因为从左右到，左括号的需求量不断在减少
+            return;
+        }
+        if (left < 0 || right < 0) {
+            return;
+        }
+        // 左右括号的匹配用完
+        if (left == 0 && right == 0) {
+            res.add(track.toString());
+            return;
+        }
+        // 回溯框架
+        // 尝试放左括号
+        track.append('(');
+        backTrackParentheses(left - 1, right, track, res);
+        track.deleteCharAt(track.length() - 1);
+
+        // 尝试放右括号
+        track.append(')');
+        backTrackParentheses(left, right - 1, track, res);
+        track.deleteCharAt(track.length() - 1);
+
     }
 }

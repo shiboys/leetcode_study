@@ -7,8 +7,6 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
-
 import org.swj.leet_code.binary_tree.TreeNode;
 
 /**
@@ -29,6 +27,9 @@ public class BfsUsage {
      * @return
      */
     public int minDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
         AtomicInteger depthCounter = new AtomicInteger();
         traverseBinaryTreeHorizonially(root, depthCounter);
         return depthCounter.get();
@@ -68,7 +69,7 @@ public class BfsUsage {
         s2.add(target); // 从结尾开始遍历的集合
         int step = 0;
         Set<String> visitedSet = new HashSet<>();
-        //visitedSet.add("0000");
+        // visitedSet.add("0000");
         // 不再使用队列
         while (!s1.isEmpty() && !s2.isEmpty()) {
             Set<String> temp = new HashSet<>();
@@ -315,12 +316,13 @@ public class BfsUsage {
         // targetStr = "0009";
         // System.out.println(instance.openLockDual(deadends, targetStr));
 
-         deadends = new String[] { "0000" };
+        deadends = new String[] { "0000" };
         targetStr = "8888";
         System.out.println(instance.openLock(deadends, targetStr));
         System.out.println(instance.openLockDual(deadends, targetStr));
 
-        // deadends = new String[] { "8887", "8889", "8878", "8898", "8788", "8988", "7888", "9888" };
+        // deadends = new String[] { "8887", "8889", "8878", "8898", "8788", "8988",
+        // "7888", "9888" };
         // targetStr = "8888";
         // System.out.println(instance.openLockDual(deadends, targetStr));
 
@@ -329,6 +331,7 @@ public class BfsUsage {
         // System.out.println("sliding puzzle steps =" + instance.slidingPuzzle(board));
 
         // board = new int[][] { { 4, 1, 2 }, { 5, 0, 3 } };
-        // System.out.println("sliding puzzle2 steps = " + instance.slidingPuzzle(board));
+        // System.out.println("sliding puzzle2 steps = " +
+        // instance.slidingPuzzle(board));
     }
 }

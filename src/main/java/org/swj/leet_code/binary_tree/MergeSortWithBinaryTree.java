@@ -34,7 +34,7 @@ public class MergeSortWithBinaryTree {
         merge(arr, start, mid, end);
     }
 
-    // 阿东的解法是利用成员变零 tmp 数组，降低分配的频率，
+    // 阿东的解法是利用成员变量 tmp 数组，降低分配的频率，
     // tmp 数组主要用来存储归并之前的数组 [start..end] 之间的数据，辅助更新原数组之用
     int[] temp;
 
