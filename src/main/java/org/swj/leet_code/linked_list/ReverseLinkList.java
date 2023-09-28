@@ -1,5 +1,8 @@
 package org.swj.leet_code.linked_list;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author shiweijie
  * @version 1.0.0
@@ -13,11 +16,13 @@ public class ReverseLinkList {
      * @param head
      * @return
      */
-    ListNode reverse(ListNode head) {
+    ListNode reverseNode(ListNode head) {
         if (head != null && head.next == null) {
             return head;
         }
-        ListNode reverseHead = reverse(head.next);
+        ListNode reverseHead = reverseNode(head.next);
+        // 不能用 reverseHead，因为 reverseHead 是翻转后的头结点
+        // head.next.next = head，只能在递归中使用，再循环中使用，会造成死循环。
         head.next.next = head;
         head.next = null;
         return reverseHead;
@@ -63,12 +68,40 @@ public class ReverseLinkList {
         }
         // 以 head.next 为起点，需要反转前 n-1 个节点
         ListNode reversedHead = reverseN(head.next, n - 1);
+        // head.next.nexst = head 这个是递归的用法，迭代的用法就是像上面的 node.next = prev;
         head.next.next = head;
         // 让反转后的 head 节点和 后面的节点链起来。这里有点费解，其实这一步应该是在翻转到原来的头结点也就是翻转后的尾结点处设置，
         // 但是 head 节点已经让我们改掉了。所以只能每次都将 head 的 next 指向 successor，
         // 并且在下一次的递归返回后将 next 改为正确的指向，直到最原始的 head 节点
         head.next = successor;
         return reversedHead;
+    }
+
+    /**
+     * 翻转前 n 个链表的循环写法
+     * 
+     * @param head
+     * @param n
+     * @return
+     */
+    ListNode reverseN2(ListNode head, int n) {
+        ListNode p = head;
+        ListNode newSuccessor = null;
+        ListNode prev = null;
+        for (int i = 1; i <= n; i++) {
+            if (p == null) {
+                return prev;
+            }
+            ListNode next = p.next;
+            if (i == n) {
+                newSuccessor = next;
+            }
+            p.next = prev;
+            prev = p;
+            p = next;
+        }
+        head.next = newSuccessor;
+        return prev;
     }
 
     ListNode reverseBetween(ListNode head, int m, int n) {
@@ -160,6 +193,7 @@ public class ReverseLinkList {
 
     /**
      * 循环法判断链表是否为回文联表
+     * 
      * @param head
      * @return
      */
@@ -206,10 +240,106 @@ public class ReverseLinkList {
         return prev;
     }
 
+    /**
+     * leetcode 第 61 题，旋转链表，一次旋转，将尾结点的链表翻转到头结点
+     * 
+     * @param head
+     * @param k    旋转 k 次
+     * @return
+     */
+    public ListNode rotateRight(ListNode head, int k) {
+        if (k < 1) {
+            return head;
+        }
+        ListNode prevTail = null;
+        ListNode tail = head;
+        // 初步的想法是用 Map<Node,Node> 维护一个向前的指针链表，这样在尾结点变成首节点后，新的尾结点可以从 Map 中取到
+
+        Map<ListNode, ListNode> prevMap = new HashMap<>();
+        int size = 0;
+        while (tail != null) {
+            prevMap.put(tail, prevTail);
+            prevTail = tail;
+            tail = tail.next;
+            size++;
+        }
+        if (size == 0) {
+            return head;
+        }
+        tail = prevTail;
+        prevTail = prevMap.get(tail);
+        if (k >= size) {
+            System.out.println("k=" + k + ",size=" + size);
+            k = k % size;
+        }
+        for (int i = 0; i < k; i++) {
+            // 就像维护双链表一样, 维护 next 指针和 map
+            // 尾结点的前一个借的 next 属性摘除
+            prevTail.next = null;
+            // 尾结点的 prev 指针摘除
+            prevMap.put(tail, null);
+            // 尾结点 next 指向 头结点
+            tail.next = head;
+            // 头结点的 prev 指向尾结点
+            prevMap.put(head, tail);
+
+            head = tail;
+            tail = prevTail;
+            prevTail = prevMap.get(prevTail);
+        }
+        return head;
+    }
+
+    static class RotateNode<T> {
+        public T val;
+        public RotateNode<T> prev;
+
+        public RotateNode(T currNode, RotateNode<T> prevNode) {
+            this.val = currNode;
+            this.prev = prevNode;
+        }
+
+        public RotateNode(T currNode) {
+            this.val = currNode;
+        }
+
+        public RotateNode() {
+
+        }
+    }
+
+    public ListNode rotateRight2(ListNode head, int k) {
+        if (head == null) {
+            return null;
+        }
+        if (head.next == null) {
+            return head;
+        }
+
+        ListNode oldTail = head;
+        int n;
+        for (n = 1; oldTail.next != null; n++) {
+            oldTail = oldTail.next;
+        }
+        // 尾结点连上头结点
+        oldTail.next = head;
+        
+        ListNode newTail = head;
+        // 找到第 k 个节点
+        for (int i = 0; i < n - 1 - k % n; i++) {
+            newTail = newTail.next;
+        }
+        ListNode newHead = newTail.next;
+        // 断开 第 k 个节点的 next
+        newTail.next = null;
+        // 返回第 k 个节点
+        return newHead;
+    }
+
     public static void main(String[] args) {
         ReverseLinkList instance = new ReverseLinkList();
         ListNode head = ListNodeUtil.convertToNodeListFromArray(new int[] { 1, 2, 3, 4, 5, 6 });
-        ListNode reverseHead = instance.reverse(head);
+        ListNode reverseHead = instance.reverseNode(head);
         ListNodeUtil.printLinkedNode(reverseHead);
 
         ListNode reverseHead2 = instance.reverseByLoop(reverseHead);
@@ -220,10 +350,13 @@ public class ReverseLinkList {
 
         // 此时 reverseHead2 已经是经过 2 次反转重新恢复原样的链表，可以继续测试
 
-        // ListNode reversedNHead = instance.reverseN(reverseHead2, 2);
+        // ListNode reversedNHead = instance.reverseN2(reverseHead2, 1);
         // // 2->1->3->4->5->6
         // ListNodeUtil.printLinkedNode(reversedNHead);
-
+        //
+        ListNode casehead = ListNodeUtil.convertToNodeListFromArray(new int[] { 0, 1, 2 });
+        ListNode rotateNode = instance.rotateRight(casehead, 4);
+        ListNodeUtil.printLinkedNode(rotateNode);
         // ListNode reversedBetweenHead = instance.reverseBetween(reverseHead2, 2, 4);
         // 1 4 3 2 5 6
         // ListNodeUtil.printLinkedNode(reversedBetweenHead)；
@@ -235,8 +368,8 @@ public class ReverseLinkList {
         // count++;
         // }
 
-        ListNode kGroupNode = instance.reverseKGroup(reverseHead2, 2);
-        ListNodeUtil.printLinkedNode(kGroupNode);
+        // ListNode kGroupNode = instance.reverseKGroup(reverseHead2, 2);
+        // ListNodeUtil.printLinkedNode(kGroupNode);
         String s = "上海自来水来自海上ha";
         int[] arr = new int[s.length()];
         int count = 0;

@@ -11,12 +11,12 @@ import java.util.PriorityQueue;
  */
 public class LinkedListCommonOperations {
     /**
-     * 2、分个链表，leetcode 第 86 题
+     * 2、分割链表，leetcode 第 86 题
      * 给你一个链表的头结点 head 和一个特定值 x ，请你对链表进行分割，使得所有的小于 x 的节点都出现在 大于等于 x 的节点之前。
      * 思路：我刚开始看到这个题目，想着怎么移动一个单链表的节点到另外一个节点之前，用数组的那一套前后两个指针遍历然后交换位置，
      * 但是链表不像数组，交换位置必须有前驱结点，这样就 4 个指针了，但是链表是单链表，后面的指针没办法向数组一样通过 -- 操作向前移动
      * 顿时我就陷入了死局当中，脑子一团浆糊了，思路被锁死，想了半个小时，愣是没想出来，没办法看了阿东的解题方案，发现跟合并两个有序链表非常相似
-     * 两个有序链表合并为一个链表，如果我们反向操作，将一个链表从 x 处分割为连个有序链表，然后再把分割后的链表串在一起，不就是一个相对有序的链表吗？
+     * 两个有序链表合并为一个链表，如果我们逆向思维，将一个链表从 x 处分割为n个有序链表，然后再把分割后的链表串在一起，不就是一个相对有序的链表吗？
      * 不就达到了题目的要求了吗？总结一句话，还是思路没有打开，链表相关操作的基础不扎实，还是的继续多刷此类的题目，将思路彻底打开，逐步消灭知识盲区
      */
 
@@ -45,19 +45,20 @@ public class LinkedListCommonOperations {
     /*
      * 合并 K 个链表升序链表
      * leetcode 23
-     * 我在看阿东的解法之前，我之前写过外派学，使用的是外派归并排序，将一个大的文件分成 n 个小的文件，
+     * 我在看阿东的解法之前，我之前写过外排序，使用的是归并外排序，将一个大的文件分成 n 个小的文件，
      * 先对小的文件进行内存排序，排序之后写入磁盘，写入之后，数据在每个小的子文件是有序的，剩下的就是将 n 个小的文件外排序组成一个大的有序文件。
      * 然后创建一个长度为 n 的数组
      * 同时数组的每一项需要映射一个文件的读取流，将 n 个文件的第一个要读取的数字写入该数组项，
      * 每次读取花费 O(n) 的时间读取一个最小的元素，将该元素写入总文件。
-     * 但是东哥的解法时间复杂度更小，使用了使用了带优先级的二叉堆 PriorityQueue，首次将 k
+     * 但是阿东的解法时间复杂度更小，使用了使用了带优先级的二叉堆 PriorityQueue，首次将 k
      * 个链表的首元素加入堆中，然后弹出最小的元素，并将最小的元素的下一个元素重新压入二叉堆
      * 这思路的话，每次存入元素是 O(logn),获取元素是 O(1), 这也是小顶堆的一个非常有用的使用场景。
      * 所以这次我先使用小顶堆，然后再使用外排序的归并。
+     * 其实将 n 个有序数组进行排序，也是这个原理
      */
 
     ListNode mergeKList(ListNode[] lists) {
-        // 创建 辅助的二叉堆
+        // 创建 辅助的二叉堆， PriorityQueue 默认小顶堆
         PriorityQueue<ListNode> queue = new PriorityQueue<>(new Comparator<ListNode>() {
             @Override
             public int compare(ListNode o1, ListNode o2) {
@@ -92,7 +93,7 @@ public class LinkedListCommonOperations {
      * 所有的链表节点都会被加入和弹出 queue，所有算法的整体复杂度度是 O(Nlogk), 其中 k 是链表的条数，N 是这些链表的节点总数。
      * 
      * 下面进行 leetcode 第 9 题，删除单链表的倒数第 k 个元素。
-     * 从前往后寻找单链表的第 k 个节点很简单，一个 for 循环就遍历就找到了，但是如何寻找去欧诺个后网线的倒数第 k 个节点那？
+     * 从前往后寻找单链表的第 k 个节点很简单，一个 for 循环就遍历就找到了，但是如何寻找单链表的倒数第 k 个节点那？
      * 我们可能会说，假设链表有 n 各节点，倒数第 k 个节点也就是正数第 n-k+1 个节点，不也是一个 for 循环的事吗？
      * 是的，但是算法题一般只给你一个 ListNode 的头结点代表一条单链表，你不能直接得出这个链表的长度 n，而需要先遍历一遍链表算出 n 的值。
      * 然后再遍历计算第 n-k+1 个节点。
@@ -111,10 +112,10 @@ public class LinkedListCommonOperations {
         }
         ListNode p1 = head;
         for (int i = 0; i < n; i++) {
-            p1 = p1.next;
             if (p1 == null) { // 超出范围了
                 return head;
             }
+            p1 = p1.next;
         }
         ListNode p2 = head;
         while (p1 != null && p1.next != null) {
@@ -125,7 +126,7 @@ public class LinkedListCommonOperations {
             head = head.next;
             p2.next = null;
         } else {
-            // 此时 p2 指向 k 节点前面的那个节点
+            // 此时 p2 指向 k 节点前面的那个节点。倒数第 n 个节点就是正数第 n-k+1 各节点。
             ListNode nNode = p2.next;
             p2.next = nNode.next; // 将 n 节点从链表上删除
             nNode.next = null;// 摘除倒数第 n 个节点的 next 属性
@@ -157,7 +158,7 @@ public class LinkedListCommonOperations {
     /*
      * 判断链表是否包含环。leetcode 第 141 题
      * 给你一个链表的头结点 head，判断链表中是否有环。
-     * 解题方法还是商用上面一个的快慢指针法，如果有环，快的指针一定会跟慢的指针相遇，则此时 slow.next == fast.next
+     * 解题方法还是用上面一个的快慢指针法，如果有环，快的指针一定会跟慢的指针相遇，则此时 slow.next == fast.next
      */
 
     boolean hasCycle(ListNode head) {
@@ -177,7 +178,7 @@ public class LinkedListCommonOperations {
      * 环形链表 II，142 题，如果链表中含有环，如何计算这个环的起点
      * 我自己的解决思路：
      * 1、先判断是否是环形链表
-     * 2、计算出环形的长度 k
+     * 2、计算出环形的长度 k。相遇时，快的是 2k，慢的是k
      * 3、前后两个指针，第一个指针先走 k 步，然后第二个指针和第一个指针开始同步向前走，如果此时 第一个指针和第二个指针相等，则当前指针执行的节点就是环的起点
      * 阿东的解法比较巧妙
      * 1、fast 和 slow 两个指针，也是首先来判断是否是环
@@ -351,13 +352,14 @@ public class LinkedListCommonOperations {
         ListNodeUtil.printLinkedNode(newHead);
 
         // testIsCycle(instance);
-        // testFirstCycleNode(instance);
+        testFirstCycleNode(instance);
         // testIntersectionNode(instance);
-        ListNode duplicateNode = ListNodeUtil.convertToNodeListFromArray(new int[] { 0, 0, 1, 1, 1, 2, 2, 3, 3, 4 });
+        // ListNode duplicateNode = ListNodeUtil.convertToNodeListFromArray(new int[] {
+        // 0, 0, 1, 1, 1, 2, 2, 3, 3, 4 });
 
-        ListNode distinctHead = instance.deleteDuplicateNode(duplicateNode);
-        System.out.println("remove duplicated node:");
-        ListNodeUtil.printLinkedNode(distinctHead);
+        // ListNode distinctHead = instance.deleteDuplicateNode(duplicateNode);
+        // System.out.println("remove duplicated node:");
+        // ListNodeUtil.printLinkedNode(distinctHead);
 
     }
 
@@ -379,13 +381,21 @@ public class LinkedListCommonOperations {
     }
 
     static void testFirstCycleNode(LinkedListCommonOperations instance) {
-        ListNode cycleNodeHead = ListNodeUtil.convertToNodeListFromArray(new int[] { 1, 2, 0, -4 });
+        ListNode cycleNodeHead = ListNodeUtil.convertToNodeListFromArray(new int[] { 1, 2, 3, 4 });
+        ListNode jointNodeHead = ListNodeUtil.convertToNodeListFromArray(new int[] { 5, 6, 7 });
         ListNode tailNode = cycleNodeHead;
         while (tailNode != null && tailNode.next != null) {
             tailNode = tailNode.next;
         }
-        // 形成环，
-        tailNode.next = cycleNodeHead.next;
+
+        ListNode joinTailNode = jointNodeHead;
+        while (joinTailNode != null && joinTailNode.next != null) {
+            joinTailNode = joinTailNode.next;
+        }
+
+        // 先让两个链表链起来
+        tailNode.next = jointNodeHead;
+        joinTailNode.next = jointNodeHead;
 
         ListNode firstCycleNode = instance.detectedFirstCycleNode(cycleNodeHead);
         if (firstCycleNode != null) {

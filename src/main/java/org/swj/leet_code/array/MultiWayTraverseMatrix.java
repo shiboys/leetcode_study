@@ -128,20 +128,44 @@ public class MultiWayTraverseMatrix {
     }
 
     String reverseWords(String s) {
+        s = s.trim();
         char[] charArr = s.toCharArray();
         // 先将所有字符都反转
         swapChars(charArr, 0, charArr.length - 1);
         // 再将相关单词反转
         int slow = 0, fast = 1;
         int n = charArr.length;
+        StringBuilder sb = new StringBuilder(n);
+        // 原始的方案，直接使用字符数组，发现无法移除中间多余的空格
+        // 后面改为 stringbuilder 方式
+        // while(fast <= n) {
+        // if(fast == n || chs[fast] == ' ') {
+        // swapAll(chs,slow,fast-1);
+        // slow = fast + 1; // 空格不反转
+        // }
+        // fast++;
+        // }
         while (fast <= n) {
-            if (fast == n || (charArr[fast] == ' ')) {
+            if (fast == n || charArr[fast] == ' ') {
+                // 单词重新反转过来
                 swapChars(charArr, slow, fast - 1);
-                slow = fast+1;
+                // 将单词和其后的空格加入 StringBuilder 中
+                // 默认长度是不包含空格的
+                int len = fast - slow;
+                if (fast < n) {
+                    len++; // 空格包含进来。
+                }
+                sb.append(charArr, slow, len);
+                // 将所有 空格排除
+                while (fast < n && charArr[fast] == ' ') {
+                    fast++;
+                }
+                slow = fast;
             }
             fast++;
         }
-        return new String(charArr);
+
+        return sb.toString();
     }
 
     void swapChars(char[] arr, int start, int end) {

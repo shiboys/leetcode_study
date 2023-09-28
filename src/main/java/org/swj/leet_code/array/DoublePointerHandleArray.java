@@ -1,9 +1,7 @@
 package org.swj.leet_code.array;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.PriorityQueue;
-import java.util.Random;
 
 /**
  * @author shiweijie
@@ -36,8 +34,9 @@ public class DoublePointerHandleArray {
     }
 
     /**
+     * leetcode 27
      * 将重复的元素删除，也就是数组中不包含任何重复的元素
-     * 
+     * 返回剩余元素的数量
      * @param nums
      * @return
      */
@@ -54,6 +53,10 @@ public class DoublePointerHandleArray {
         return slow;
     }
 
+    /**
+     * leetcode 283 题
+     * @param nums
+     */
     void moveZeros(int[] nums) {
         int pos = removeElement(nums, 0);
         for (; pos < nums.length; pos++) {

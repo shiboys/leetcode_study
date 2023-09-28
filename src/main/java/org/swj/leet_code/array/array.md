@@ -1,4 +1,4 @@
-## 双指针解决链表相关 7 道题目
+## 双指针解决数组相关 7 道题目
 
 数组中没有真正意义的指针，但是我们可以把索引当做数组的指针，这样也可以在数组中实战双指针技巧，**本章节主要讲数组相关的双指针算法**
 
@@ -92,7 +92,7 @@ String palindromeString(String s,int i, int j) {
 
 #### 二维矩阵的前缀和
 
-![最长回文子串](../algorithm/dynamic_programming/imgs/matrix_pre_sum.png)
+![二维数组前缀和](../algorithm/dynamic_programming/imgs/matrix_pre_sum.png)
 
 注意看这幅图，任意子矩阵的元素都可以转化成它周边几个大矩阵的元素和的运算
 
