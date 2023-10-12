@@ -302,7 +302,7 @@ public class LinkedListOther {
             return a[0] - b[0];
         });
         for (int i = 0; i < n; i++) {
-            // 除了元素装入队列之外，还要装入元素所在的行，该元素再改行的索引。
+            // 除了元素装入队列之外，还要装入元素所在的行，以及该元素在改行的索引。
             queue.offer(new int[] { matrix[i][0], i, 0 });
         }
         int target = -1;
@@ -337,12 +337,22 @@ public class LinkedListOther {
      * @return
      */
     public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
+        /**
+         * 解法思路，这道题怎么把两个数组合并成有序链表那，比如说题目的测试用例 nums1 = [1,7,11], nums2 = [2,4,6]
+         * 给出的所有数，就可以抽象成 3 个有序链表：
+         * [1, 2] -> [1, 4] -> [1, 6]
+         * [7, 2] -> [7, 4] -> [7, 6]
+         * [11, 2] -> [11, 4] -> [11, 6]
+         * 
+         * 这 3 个链表中每个元素都是递增的，所以就可以按照 使用 优先级队列来合并 k 个有序链表的思路来合并，取出前 k 个答案即可
+         */
         Queue<int[]> queue = new PriorityQueue<>((a, b) -> {
             return a[0] + a[1] - (b[0] + b[1]);
         });
         List<List<Integer>> res = new ArrayList<>();
         for (int i = 0; i < nums2.length; i++) {
             // 将 nums1[i],nums2[j], i 这几个关键信息放入队列。
+            // 先放入 [1,2],[1,4],[1,6]
             queue.offer(new int[] { nums1[0], nums2[i], 0 });
         }
 
@@ -350,6 +360,7 @@ public class LinkedListOther {
             int[] arr = queue.poll();
             res.add(Arrays.asList(arr[0], arr[1]));
             k--;
+            // 下一个元素
             int idx = arr[2];
             if (idx < nums1.length - 1) {
                 queue.offer(new int[] { nums1[idx + 1], arr[1], idx + 1 });

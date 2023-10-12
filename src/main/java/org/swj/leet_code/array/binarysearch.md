@@ -531,5 +531,95 @@ leetcode 410 题，题目的描述如下：
 
 所以这道题的解法直接复制粘贴运输问题的解法代码即可。
 
+#### 搜索旋转排序数组
 
 
+有一个整数数组 `nums` 按升序排列，数组中的值**互不相同**。
+
+但在传递给函数之前，`nums` 在预先未知的某个下标 `k` `(0<=k <= nums.length)` 上进行了**旋转**，使数组变为 `[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]`。例如 `[0,1,2,4,5,6,7]` 在下标 `3` 处旋转可变为 `[4,5,6,7,0,1,2]`。
+
+给你**旋转后**的数组 `nums` 和一个整数 `target`，如果 `nums` 中存在这个目标值 `target`，则返回它的下标，否则返回 `-1`。
+
+示例1：
+
+```py
+输入：nums = [4,5,6,7,0,1,2], target = 0
+输出：4
+```
+
+示例2：
+```py
+输入：nums = [4,5,6,7,0,1,2], target = 3
+输出：-1
+```
+
+##### 基本思路
+
+这是一个经典的二分搜索题目，只要把图画出来并且正确理解了 `二分搜索框架` ,难度不大
+
+把一个排好序的数组就好比一段斜向上的山坡，沿着一个元素旋转数组，相当于将山坡切断并旋转，在原本平滑的山坡上产生一个「断崖」：
+
+![旋转数组查找元素](../algorithm/dynamic_programming/imgs/search_rotate_array1.png)
+
+注意「断崖」左侧的所有元素都比右侧所有元素大，我们是可以在这一一个存在断崖的山坡上二分搜索算法搜索元素，主要分成两步：
+
+**1、确定 mid 重点落在「断崖」左侧还是右侧。**
+
+**2、在第 1 步的基础上，根据 `target` 和 `nums[left],nums[right],nums[mid]` 的相对大小收缩搜索区间。**
+
+具体来说，我们首先可以根据 `nums[mid]`和`nums[left]` 的相对大小确定 `mid` 和 「断崖」的相对位置：
+
+```java
+if(nums[mid] >= nums[left]) {
+    // mid 落在断崖左侧，此时 nums[left...mid] 有序
+} else {
+    // mid 落在断崖右侧，此时 nums[mid..right] 有序
+}
+```
+![旋转数组查找元素](../algorithm/dynamic_programming/imgs/search_rotate_array2.png)
+
+假设 mid 在断崖左侧，那么可以肯定 nums[left..mid] 是连续且有序的，如果 `nums[left]<= target < nums[mid]` 可以收缩右边界 right = mid-1，否则 (target >= nums[mid])应该收缩左边界 left = mid+1
+
+假设 mid 在断崖右侧，那么可以肯定 nums[mid...right] 是连续且有序的，如果 `nums[mid]< target <= nums[right]` 可以收缩左边界，否则收缩右边界
+
+#### 81. 搜索旋转排序数组 II
+
+已知存在一个按非降序拍立的整数数组 nums,**数组中存在重复元素**。
+
+在传递给函数之前，`nums` 在预先未知的某个下标 k (`0<=k<= nums.length`) 上进行了**旋转**，使数组变为 `[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]`。例如 `[0,1,2,4,4,4,5,6,6,7]` 在下标 `5` 处旋转可变为 `[4,5,6,6,7,0,1,2,4,4]`。
+
+给你**旋转后**的数组 `nums` 和一个整数 `target`，如果 `nums` 中存在这个目标值 `target`，则返回`true`，否则返回 `false`。你必须尽可能减少整个操作的步骤。
+
+示例1：
+```py
+输入：nums = [2,5,6,0,0,1,2], target = 0
+输出：true
+```
+
+示例2：
+```py
+输入：nums = [2,5,6,0,0,1,2], target = 3
+输出：false
+```
+
+##### 基本思路
+
+这个题和上一个题很类似，不过本题的关键在于说题目中可能存在重复元素
+
+上题的解法中，在一个存在「断崖」的山坡上用二分法搜索元素主要分为两个步骤：
+
+**1、确定 mid 重点落在「断崖」左侧还是右侧。**
+
+**2、在第 1 步的基础上，根据 `target` 和 `nums[left],nums[right],nums[mid]` 的相对大小收缩搜索区间。**
+
+对于这道题，`nums` 中存在重复元素，会影响到第 1 步，你比如说旋转后数组 `nums=[2,2,2,2,0,1,2]` ，画成图就是这样：
+
+![旋转数组查找元素](../algorithm/dynamic_programming/imgs/search_rotate_array3.png)
+
+如上图：`mid` 会落在左侧的直线上，此时 `nums[left] == nums[mid] == mums[right]`, 无法根据他们的相对大小判断「断崖」到底在 mid 的左侧还是右侧，从而无法进入第 2 步的逻辑
+
+而我们的解决方案就是，不出现 `nums[left] == nums[mid] == mums[right]` 的情况，**即在计算 `mid`之前，提前收缩`left,right` 的边界，提前消除重复元素**：
+
+![旋转数组查找元素](../algorithm/dynamic_programming/imgs/search_rotate_array4.png)
+
+这样 `mid` 必然出现在山坡上，不会和 `nums[left],nums[right]` 相等，然后就可以正常执行第 2 步的逻辑了，和第 33 题的解法完全相同，参考 BinarySearchOther.search3() 方法

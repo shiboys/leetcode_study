@@ -48,7 +48,7 @@ public class QuickSortAndBST {
             int i = start; // 或者 i = start+1
             int j = end;
             while (i <= j) { // 当 i>j 时循环结束，以保证区间 [start, end] 都被覆盖。
-                while (i <= j && nums[i] <= pivort) {
+                while (i <= j && nums[i] <= pivort) {// == 的时候，不交换
                     // 找到 左边大于 pivort 的 i。 while 退出时 nums[i] > pivort
                     i++;
                 }
@@ -63,7 +63,7 @@ public class QuickSortAndBST {
                 }
 
             }
-            // 将 j 的位置和 pivort 交换
+            // 将 j 的位置和 pivort 交换，因为此时 j 位置的元素比 start 小，符合 j 位置左侧的都比 arr[j] 大
             swap(nums, j, start);
 
             return j;
@@ -71,7 +71,9 @@ public class QuickSortAndBST {
 
         /**
          * 使用快速选择排序，来返回第 k 大的元素。leetcode 第 215 题。
-         * 
+         * 用小顶堆的算法的话，逻辑是插入 k 个元素，当元素个数大于 k 时，弹出 top 元素，
+         * 最终堆里面的元素为最大的 k 个数，其中堆顶的元素就是第 k 大的元素。时间复杂度是 O(nLogn)
+         * 快速选择算法的话，是 O(N)
          * @param nums
          * @param k
          * @return
@@ -80,6 +82,7 @@ public class QuickSortAndBST {
             if (k < 1 || k > nums.length) {
                 return -1;
             }
+            // 「第 `k` 个最大元素」，相当于数组升序排序后「排名第 `n-k` 的元素」
             int kPlus = nums.length - k;
             // shuffle the array
             Random random = new Random();

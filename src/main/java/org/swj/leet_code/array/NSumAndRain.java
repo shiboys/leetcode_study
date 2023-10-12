@@ -329,5 +329,11 @@ public class NSumAndRain {
 
     arr = new int[] { 1, 8, 6, 2, 5, 4, 8, 3, 7 };
     System.out.println(instance.maxArea(arr));
+
+
+    int mask = 0x7ffffff;
+    System.out.println(-1 >>> 16 );
+    System.out.println((-1 >>> 16) & mask);
+    System.out.println( -1 ^ (-1 >>> 16 ));
   }
 }

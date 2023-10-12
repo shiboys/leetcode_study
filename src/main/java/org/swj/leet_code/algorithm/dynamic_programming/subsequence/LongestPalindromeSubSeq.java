@@ -6,7 +6,7 @@ import java.util.Arrays;
  * @author shiweijie
  * @version 1.0.0
  * @since 2023/08/04 19:14
- *        最长回文字符串
+ *        最长回文子序列
  *        leetcode 516 题 和 1312 题
  *        回文字符串 比如 上海自来水来自海上
  *        但是这里要求是回文子序列，中间可以有不是回文的字符串，这跟回文字符串也不一样，

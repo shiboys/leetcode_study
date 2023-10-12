@@ -145,11 +145,17 @@ public class DoublePointerHandleArray {
         return res;
     }
 
+    /**
+     * leetcode 870 优势洗牌
+     * @param nums1
+     * @param nums2
+     * @return
+     */
     int[] advantageCount(int[] nums1, int[] nums2) {
         // 齐王的马，将其战力和比赛排位封装进一个数组中
         int n = nums2.length;
         int[] res = new int[n];
-        // 小顶堆倒叙排列就成了大顶堆
+        // 小顶堆倒序排列就成了大顶堆，齐王队列
         PriorityQueue<int[]> pqqw = new PriorityQueue<>((o1, o2) -> {
             // 按照战力倒序排列
             return o2[1] - o1[1];

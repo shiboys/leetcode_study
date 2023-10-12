@@ -1,7 +1,7 @@
 package org.swj.leet_code.linked_list;
 
 public class ListNodeUtil {
-    static ListNode convertToNodeListFromArray(int[] array) {
+    public static ListNode convertToNodeListFromArray(int[] array) {
         if (array == null || array.length < 1) {
             return null;
         }
@@ -14,7 +14,7 @@ public class ListNodeUtil {
         return (ListNode) dummy.next;
     }
 
-    static void printLinkedNode(ListNode head) {
+    public static void printLinkedNode(ListNode head) {
         ListNode p = head;
         while (p != null) {
             System.out.print(p + "\t");
@@ -24,7 +24,7 @@ public class ListNodeUtil {
     }
 
 
-    static <T> ListGenericNode<T> convertToNodeListFromArray(T[] array) {
+    public static <T> ListGenericNode<T> convertToNodeListFromArray(T[] array) {
         if (array == null || array.length < 1) {
             return null;
         }
@@ -37,7 +37,7 @@ public class ListNodeUtil {
         return dummy.next;
     }
 
-    static <T> void printLinkedNode(ListGenericNode<T> head) {
+    public static <T> void printLinkedNode(ListGenericNode<T> head) {
         ListGenericNode<T> p = head;
         while (p != null) {
             System.out.print(p + "\t");

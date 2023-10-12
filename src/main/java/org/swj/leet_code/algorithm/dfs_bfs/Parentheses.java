@@ -56,7 +56,7 @@ public class Parentheses {
                 need++;
             } else { // 右括号
                 need--;
-                if (need == -1) {// 说明有括号数量多
+                if (need == -1) {// 说明又括号数量多
                     res++; // 需要左括号
                     need = 0;
                 }

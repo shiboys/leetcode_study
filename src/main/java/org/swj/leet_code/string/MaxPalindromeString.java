@@ -8,6 +8,8 @@ package org.swj.leet_code.string;
  * 回文： 所谓回文，是指正读和反读都是一样的字符串，比如madam,我爱我， 上海自来水来自海上
  * 黄河小浪底浪小河黄，前门出租车租出门前，黄山落叶松叶落山黄，山东落花生花落东山
  * 思路也是来自 hellMac 项目的数据结构一节的最长回文长度
+ 
+ * 更好的解法参考 我的 leetcode 上面的解法，使用双指针技巧，从中间向两边扩散查找，理解起来简单容易
  */
 public class MaxPalindromeString {
   public String longestPalindrome(String s) {

@@ -43,7 +43,7 @@ public class LinkedListCommonOperations {
     }
 
     /*
-     * 合并 K 个链表升序链表
+     * 合并 k 个链表升序链表
      * leetcode 23
      * 我在看阿东的解法之前，我之前写过外排序，使用的是归并外排序，将一个大的文件分成 n 个小的文件，
      * 先对小的文件进行内存排序，排序之后写入磁盘，写入之后，数据在每个小的子文件是有序的，剩下的就是将 n 个小的文件外排序组成一个大的有序文件。
@@ -67,7 +67,7 @@ public class LinkedListCommonOperations {
         });
 
         for (ListNode node : lists) {
-            if (node != null) { // 加个判断更严谨
+            if (node != null) { // 把每个链表的头结点加入优先级队列，加个判断更严谨
                 queue.add(node);
             }
         }
