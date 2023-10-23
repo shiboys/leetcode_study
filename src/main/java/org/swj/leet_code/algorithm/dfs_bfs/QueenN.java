@@ -38,7 +38,7 @@ public class QueenN {
      */
     void trackBack(char[][] board, int row, List<List<String>> res) {
         if (row == board.length) {// 有一个成功放置 Q 的方案
-            List<String> currList = new ArrayList(board.length);
+            List<String> currList = new ArrayList<>(board.length);
             for (int k = 0; k < board.length; k++) {
                 currList.add(new String(board[k]));
             }

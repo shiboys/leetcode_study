@@ -16,6 +16,7 @@ import java.math.BigInteger;
  * 3、将二者之和编程字符串形式，然后遍历字符串的每个字符，使用头插法转换成链表
  *
  * ps:字符串素组的计算，都得用到 BigInteger ？？ 哎，太卷了
+ * leetcode 我的提交上，有用到链表而非BigInteger 实现的，可以参考下
  */
 public class AddTwoNumbers {
   public ListNode addTwoNumbers(ListNode l1, ListNode l2) {

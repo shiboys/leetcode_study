@@ -300,40 +300,121 @@ public class NSumAndRain {
     return res;
   }
 
+  /**
+   * leetcode 16 题，最接近的三数之和
+   * Input: nums = [-1,2,1,-4], target = 1
+   * Output: 2
+   * Explanation: The sum that is closest to the target is 2. (-1 + 2 + 1 = 2)
+   */
+  public int threeSumClosest(int[] nums, int target) {
+    Arrays.sort(nums);
+    return nSumCloest(nums, 3, 0, target);
+  }
+
+  int nSumCloest(int[] nums, int n, int start, int target) {
+    if (n < 2 || start < 0) {
+      throw new IllegalArgumentException();
+    }
+    int deltaSum = 100_0000, minSum = deltaSum;
+    int lo = start, len = nums.length, hi = len - 1;
+    int left, right, sum;
+    if (n == 2) {
+      while (lo < hi) {
+        left = nums[lo];
+        right = nums[hi];
+        sum = left + right;
+        if (sum < target) {
+          if (target - sum < deltaSum) {
+            deltaSum = target - sum;
+            minSum = sum;
+          }
+          while (lo < hi && nums[lo] == left)
+            lo++;
+        } else if (sum > target) {
+          // 记录最小差
+          if (sum - target < deltaSum) {
+            deltaSum = sum - target;
+            minSum = sum;
+          }
+          // 消除右边重复
+          while (lo < hi && nums[hi] == right)
+            hi--;
+        } else { // 相等
+          deltaSum = 0;
+          minSum = sum;
+          while (lo < hi && nums[lo] == left)
+            lo++;
+          while (lo < hi && nums[hi] == right)
+            hi--;
+        }
+      }
+    } else { // n 数最接近之和
+      for (int i = 0; i < nums.length; i++) {
+        int first = nums[i];
+        int closestSum = nSumCloest(nums, n - 1, i + 1, target - first);
+        // 还原 closestSum
+        closestSum += first;
+        if (Math.abs(target - closestSum) < deltaSum) {
+          deltaSum = Math.abs(target - closestSum);
+          minSum = closestSum;
+        }
+      }
+    }
+    return minSum;
+  }
+
   public static void main(String[] args) {
     int[] arr = new int[] { 2, 7, 11, 15 };
     int target = 22;
     NSumAndRain instance = new NSumAndRain();
-    System.out.println(Arrays.toString(instance.twoSum(arr, target)));
-    System.out.println(Arrays.toString(instance.twoSum2(arr, target)));
+    // System.out.println(Arrays.toString(instance.twoSum(arr, target)));
+    // System.out.println(Arrays.toString(instance.twoSum2(arr, target)));
 
-    arr = new int[] { -1, 0, 1, 2, -1, -4 };
-    System.out.println(instance.threeSumTarget(arr, 0, 0));
+    // arr = new int[] { -1, 0, 1, 2, -1, -4 };
+    // System.out.println(instance.threeSumTarget(arr, 0, 0));
 
-    arr = new int[] { 1, 0, -1, 0, -2, 2 };
-    System.out.println(instance.fourSum(arr, 0));
+    // arr = new int[] { 1, 0, -1, 0, -2, 2 };
+    // System.out.println(instance.fourSum(arr, 0));
 
     // 使用 nSum 测试 4Sum, 注意，使用之前要先排序，要不让算法会死循环或者计算错误
     // Arrays.sort(arr);
     // System.out.println(instance.nSumTarget(arr, 4, 0, 0));
 
     arr = new int[] { 1000000000, 1000000000, 1000000000, 1000000000 };
-    target = -294967296;
-    Arrays.sort(arr);
-    System.out.println(instance.nSumTarget(arr, 4, 0, target));
-    System.out.println(target - 2 * arr[0]);
+    // target = -294967296;
+    // Arrays.sort(arr);
+    // System.out.println(instance.nSumTarget(arr, 4, 0, target));
+    // System.out.println(target - 2 * arr[0]);
 
-    arr = new int[] { 0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1 };
+    // arr = new int[] { 0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1 };
 
-    System.out.println(instance.trap(arr));
+    // System.out.println(instance.trap(arr));
 
-    arr = new int[] { 1, 8, 6, 2, 5, 4, 8, 3, 7 };
-    System.out.println(instance.maxArea(arr));
+    // arr = new int[] { 1, 8, 6, 2, 5, 4, 8, 3, 7 };
+    // System.out.println(instance.maxArea(arr));
 
+    // int mask = 0x7ffffff;
+    // System.out.println(-1 >>> 16);
+    // System.out.println((-1 >>> 16) & mask);
+    // System.out.println(-1 ^ (-1 >>> 16));
 
-    int mask = 0x7ffffff;
-    System.out.println(-1 >>> 16 );
-    System.out.println((-1 >>> 16) & mask);
-    System.out.println( -1 ^ (-1 >>> 16 ));
+    arr = new int[] { -1, 2, 1, -4 };
+    System.out.println(instance.threeSumClosest(arr, 1));
+    arr = new int[] { 0, 0, 0 };
+    System.out.println(instance.threeSumClosest(arr, 1));
+    arr = new int[] { 0, 1, 2 };
+    System.out.println(instance.threeSumClosest(arr, 3));
+    arr = new int[] { 833, 736, 953, -584, -448, 207, 128, -445, 126, 248, 871, 860, 333, -899, 463, 488, -50, -331,
+        903, 575, 265, 162, -733, 648, 678, 549, 579, -172, -897, 562, -503, -508, 858, 259, -347, -162, -505, -694,
+        300, -40, -147, 383, -221, -28, -699, 36, -229, 960, 317, -585, 879, 406, 2, 409, -393, -934, 67, 71, -312, 787,
+        161, 514, 865, 60, 555, 843, -725, -966, -352, 862, 821, 803, -835, -635, 476, -704, -78, 393, 212, 767, -833,
+        543, 923, -993, 274, -839, 389, 447, 741, 999, -87, 599, -349, -515, -553, -14, -421, -294, -204, -713, 497,
+        168, 337, -345, -948, 145, 625, 901, 34, -306, -546, -536, 332, -467, -729, 229, -170, -915, 407, 450, 159,
+        -385, 163, -420, 58, 869, 308, -494, 367, -33, 205, -823, -869, 478, -238, -375, 352, 113, -741, -970, -990,
+        802, -173, -977, 464, -801, -408, -77, 694, -58, -796, -599, -918, 643, -651, -555, 864, -274, 534, 211, -910,
+        815, -102, 24, -461, -146 };
+        
+  target = -7111;
+  System.out.println(instance.threeSumClosest(arr, target));
   }
 }

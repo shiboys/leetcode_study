@@ -43,7 +43,7 @@ public class WordBreak {
                 return;
             }
             if (trackList.size() == nums.length) {
-                res.add(new LinkedList(trackList)); // 满足条件的 回溯元素个数，则回收一波到 res 里面
+                res.add(new LinkedList<>(trackList)); // 满足条件的 回溯元素个数，则回收一波到 res 里面
                 return;
             }
             // 下面就是标准的回溯算法
@@ -146,7 +146,7 @@ public class WordBreak {
         String s = "catsanddog";
         List<String> wordDict = Arrays.asList("cat", "cats", "and", "sand", "dog");
         System.out.println(instance.wordBreakReturnResultByDp(s, wordDict));
-        instance.testBasicBackTrack();
+        testBasicBackTrack();
     }
 
     private static void testSimpleWordBreak(WordBreak instance) {
@@ -216,7 +216,7 @@ public class WordBreak {
     }
 
     boolean wordBreak_dp(String s, List<String> wordDict) {
-        this.wordSet = new HashSet(wordDict);
+        this.wordSet = new HashSet<>(wordDict);
         memo = new int[s.length()];
         Arrays.fill(memo, -1);
         return dp(s, 0);

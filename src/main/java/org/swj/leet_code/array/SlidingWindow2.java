@@ -41,10 +41,10 @@ public class SlidingWindow2 {
         if (nums == null || nums.length < 1) {
             return -1;
         }
-        //int sum = Arrays.stream(nums).sum();
+        // int sum = Arrays.stream(nums).sum();
         int sum = 0;// Arrays.stream(nums).sum(); 这个效率太低，坑爹
-        for(int n : nums) {
-            sum+=n;
+        for (int n : nums) {
+            sum += n;
         }
         int target = sum - x;
         if (target < 0) {
@@ -102,7 +102,7 @@ public class SlidingWindow2 {
         while (right < nums.length) {
             windowMulti *= nums[right];
             right++;
-            while (left <right && windowMulti >= k) {
+            while (left < right && windowMulti >= k) {
                 windowMulti /= nums[left];
                 left++;
             }
@@ -118,6 +118,31 @@ public class SlidingWindow2 {
         return validNum;
     }
 
+    /**
+     * 209. 长度最小的子数组
+     * 
+     * @param target
+     * @param nums
+     * @return
+     */
+    public int minSubArrayLen(int target, int[] nums) {
+        // 子数组和，离不开前缀和，然后加上滑动窗口
+        int[] preSumArr = new int[nums.length + 1];
+        for (int i = 1; i <= nums.length; i++) {
+            preSumArr[i] = preSumArr[i - 1] + nums[i - 1];
+        }
+        int left = 0, right = 0;
+        int minLen = preSumArr.length;
+        while (right < preSumArr.length) {
+            while (left < right && right < preSumArr.length && preSumArr[right] - preSumArr[left] >= target) {
+                minLen = Math.min(minLen, right - left);
+                left++;
+            }
+            right++;
+        }
+        return minLen == preSumArr.length ? 0 : minLen;
+    }
+
     public static void main(String[] args) {
         SlidingWindow2 instance = new SlidingWindow2();
         int[] nums = new int[] { 3, 2, 20, 1, 1, 3 };
@@ -131,5 +156,14 @@ public class SlidingWindow2 {
 
         nums = new int[] { 10, 5, 2, 6 };
         System.out.println(instance.numSubarrayProductLessThanK(nums, 100));
+
+        nums = new int[] { 2, 3, 1, 2, 4, 3 };
+        System.out.println(instance.minSubArrayLen(7, nums));
+
+        nums = new int[] { 1, 4, 4 };
+        System.out.println(instance.minSubArrayLen(4, nums));
+
+        nums = new int[] { 1, 1, 1, 1, 1, 1, 1, 1 };
+        System.out.println(instance.minSubArrayLen(11, nums));
     }
 }

@@ -112,6 +112,9 @@ public class BinarySearchTreeCommon {
         convertToSumBST(root.left);
     }
 
+    /**
+     * leetcode 450, 删除二叉搜索树中的节点
+     */
     TreeNode deleteBstNode(TreeNode root, int target) {
         if (root == null) {
             return root;

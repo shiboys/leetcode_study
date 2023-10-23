@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Stack;
 
 /**
  * @author shiweijie
@@ -20,6 +21,9 @@ public class BinaryTreeArch {
     /**
      * 求一个二叉树的最大深度，最大深度是从根节点到叶子节点所经过的数量最多的节点
      * leetcode 104 题
+     * 树的高度和深度，来自维基百科的解释
+     * 深度：对于任意节点n,n的深度为从根到n的唯一路径长，根的深度为0；
+     * 高度：对于任意节点n,n的高度为从n到一片树叶的最长路径长，所有树叶的高度为0；
      * 
      * @param node
      * @return
@@ -61,6 +65,44 @@ public class BinaryTreeArch {
         int maxLeftDepth = maxDepth2(node.left);
         int maxRightDepth = maxDepth2(node.right);
         return Math.max(maxLeftDepth, maxRightDepth) + 1;
+    }
+
+    int maxHeight(TreeNode node) {
+        if (node == null) {
+            return -1;
+        }
+        // 叶子结点的高度为 0。
+        if (node.left == null && node.right == null) {
+            return 0;
+        }
+        int maxLeftHeight = maxHeight(node.left);
+        int maxRightHeight = maxHeight(node.right);
+        return Math.max(maxLeftHeight, maxRightHeight) + 1;
+    }
+
+    /**
+     * 110. Balanced Binary Tree
+     * AVL树（Adelson-Velsky and Landis Tree）是计算机科学中最早被发明的自平衡二叉查找树。
+     * 在AVL树中，任一节点对应的两棵子树的最大高度差为1，因此它也被称为高度平衡树。
+     * 
+     * @param root
+     * @return
+     */
+    public boolean isBalanced(TreeNode root) {
+        return isBalancedTree(root);
+    }
+
+    boolean isBalancedTree(TreeNode node) {
+        if (node == null) {
+            return true;
+        }
+        int leftHight = maxHeight(node.left);
+        int rightHeight = maxHeight(node.right);
+        int diff = Math.abs(leftHight - rightHeight);
+        if (diff > 1) {
+            return false;
+        }
+        return isBalanced(node.left) && isBalanced(node.right);
     }
 
     private static void maxLevelVal(BinaryTreeArch instance) {
@@ -120,6 +162,7 @@ public class BinaryTreeArch {
         }
         int leftMaxDepth = maxDepth3(node.left);
         int rightMaxDepth = maxDepth3(node.right);
+        // 在统计最大深度的同事，把最大直径顺便统计了
         // 后续位置，顺便计算最大直径
         // 对每个节点计算直径
         int diameter = rightMaxDepth + leftMaxDepth;
@@ -127,15 +170,6 @@ public class BinaryTreeArch {
         maxDiameter = Math.max(maxDiameter, diameter);
 
         return Math.max(leftMaxDepth, rightMaxDepth) + 1;
-    }
-
-    int count(TreeNode node) {
-        if (node == null) {
-            return 0;
-        }
-        int leftCount = count(node.left);
-        int rightCount = count(node.right);
-        return leftCount + rightCount + 1;
     }
 
     /**
@@ -183,15 +217,18 @@ public class BinaryTreeArch {
     }
 
     List<Integer> maxLevelValListRes;
-    
+
     /**
      * 不依靠队列且水平的方式实现宽度优先遍历二叉树。在遍历过程中求每一层的最大值
+     * leetcode 102 题
+     * 
      * @param list
      */
     private void traverseLevel(List<TreeNode> list) {
         if (list == null || list.isEmpty()) {
             return;
         }
+        // 直接用 int maxVal = Integer.MIN_VALUE. maxVal = Math.max(maxVal,node.val);
         List<Integer> currVals = new ArrayList<>(list.size());
         List<TreeNode> nextLevelList = new LinkedList<>();
         for (TreeNode node : list) {
@@ -205,9 +242,10 @@ public class BinaryTreeArch {
         }
         // 把这行放到 traverseLevel 后面就是后序遍历，则是自下而上的，从最底层开始算起
         if (!currVals.isEmpty()) {
-            maxLevelValListRes.add(currVals.stream().max((a, b) -> {
-                return a >= b ? 1 : -1;
-            }).get());
+            maxLevelValListRes.add(currVals.stream().mapToInt(Integer::intValue).max().getAsInt());
+            // maxLevelValListRes.add(currVals.stream().max((a, b) -> {
+            // return a >= b ? 1 : -1;
+            // }).get());
         }
 
         traverseLevel(nextLevelList);
@@ -234,17 +272,9 @@ public class BinaryTreeArch {
             p = p.right;
         }
 
-        // 方法2 行不通
-        // flattenNode2 这种方式无法实现原地更改的。
-        // flattenNode2(root);
-        // root = dummy.right;
-
         // 方法3 ，采用后续遍历的方式。
-        flattenNode3(root);
+        // flattenNode3(root);
     }
-
-    TreeNode dummy = new TreeNode(-1);
-    TreeNode p = dummy;
 
     void flattenNode3(TreeNode node) {
         if (node == null) {
@@ -277,16 +307,6 @@ public class BinaryTreeArch {
         queue.add(node);
         flattenNode(node.left, queue);
         flattenNode(node.right, queue);
-    }
-
-    void flattenNode2(TreeNode node) {
-        if (node == null) {
-            return;
-        }
-        p.right = new TreeNode(node.val);
-        p = p.right;
-        flattenNode2(node.left);
-        flattenNode2(node.right);
     }
 
     /**
@@ -333,6 +353,7 @@ public class BinaryTreeArch {
             return;
         }
         // 二叉树的翻转，前序和后续都行
+        // 这里需要看仔细，反转的代码不是简单的值交换，而是引用交换
         TreeNode temp = root.left;
         root.left = root.right;
         root.right = temp;
@@ -370,7 +391,7 @@ public class BinaryTreeArch {
         /**
          * 这道题我们需要发散下思维，
          * 除了设置我们常规的 node.left.next = node.right;
-         * 我们还要将 node1.right = node2.left;
+         * 我们还要将 node1.right = node2.left，就是图中的 5 节点指向 6 节点
          * 因此我们递归的参数需要两个: node1, node2
          */
         // root.next = root.left;
@@ -392,6 +413,108 @@ public class BinaryTreeArch {
         }
     }
 
+    /**
+     * 101. Symmetric Tree
+     * 二叉树是否对称
+     * 
+     * @param root
+     * @return
+     */
+    public boolean isSymmetric(TreeNode root) {
+        /**
+         * 对称二叉树，这个是我从剑指offer上获取到的思路
+         * 我们常见的二叉树的前后后遍历全部都是 先遍历左子节点，然后遍历右子节点，为什么这么遍历，因为这是规定，那么我们有没有想过，
+         * 可以先遍历右子节点，然后再遍历左子节点， 这成啥了？哟，你别说，对称的算法就用到了这个
+         * 如果前序遍历的中左右 和 对称前序遍历的 中右左节点的值完全相同，那就是对称的了。
+         * 不过有种特殊情况，比如说 节点的值都是相同的，但是不对称，这种如何处理？
+         * 这里就用到了序列化二叉树中讲到的 null 值表示了，把 null 叶子结点也算上，就可以完全判断出二叉树是否对称
+         */
+        return isSymmetric(root, root);
+        // 其实把树序列化(带 null)出来以后，比对字符串的值也可以, 可能更直观
+    }
+
+    boolean isSymmetric(TreeNode node1, TreeNode node2) {
+        if (node1 == null && node2 == null) {
+            return true;
+        }
+        if (node1 == null || node2 == null) {
+            return false;
+        }
+        if (node1.val != node2.val) {
+            return false;
+        }
+        return isSymmetric(node1.left, node2.right) && isSymmetric(node1.right, node2.left);
+    }
+
+    /**
+     * 1325. Delete Leaves With a Given Value
+     * 
+     * @param root
+     * @param target
+     * @return
+     */
+    public TreeNode removeLeafNodes(TreeNode root, int target) {
+        root = deleteNodeWithTarget(root, target);
+        return root;
+    }
+
+    TreeNode deleteNodeWithTarget(TreeNode node, int target) {
+        if (node == null) {
+            return null;
+        }
+        node.left = deleteNodeWithTarget(node.left, target);
+        node.right = deleteNodeWithTarget(node.right, target);
+        // 当前节点是叶子结点，且值为 target，表示可以删掉
+        if (node.val == target && node.left == null && node.right == null) {
+            return null;
+        }
+        return node;
+    }
+
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        Stack<TreeNode> stack2 = new Stack<>();
+        stack.push(root);
+        TreeNode node = null;
+        int size = 0;
+        boolean inOrder = true;
+        // 使用两个栈来实现 zigzag 遍历，使用 inOrder 变量决定先访问左子节点还是右子节点
+        while (!stack.isEmpty()) {
+            size = stack.size();
+            List<Integer> subList = new LinkedList<>();
+            for (int i = 0; i < size; i++) {
+                node = stack.pop();
+                subList.add(node.val);
+                if (inOrder) {// 正序
+                    if (node.left != null) {
+                        stack2.push(node.left);
+                    }
+                    if (node.right != null) {
+                        stack2.push(node.right);
+                    }
+                } else {
+                    if (node.right != null) {
+                        stack2.push(node.right);
+                    }
+                    if (node.left != null) {
+                        stack2.push(node.left);
+                    }
+                }
+            }
+            res.add(subList);
+            inOrder = !inOrder;
+            // 交换 stack;
+            Stack<TreeNode> tmp = stack;
+            stack = stack2;
+            stack2 = tmp;
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         BinaryTreeArch instance = new BinaryTreeArch();
 
@@ -399,22 +522,27 @@ public class BinaryTreeArch {
         // testGetDiameter(instance);
         // maxLevelVal(instance);
 
-        // testInvertTree(instance);
-        Node root = new Node(1);
-        Node node2 = new Node(2, new Node(4), new Node(5), null);
-        Node node3 = new Node(3, new Node(6), new Node(7), null);
-        root.left = node2;
-        root.right = node3;
-        printNodeChain(instance.connect(root));
+        testInvertTree(instance);
+        // Node root = new Node(1);
+        // Node node2 = new Node(2, new Node(4), new Node(5), null);
+        // Node node3 = new Node(3, new Node(6), new Node(7), null);
+        // root.left = node2;
+        // root.right = node3;
+        // printNodeChain(instance.connect(root));
+
+        // root.val = 3;
+        // node2.val=9;
+        // node3.val = 20;
+        // node3.left.val = 15;node3.right.val= 7;
     }
-    
+
     static void printNodeChain(Node node) {
 
         Node n = node;
         Node p = node;
-        while(n != null) {
+        while (n != null) {
 
-            while(p != null) {
+            while (p != null) {
                 System.out.print(p.val + " ");
                 p = p.next;
             }
@@ -425,19 +553,23 @@ public class BinaryTreeArch {
     }
 
     private static void testInvertTree(BinaryTreeArch instance) {
-        TreeNode root = new TreeNode(1);
-        TreeNode node1 = new TreeNode(2, new TreeNode(3), new TreeNode(4));
-        TreeNode node2 = new TreeNode(5, null, new TreeNode(6));
+        TreeNode root = new TreeNode(3);
+        TreeNode node1 = new TreeNode(9, new TreeNode(5), new TreeNode(6));
+        TreeNode node2 = new TreeNode(20, new TreeNode(15), new TreeNode(7));
 
         root.left = node1;
         root.right = node2;
 
-        instance.printBinaryTreeSimple(root);
-        System.out.println();
-        // instance.invertBinaryTree(root);
-        instance.invertTree(root);
-        instance.printBinaryTreeSimple(root);
-        System.out.println();
+        // instance.printBinaryTreeSimple(root);
+        // System.out.println();
+        // // instance.invertBinaryTree(root);
+        // instance.invertTree(root);
+        // instance.printBinaryTreeSimple(root);
+        // System.out.println();
+
+        List<List<Integer>> res = instance.zigzagLevelOrder(root);
+        System.out.println(res);
+
     }
 
 }

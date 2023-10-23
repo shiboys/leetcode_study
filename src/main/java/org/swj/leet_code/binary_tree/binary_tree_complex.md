@@ -6,7 +6,9 @@
 
 ![前序和中序构造二叉树](../algorithm/dynamic_programming/imgs/build_binary_tree4.png)
 
-前序和后序构造二叉树
+上图为前序和中序构造二叉树
+
+下图为 前序和后序构造二叉树
 
 ![前序和后序构造二叉树](../algorithm/dynamic_programming/imgs/build_binary_tree8.png)
 

@@ -1,12 +1,15 @@
 package org.swj.leet_code.stackqueue;
 
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.Map;
 import java.util.List;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -643,13 +646,324 @@ public class StackQueue {
         }
     }
 
+    /**
+     * 32. 最长有效括号
+     * 给你一个只包含 '(' 和 ')' 的字符串，找出最长有效（格式正确且连续）括号子串的长度。
+     * 
+     * 示例 1：
+     * 
+     * 输入：s = "(()"
+     * 输出：2
+     * 解释：最长有效括号子串是 "()"
+     * 
+     * 示例 2：
+     * 
+     * 输入：s = ")()())"
+     * 输出：4
+     * 解释：最长有效括号子串是 "()()"
+     * 
+     * @param s
+     * @return
+     */
+    public int longestValidParentheses(String s) {
+        /**
+         * 思路，必须用栈呀
+         * 
+         */
+
+        // 想了好久，试了好几种办法，都没搞定所有用例。
+        // 没办法了，先用笨办法搞一波
+        int maxLen = 0;
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < s.length(); i++) {
+            for (int j = i + 1; j < s.length(); j++) {
+                if (isValidParentheses(s.substring(i, j + 1), stack)) {
+                    maxLen = Math.max(maxLen, j - i + 1);
+                }
+            }
+        }
+        return maxLen;
+        // 测试用例发现，居然超时，说明这个方法的时间复杂度还是太高了
+    }
+
+    /**
+     * 参考 阿东的解法，使用栈来处理一般情况，包括括号嵌套的，
+     * 然后使用动态规划数组 dp 来记录前一个字符串为结尾的合法括号字符串长度
+     * 
+     * @param s
+     * @return
+     */
+    public int longestValidParentheses2(String s) {
+        char[] chs = s.toCharArray();
+        Stack<Integer> stack = new Stack<>();
+        // dp 定义：以 i 结尾的字符串是合法的括号结尾的最长的长度
+        int[] dp = new int[s.length() + 1];
+        for (int i = 0; i < chs.length; i++) {
+            if (chs[i] == '(') {
+                stack.push(i);
+                // 左括号结尾，肯定不是一个合法的结尾，长度为 0。
+                dp[i + 1] = 0;
+            } else { // 当前字符是 右括号
+                if (!stack.isEmpty()) {
+                    int left = stack.pop();
+                    // i - left + 1 是 left...i 这段子串的长度，dp[left] 是 0...left-1 这段字符串之间的合法最长长度
+                    int len = i - left + 1 + dp[left];
+                    dp[i + 1] = len;
+                } else { // 没有配对的左括号
+                    dp[i + 1] = 0;
+                }
+            }
+        }
+        int maxLength = 0;
+        for (int i = 0; i < dp.length; i++) {
+            maxLength = Math.max(maxLength, dp[i]);
+        }
+        return maxLength;
+    }
+
+    boolean isValidParentheses(String s, Stack<Character> stack) {
+        /**
+         * 解题思路：栈是一种后进先出的数据结构，用来处理括号问题尤其有用
+         */
+        while (!stack.isEmpty()) {
+            stack.pop();
+        }
+        for (char ch : s.toCharArray()) {
+            if (ch == '{' || ch == '[' || ch == '(') {
+                stack.push(ch);
+            } else {
+                if (!stack.isEmpty() && rightOf(stack.peek()) == ch) {
+                    stack.pop();
+                } else {
+                    return false;
+                }
+            }
+        }
+        return stack.isEmpty();
+    }
+
+    /**
+     * 224. 基本计算器
+     * 给你一个字符串表达式 s ，请你实现一个基本计算器来计算并返回它的值。
+     * 
+     * 注意:不允许使用任何将字符串作为数学表达式计算的内置函数，比如 eval() 。
+     * s 由数字、'+'、'-'、'('、')'、和 ' ' 组成
+     * '-' 可以用作一元运算(即 "-1" 和 "-(2 + 3)" 是有效的)
+     * 示例 2：
+     * 
+     * 输入：s = " 2-1 + 2 "
+     * 输出：3
+     * 示例 3：
+     * 
+     * 输入：s = "(1+(4+5+2)-3)+(6+8)"
+     * 输出：23
+     * 
+     * @param s
+     * @return
+     */
+    Stack<Character> opStack;
+    Stack<Integer> numStack;
+
+    public int calculate(String s) {
+        /**
+         * 解题思路：这道题被标记为 hard
+         * 使用两个栈，一个符号栈，一个数字栈进行计算，然后倒着遍历字符串
+         */
+        if (s == null || s.length() < 1) {
+            return 0;
+        }
+        opStack = new Stack<>();
+        numStack = new Stack<>();
+
+        int firstOpIdx = firstOpIdx(s);
+        char firstOperator = s.charAt(firstOpIdx);
+        if (firstOperator == '-') {
+            s = fixMinusWithZeros(s);
+        }
+        char[] chs = s.toCharArray();
+        char ch;
+        StringBuilder numSb = new StringBuilder();
+        int j;
+        for (int i = chs.length - 1; i >= 0; i--) {
+            ch = chs[i];
+            if (ch == ' ') {
+                continue;
+            } else if (ch == '+' || ch == '-' || ch == '(' || ch == ')') {
+                if (ch != '(') {
+                    opStack.push(ch);
+                } else { // 倒着遍历,遇到了一个'(', 那么表示遇到一个可计算的括号表达式，计算这个表达式，然后重新压入栈中
+                    numStack.push(calculateSimple());
+                }
+            } else {
+                numSb.delete(0, numSb.length());
+                // 有可能是多个数字字符,比如，50,500
+                j = i;
+                while (j >= 0 && chs[j] >= '0' && chs[j] <= '9') {
+                    numSb.append(chs[j]);
+                    j--;
+                }
+                if (numSb.length() > 1) {
+                    numStack.push(Integer.parseInt(numSb.reverse().toString()));
+                } else {
+                    numStack.push(ch - '0');
+                }
+                if (j < i) {
+                    i = j + 1;
+                }
+            }
+        }
+        // 此处已经把括号都消除完毕，可以跟无括号一样进行计算。
+        return calculateSimple();
+    }
+
+    /**
+     * 计算不包含括号的普通表达式
+     * 
+     * @param s
+     * @return
+     */
+    int calculateSimple() {
+        if (opStack.isEmpty() && numStack.isEmpty()) {
+            return 0;
+        }
+        while (!opStack.isEmpty() && !numStack.isEmpty()) {
+            char op = opStack.pop();
+            if (op == ')') {
+                // 简单表达式遇到 '('，无法进行计算,返回栈顶处理结果
+                break;
+            }
+            int n1 = numStack.pop();
+            int n2 = 0;
+            if (!numStack.isEmpty()) {
+                n2 = numStack.pop();
+            } else {
+                if (op == '-') {
+                    // 压入计算结果
+                    numStack.push(-n1);
+                    continue;
+                }
+            }
+            if (op == '+') {
+                // 压入计算结果
+                numStack.push(n1 + n2);
+            } else if (op == '-') {
+                // 压入计算结果
+                numStack.push(n1 - n2);
+            }
+        }
+        return numStack.pop();
+    }
+
+    int firstOpIdx(String s) {
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) != ' ' && s.charAt(i) != '(') {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    String fixMinusWithZeros(String s) {
+        char[] chs = s.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        for (; i < chs.length; i++) {
+            if (chs[i] >= '0' && chs[i] <= '9') {
+                break;
+            }
+            if (chs[i] == '-') {
+                sb.append(0);
+            }
+            sb.append(chs[i]);
+        }
+        sb.append(s.substring(i));
+        return sb.toString();
+    }
+
+    /**
+     * 计算包含括号，加减乘除和空格的基本计算
+     * 227. Basic Calculator II
+     * 
+     * @param s
+     * @return
+     */
+    public int calculate2(String s) {
+        /**
+         * 上面的计算方式，是我自己捣鼓出来的，确实有点复杂了，不过能解决问题，提交也能通过所有用例
+         * 下面的解决方法是参考 阿东的，他的思路确实独辟蹊径，令人耳目一新
+         * 表达式 1-2+3 ，首先可以转化成 +1,-2,+3 压入栈中，不再像我那样使用操作数栈，使用一个栈来完成大一统。最后弹出所有元素进行累加
+         * 同理，乘除也是变成 *n, /m 这样的字符串 由于有优先级，结果的计算就是 stack.peek() * n 或者 stack.peek() /m
+         * 最后处理括号的问题
+         * 括号的处理具有递归性，之前真没看出来，比如说下面的计算方式：
+         * calculate(3 * (4 - 5/2) - 6)
+         * = 3 * calculate(4 - 5/2) - 6
+         * = 3 * 2 - 6
+         * = 0
+         * 而递归开始的条件是 '(', 结束的条件是 ')'
+         * 之前我觉得在字符串身上实现递归复杂，不好控制递归开始和结束。后来看阿东的解法，将字符串中的字符放到队列中
+         * 队列，这么牛逼的数据结构，我都没想起来，队里不就刚好处理一个少一个吗？递归处理和函数处理，完全无影响呀
+         */
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        Queue<Character> queue = new LinkedList<>();
+        for (char ch : s.toCharArray()) {
+            queue.add(ch);
+        }
+        return helper(queue);
+    }
+
+    // 将字符串转换成字符队列，方便进行递归处理
+    private int helper(Queue<Character> queue) {
+        Stack<Integer> stack = new Stack<>();
+        // 初始的符号，如果遇到 1+2+3 这样的，+ 可以编程 +1,+2,+3, 如果遇到 -(-2)+1 这样的， + 入栈的是 +0,-2,+1
+        // 所以下面的 num 也很重要
+        char sign = '+';
+        int num = 0;
+        char ch;
+        while (!queue.isEmpty()) {
+            ch = queue.poll();
+            if (ch == '(') { // 递归开始
+                num = helper(queue);
+            }
+            if (Character.isDigit(ch)) {
+                // 下面这个表达式是将字符串转换成表达式的最简洁的一种方式。
+                // 比我上面的使用 StringBuilder 收集数字字符串，然后用 Integer.parseInt() 强了不是一星半点
+                num = 10 * num + (ch - '0');
+            }
+            if ((!Character.isDigit(ch) && ch != ' ') || queue.isEmpty()) { // 排除空格，处理操作符，如果是字符末尾，也需要进行处理
+                if (sign == '+') {
+                    stack.push(num);
+                } else if (sign == '-') {
+                    stack.push(-num);
+                } else if (sign == '*') {
+                    // 1-3*4+5=>+1,-3*4, 符号始终在数字前面
+                    stack.push(stack.pop() * num);
+                } else if (sign == '/') {
+                    stack.push(stack.pop() / num);
+                }
+                // 重置 sign 和 num
+                sign = ch;
+                num = 0;
+            }
+            if (ch == ')') {// 递归结束, 跳出循环
+                break;
+            }
+        }
+        int res = 0;
+        for (int val : stack) {
+            res += val;
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         // testHitCounter();
-        String input = "\t\tfile2.ext";
-        System.out.println(input.lastIndexOf("\t"));
-        System.out.println(input.indexOf("\t"));
-        input = "file2.txt";
-        System.out.println(input.indexOf("\t"));
+        // String input = "\t\tfile2.ext";
+        // System.out.println(input.lastIndexOf("\t"));
+        // System.out.println(input.indexOf("\t"));
+        // input = "file2.txt";
+        // System.out.println(input.indexOf("\t"));
 
         StackQueue instance = new StackQueue();
 
@@ -672,8 +986,18 @@ public class StackQueue {
         // "+", "5", "+" };
         // System.out.println(instance.evalRPN(expr));
 
-        System.out.println(instance.lengthLongestPath("dir\n\tsubdir1\n\tsubdir2\n\t\tfile.ext"));
-        testMaxFreqStack();
+        // System.out.println(instance.lengthLongestPath("dir\n\tsubdir1\n\tsubdir2\n\t\tfile.ext"));
+        // testMaxFreqStack();
+        // System.out.println(instance.longestValidParentheses2("()(()"));
+        // System.out.println(instance.longestValidParentheses2("(()(()"));
+        // System.out.println(instance.longestValidParentheses2(")()())"));
+        // System.out.println(instance.longestValidParentheses2("()(())"));
+        // System.out.println(instance.calculate(" 2-10 + 2 "));
+        // System.out.println(instance.calculate("(1+(4+5+12)-3)+(6+8)"));
+        // System.out.println(instance.calculate("1-( -2)"));
+        // System.out.println(instance.calculate2("(-2)+ 1"));
+        // System.out.println(instance.calculate2("-(-2)+4"));
+        System.out.println(instance.calculate2("3+2*2"));
     }
 
     static void testMaxFreqStack() {

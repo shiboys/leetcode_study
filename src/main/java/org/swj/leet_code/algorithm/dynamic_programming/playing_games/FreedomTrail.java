@@ -22,7 +22,7 @@ public class FreedomTrail {
         if (key == null || key.isEmpty()) {
             return 0;
         }
-        keyPosMap = new HashMap();
+        keyPosMap = new HashMap<>();
         char[] ringChars = ring.toCharArray();
         for (int i = 0, len = ringChars.length; i < len; i++) {
             char ch = ringChars[i];

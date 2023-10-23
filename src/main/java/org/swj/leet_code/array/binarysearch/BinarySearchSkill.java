@@ -76,7 +76,7 @@ public class BinarySearchSkill {
                 left = mid + 1;
             }
         }
-        int pos = right - 1;
+        int pos = right - 1;// 或者 left - 1
         if (pos < 0 || pos > nums.length - 1) {
             return -1;
         }

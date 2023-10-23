@@ -247,7 +247,7 @@ List<Integer> spiralOrder(int[][] matrix);
 
 ![螺旋遍历矩阵](../algorithm/dynamic_programming/imgs/traverse_matrix_6.png)
 
-随着螺旋遍历，相应的边界会收缩，知道螺旋遍历完整个数组，根据这个思路，我们写出代码就比较容易了。
+随着螺旋遍历，相应的边界会收缩，直到螺旋遍历完整个数组，根据这个思路，我们写出代码就比较容易了。
 
 
 #### 旋转矩阵 II
@@ -447,7 +447,7 @@ for(int i=n-1;i>-0;i--) {
 
 同时，最终的解法还用到了前文的头尾双指针技巧，头指针用来获取送人头的马，尾指针是用来比得过的时候 pk 的马。
 
-参见 advantageCount 方法
+参见 DoublePointerHandlerArray.advantageCount 方法
 
 #### 实现随机集合
 
@@ -582,7 +582,7 @@ String removeDuplicateLetters(String s) {
 
 **我们的算法在 `stack.peek() > c` 时才会 pop 元素，其实这时候应该视情况而定**：
 
-情况一：如果 `stack.peek()` 这个字符之后还回出现，那么可以安心地把它 pop 出去，反转后面还会有该字符嘛，后面再 push 到栈里，刚刚符合字典的要求。
+情况一：如果 `stack.peek()` 这个字符之后还回出现，那么可以安心地把它 pop 出去，反正后面还会有该字符嘛，后面再 push 到栈里，刚刚符合字典顺序的要求。
 
 情况二：如果 `stack.peek()` 这个字符之后就不会再出现了，前面我们也说了栈中不会存在重复的元素，那么就不能把它 pop 出去，否则我们就永久失去了这个字符，这明显不符合题目的要求。
 

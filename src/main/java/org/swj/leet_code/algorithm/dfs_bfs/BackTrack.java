@@ -70,6 +70,13 @@ public class BackTrack {
         }
     }
 
+    /**
+     * leetcode 90 题 『子集 II』
+     * 带有重复元素的子集问题
+     * @param nums
+     * @return
+     */
+
     public List<List<Integer>> subsetsWithDp(int[] nums) {
         Arrays.sort(nums);
         res = new ArrayList<>();
@@ -85,7 +92,7 @@ public class BackTrack {
             // // 跳过 start 开始的遍历，因为之前已经遍历过了它
             // continue;
             // }
-
+            // 子集和组合问题，都是从 start 开始的，而不是从什么 1 开始的
             // 上面的剪枝逻辑写错了。为什么写错，还是因为对 这个子集的问题没有弄清楚是怎么递归遍历的。
             // 从 start 到 i 的遍历，如果当前的 i 已经遍历过了，后面再遍历到 跟 i 相同的元素，肯定需要 continue 跳过的。
             // 需要根据剪枝的那张图仔细揣摩，然后对比代码就能理解该代码逻辑就是图中剪枝的实现
@@ -285,8 +292,6 @@ public class BackTrack {
         backTrackParentheses(n, n, track, res);
         return res;
     }
-
-    private static final char[] PARENTHESES = new char[] { '(', ')' };
 
     /**
      * 

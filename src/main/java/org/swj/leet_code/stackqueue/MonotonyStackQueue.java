@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.swj.leet_code.linked_list.ListNode;
-import org.swj.leet_code.linked_list.ListNodeUtil;
 
 /**
  * @author shiweijie
@@ -587,15 +586,180 @@ public class MonotonyStackQueue {
         return (int) maxSum;
     }
 
+    /**
+     * 581. 最短无序连续子数组
+     * 给你一个整数数组 nums ，你需要找出一个 连续子数组 ，如果对这个子数组进行升序排序，那么整个数组都会变为升序排序。
+     * 
+     * 请你找出符合题意的 最短 子数组，并输出它的长度。
+     * 示例 1：
+     * 
+     * 输入：nums = [2,6,4,8,10,9,15]
+     * 输出：5
+     * 解释：你只需要对 [6, 4, 8, 10, 9] 进行升序排序，那么整个表都会变为升序排序。
+     * 
+     * @param nums
+     * @return
+     */
+    public int findUnsortedSubarray(int[] nums) {
+        /**
+         * 这道题的解法，当时已经比较晚了，我看了一天的算题，脑袋不好使了，
+         * 后来就参考了阿东的思路，看完后就拍下脑袋，哦，原来是这样呀
+         * 解法一：使用排序数组的方式，将原数组跟排序数组比对，找到不同的值位置的索引 left 和 right
+         * 解法二：使用单调栈，之前用的单调栈基本都是从后往前，所以思维又被限制住了
+         * 这道题就是单调栈的经典用法，单调递增栈，一个升序数组从前往后遍历的话，就是一个单调递增栈
+         * 单调递减栈，一个升序数组如果从后往前遍历的话，就是一个单调递减栈
+         * 利用这两种单调栈的特性，遍历两遍数组，就得到最左侧的 left 和左右侧的 right
+         * 不过后来我想了下，既然是最左侧和最右侧，那左右两侧只取第一个元素就行了，栈都不需要用。
+         * 但是后来又看了看用例，发现这个解法是错误的。比如说用例
+         * [2,6,1,8,10,9,15], 你不能说我找到 左边 1 所在的索引是第一个 left，10 所在索引为 right
+         * 返回 right-left+1，这肯定不对。
+         * 最后还是发现 使用单调栈 yyds
+         */
+        int left = Integer.MAX_VALUE, right = -1;
+        Stack<Integer> incrStack = new Stack<>();
+        for (int i = 0; i < nums.length; i++) {
+            while (!incrStack.isEmpty() && nums[i] < nums[incrStack.peek()]) {
+                // 取最小的需要排序左侧索引位
+                left = Math.min(left, incrStack.pop());
+            }
+            incrStack.push(i);
+        }
+        // 从后往前遍历，需要递减栈
+        Stack<Integer> decrStack = new Stack<>();
+        for (int j = nums.length - 1; j >= 0; j--) {
+            while (!decrStack.isEmpty() && nums[j] > nums[decrStack.peek()]) {
+                right = Math.max(right, decrStack.pop());
+            }
+            decrStack.push(j);
+        }
+        if (left == Integer.MAX_VALUE && right == -1) {
+            return 0;
+        }
+        return right - left + 1;
+    }
+
+    /**
+     * 最短无序连续子数组 的排序解法
+     * 
+     * @param nums
+     * @return
+     */
+    public int findUnsortedSubarray2(int[] nums) {
+        int[] copy = Arrays.copyOf(nums, nums.length);
+        Arrays.sort(copy);
+        int n = nums.length;
+        int left = -1, right = -1;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != copy[i]) {
+                left = i;
+                break;
+            }
+        }
+        for (int j = n - 1; j >= 0; j--) {
+            if (nums[j] != copy[j]) {
+                right = j;
+                break;
+            }
+        }
+        if (left == -1 && right == -1) {
+            return 0;
+        }
+        return right - left + 1;
+    }
+
+    /**
+     * 945. 使数组唯一的最小增量
+     * 给你一个整数数组 nums 。每次 move 操作将会选择任意一个满足 0 <= i < nums.length 的下标 i，并将 nums[i] 递增
+     * 1。
+     * 
+     * 返回使 nums 中的每个值都变成唯一的所需要的最少操作次数。
+     * 示例 2：
+     * 
+     * 输入：nums = [3,2,1,2,1,7]
+     * 输出：6
+     * 解释：经过 6 次 move 操作，数组将变为 [3, 4, 1, 2, 5, 7]。
+     * 可以看出 5 次或 5 次以下的 move 操作是不能让数组的每个值唯一的。
+     * 
+     * @param nums
+     * @return
+     */
+    public int minIncrementForUnique(int[] nums) {
+        /**
+         * 这道题我想到的就是用 map 存储元素的出现次数，然后遍历 map
+         * 将出现次数大于1 的元素给他找一个位置，然后 -1，并统计移动次数
+         * 感觉没啥算法含量。
+         * 但是提交之后，发现用 map 会导致超时
+         */
+        if (nums == null || nums.length < 1) {
+            return 0;
+        }
+        Map<Integer, Integer> mapCounter = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            mapCounter.put(nums[i], mapCounter.getOrDefault(nums[i], 0) + 1);
+        }
+        int minMoveCounter = 0;
+        int val, oldKey;
+        for (int key : nums) {
+            oldKey = key;
+            val = mapCounter.get(oldKey);
+            if (val == 1) {
+                continue;
+            }
+            while (val > 1) {
+                // 每次重新判断数量之后，重置 key 为原来的元素
+                key = oldKey;
+                while (mapCounter.containsKey(key)) {
+                    key++;
+                    minMoveCounter++;
+                }
+                // 当前的 key 在 map 中不存在，数量置为 1。
+                mapCounter.put(key, 1);
+                // 重复的 key 的数量减 1。
+                val--;
+            }
+            // 所有重复的 key 都 move 后，重新设置 原始 key 的数量
+            mapCounter.put(oldKey, val);
+
+        }
+        return minMoveCounter;
+    }
+
+    public int minIncrementForUnique2(int[] nums) {
+        // 使用 HashMap 的 minIncrementForUnique 方法提交 leetcode 之后发现会超时
+        // 也想到用排序和遍历的方式，但是实在没想出来排序后怎么才能将重复的数字消除掉
+        // 最后参考了别人的解法，
+        // 大致思路是：排序后，将每个元素都跟 它 前一个元素对比，如果 <= 则将当前元素 +1 然后遍历下一个元素
+        // 比如用例 3,2,1,2,1,7 。排序后的结果是 1,1,2,2,3,7
+        // 但是经过该方法的遍历和更改后，就变成 1,2,3,4,5,7。而不是用例说明中的 数组将变为 [3, 4, 1, 2, 5, 7]
+        // 确实是被这个用例给误导了，想不出来.
+        // 排序的时间复杂度是 O(nlogn), 遍历的时间复杂度是 O(N)，所以总的时间复杂度是 O(NlogN)
+        if (nums == null || nums.length < 1) {
+            return 0;
+        }
+        Arrays.sort(nums);
+        int res = 0;
+        int prev = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] <= prev) {
+                // 累计移动次数
+                res += prev - nums[i] + 1;
+                nums[i] = prev + 1;
+            }
+            prev = nums[i];
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         MonotonyStackQueue instance = new MonotonyStackQueue();
         // testMonotonicStack(instance);
         // int[] items = new int[] { -7, -8, 7, 5, 7, 1, 6, 0 };
         // System.out.println(Arrays.toString(instance.maxSlidingWindow(items, 4)));
 
-        ListNode head = ListNodeUtil.convertToNodeListFromArray(new int[] { 2, 1, 5 });
-        int[] arr = instance.nextLargerNodes(head);
-        System.out.println(Arrays.toString(arr));
+        // ListNode head = ListNodeUtil.convertToNodeListFromArray(new int[] { 2, 1, 5
+        // });
+        // int[] arr = instance.nextLargerNodes(head);
+        // System.out.println(Arrays.toString(arr));
 
         // head = ListNodeUtil.convertToNodeListFromArray(new int[] { 2, 7, 4, 3, 5 });
         // arr = instance.nextLargerNodes(head);
@@ -604,7 +768,7 @@ public class MonotonyStackQueue {
         // arr = new int[] { 10, 6, 8, 5, 11, 9 };
         // System.out.println(Arrays.toString(instance.canSeePersonsCount(arr)));
 
-        arr = new int[] { 8, 4, 6, 2, 3 };
+        int[] arr = new int[] { 8, 4, 6, 2, 3 };
         System.out.println(Arrays.toString(instance.finalPrices(arr)));
 
         // arr = new int[] { 28, 14, 28, 35, 46, 53, 66, 80, 87, 88 };
@@ -633,13 +797,23 @@ public class MonotonyStackQueue {
         // arr = new int[] { 1 };
         // System.out.println(instance.shortestSubarray(arr, 1));
 
-        arr = new int[] { 1, -2, 3, -2 };
-        System.out.println(instance.maxSubarraySumCircular(arr));
+        // arr = new int[] { 1, -2, 3, -2 };
+        // System.out.println(instance.maxSubarraySumCircular(arr));
 
-        arr = new int[] { 5, -3, 5 };
-        System.out.println(instance.maxSubarraySumCircular(arr));
+        // arr = new int[] { 5, -3, 5 };
+        // System.out.println(instance.maxSubarraySumCircular(arr));
 
-        arr = new int[] { 3, -2, 2, -3 };
-        System.out.println(instance.maxSubarraySumCircular(arr));
+        // arr = new int[] { 3, -2, 2, -3 };
+        // System.out.println(instance.maxSubarraySumCircular(arr));
+
+        // arr = new int[] { 2, 6, 4, 8, 10, 9, 15 };
+        // System.out.println(instance.findUnsortedSubarray(arr));
+
+        arr = new int[] { 3, 2, 1, 2, 1, 7 };
+        System.out.println("min move count:");
+        System.out.println(instance.minIncrementForUnique2(arr));
+
+        arr = new int[] { 2, 2, 2, 1 };
+        System.out.println(instance.minIncrementForUnique2(arr));
     }
 }

@@ -33,7 +33,7 @@ public class ZStyleString {
   }
 
   public String[][] getConvertedMatrix(String s, int numRows) {
-    // 根据一个 z 的元素树和行数计算列数
+    // 根据一个 z 的元素数和行数计算列数
     int columnsCount = getColumnsCount(s.length(), numRows);
     // int zItemCount
     String[][] matrix = new String[numRows][columnsCount];
@@ -129,7 +129,7 @@ public class ZStyleString {
 
   /**
    * 一个 Z 应该包含多少个字符
-   *
+   * 这个是我观察的，其实没有科学依据，数量包括 1 列 1 斜
    * @param numRows 行数
    * @return
    */
@@ -169,6 +169,7 @@ public class ZStyleString {
 
     int sLength = s.length();
     // 使用这个数组列数长度，预估的，非精准的，但是确实满足要求
+    // 1 <= numRows <= 1000, 至少 1 行。
     int colLength = (sLength + 1) >> 1;
     char[][] matrixArr = new char[rowsNum][colLength];
     matrixArr[0][0] = s.charAt(0);
@@ -214,7 +215,7 @@ public class ZStyleString {
   public String convert3(String s, int rowsNum) {
     if (s == null || s.isEmpty()) {
       return s;
-    } else if (s.length() <= 1 || rowsNum <= 1 || s.length() < rowsNum) {
+    } else if (s.length() <= 1 || rowsNum <= 1 ) {
       return s;
     }
 
@@ -252,7 +253,7 @@ public class ZStyleString {
   public String convert4(String s, int rowsNum) {
     if (s == null || s.isEmpty()) {
       return s;
-    } else if (s.length() <= 1 || rowsNum <= 1 || s.length() < rowsNum) {
+    } else if (s.length() <= 1 || rowsNum <= 1) {
       return s;
     }
     int sLength = s.length();
@@ -261,7 +262,7 @@ public class ZStyleString {
     int periodLength = getZItemsSize(rowsNum);
     for (int i = 0; i < rowsNum; i++) {
       for (int j = 0; j + i < sLength; j += periodLength) {
-        // 每行每列都有字符的列
+        // 每列都有字符的列,附加每个周期的元素第 i 行元素
         stringBuilder.append(s.charAt(j + i));
         // 如果 i 不在行首或者行尾,其没有越界，第 i 个字符和 第 periodLength-i 个字符，一个 Z 字周期内有 2 个字符
         if (i != 0 && i != rowsNum - 1 && (j + periodLength - i) < sLength) {

@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 import org.swj.leet_code.binary_tree.TreeNode;
 import org.swj.leet_code.binary_tree.TreeNodeP;
 
-import lombok.val;
-
 /**
  * @author shiweijie
  * @version 1.0.0
@@ -37,18 +35,19 @@ public class LowestCommonAncestorOfTree {
         }
         if (root.val == val1 || root.val == val2) {
             // 找到了符合要求的节点
-            // 这也符合情况1 ，就是 p 本身就是 q 的最近公共祖先，先找到p 则返回
+            // 这也覆盖情况1 ，就是 p 本身就是 q 的最近公共祖先，先找到p 则返回
             return root;
         }
-        // 后续遍历
+        // 后续遍历，查找目标节点
         TreeNode leftTargetNode = find(root.left, val1, val2);
         TreeNode rightTargetNode = find(root.right, val1, val2);
         // 这里判断左右目标子节点都不为空，说明找到了 2 个目标子节点，则 root 就是最近公共祖先
         // 满足情况 2 左右子节点分别分布在左右子树上。
         if (leftTargetNode != null && rightTargetNode != null) {
+              // 左子树和右子树都找到了目标节点，则后续遍历的第一个 root 节点便是最近公共祖先
             return root;
         }
-        // 将找到的目标节点一级级的返回。
+        // 将找到的目标节点一级级的返回。不是返回 node，也就是不是返回父节点， 这里要注意
         return leftTargetNode != null ? leftTargetNode : rightTargetNode;
     }
 

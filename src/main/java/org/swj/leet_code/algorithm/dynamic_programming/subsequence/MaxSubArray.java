@@ -1,7 +1,5 @@
 package org.swj.leet_code.algorithm.dynamic_programming.subsequence;
 
-import java.util.Arrays;
-
 /**
  * @author shiweijie
  * @version 1.0.0

@@ -80,7 +80,7 @@ public class MultiWayTraverseMatrix {
                 bottomIndex--;
             }
 
-            if (leftIndex >= rightIndex) {
+            if (leftIndex <= rightIndex) {
                 // 上
                 for (int i = bottomIndex; i >= topIndex; i--) {
                     res.add(matrix[i][leftIndex]);
@@ -91,6 +91,11 @@ public class MultiWayTraverseMatrix {
         return res;
     }
 
+    /**
+     * leetcode 59 题，螺旋矩阵II，生成矩阵
+     * @param n
+     * @return
+     */
     int[][] generateMatrix(int n) {
         int[][] matrix = new int[n][n];
         int topIndex = 0, bottomIndex = n - 1;
