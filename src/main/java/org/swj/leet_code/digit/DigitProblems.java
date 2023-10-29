@@ -1,7 +1,6 @@
-package org.swj.digit;
+package org.swj.leet_code.digit;
 
 import org.swj.leet_code.linked_list.ListNode;
-import org.swj.leet_code.linked_list.ListNodeUtil;
 
 /**
  * 数字问题

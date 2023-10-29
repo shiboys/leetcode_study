@@ -27,7 +27,7 @@ public class Bag01 {
 
     for (int i = 1; i <= N; i++) {
       for (int j = 1; j <= W; j++) {
-        if (j - wt[i-1] < 0) { // 当前的容易已经不足以放下第 i 个物品了
+        if (j - wt[i-1] < 0) { // 当前的剩余重量已经不足以放下第 i 个物品了
           dp[i][j] = dp[i - 1][j]; // 当前背包的价格只能取上一次装填背包的价格
         } else {
           dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - wt[i-1]] + val[i-1]);

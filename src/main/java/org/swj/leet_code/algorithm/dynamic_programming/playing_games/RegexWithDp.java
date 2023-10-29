@@ -26,23 +26,20 @@ public class RegexWithDp {
         if (j == n) {
             return i == m;
         }
-        if (i == m) { // s 已经匹配完毕，p 是否匹配完毕
-            if (j == n) {
-                return true;
-            } else {
-                // 这种情况下，要看 s 的结尾是否 a*b*c* 这种形式
-                int llen = n - j;
-                if ((llen & 1) != 0) { // 不是偶数
-                    return false;
-                }
-                char[] lcharArr = p.substring(j).toCharArray();
-                for (int k = 0, len = lcharArr.length; k + 1 < len; k += 2) {
-                    if (lcharArr[k + 1] != '*') {
-                        return false;
-                    }
-                }
-                return true;
-            }
+        if (i == m) { // s 已经匹配完毕，p 是否匹配完毕。i == m && j != n
+
+           // 这种情况下，要看 s 的结尾是否 a*b*c* 这种形式
+           int llen = n - j;
+           if ((llen & 1) != 0) { // 不是偶数
+               return false;
+           }
+           char[] lcharArr = p.substring(j).toCharArray();
+           for (int k = 0, len = lcharArr.length; k + 1 < len; k += 2) {
+               if (lcharArr[k + 1] != '*') {
+                   return false;
+               }
+           }
+           return true;
         }
 
         if (memo[i][j] != -1) {
@@ -86,5 +83,7 @@ public class RegexWithDp {
         s = "ab";
         p = ".*";
         System.out.println(instance.isMatch(s, p));
+
+        System.out.println(instance.isMatch("bb", ".bab"));
     }
 }

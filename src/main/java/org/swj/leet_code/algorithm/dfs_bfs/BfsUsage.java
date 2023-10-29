@@ -137,7 +137,7 @@ public class BfsUsage {
         }
         Queue<String> queue = new LinkedList<>();
         Set<String> visitedSet = new HashSet<>();
-
+        // 每个密码有 8 个相邻密码，也就是 8 个相邻节点， 
         queue.offer(source);
         visitedSet.add(source);
         int step = 0;

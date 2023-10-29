@@ -82,7 +82,7 @@ public class MaxSubArray {
             dp[i] = Math.max(arr[i], arr[i] + dp[i - 1]);
         }
         // 获取 dp 数组中的最大子数组之和
-        // return Arrays.stream(dp).max().getAsInt();
+        // 有点最小下降路径和的意思
         int res = Integer.MIN_VALUE;
         for (int dpVal : dp) {
             res = Math.max(res, dpVal);

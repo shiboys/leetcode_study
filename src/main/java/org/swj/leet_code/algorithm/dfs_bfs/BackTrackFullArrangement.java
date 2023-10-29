@@ -30,7 +30,7 @@ public class BackTrackFullArrangement {
 
         // 回溯框架
         for (int i = 0; i < nums.length; i++) {
-            // 排除路径上已经访问过的元素，避免向 1,1,1 或者 1,1,2 这种
+            // 排除路径上已经访问过的元素，避免像 1,1,1 或者 1,1,2 这种
             if (visited[i]) {
                 continue;
             }

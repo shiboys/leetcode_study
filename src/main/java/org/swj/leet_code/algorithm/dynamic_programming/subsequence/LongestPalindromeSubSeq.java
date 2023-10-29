@@ -64,7 +64,7 @@ public class LongestPalindromeSubSeq {
     // 总体从下向上遍历，i--
     for (int i = n - 1; i >= 0; i--) {
       // 列的遍历方向为正常的从左至右，从小到大哦
-      for (int j = i + 1; j < n; j++) {
+      for (int j = i + 1; j < n; j++) {// j==i 的位置值为 1
         if (s.charAt(i) == s.charAt(j)) {
           dp[i][j] = dp[i + 1][j - 1] + 2;
         } else {

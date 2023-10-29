@@ -9,7 +9,13 @@ import java.util.Arrays;
  *        找零钱
  *        leecode 第 322 题。
  *        找零钱问题跟青蛙跳台阶问题基本是同一类问题，但是我们这次使用动态规划法来解这道题
+ * 跳台阶问题跟 找零钱 II——leetcode 518 类似，找出多少种跳法或者凑法
  * 
+ * 给你一个整数数组 coins ，表示不同面额的硬币；以及一个整数 amount ，表示总金额。
+
+计算并返回可以凑成总金额所需的 最少的硬币个数 。如果没有任何一种硬币组合能组成总金额，返回 -1 。
+
+你可以认为每种硬币的数量是无限的。
  */
 public class CoinChange {
 
@@ -74,6 +80,7 @@ public class CoinChange {
         if (amount == 0) {
             return 0;
         } else if (amount < 1) {
+            // 为什么这里返回-1，是为了递归逻辑中的 if(sub <0 ) 的逻辑判断
             return -1;
         }
         // 从备忘录中查询，如果存在则从备忘录中返回
@@ -139,7 +146,7 @@ public class CoinChange {
     }
 
     /**
-     * 在写一遍硬币最小分配个数，使用动态规划函数
+     * 再写一遍硬币最小分配个数，使用动态规划函数
      * 
      * @param coins
      * @param amount
@@ -188,7 +195,7 @@ public class CoinChange {
                     continue;
                 }
                 int subProblem = i - coin;
-                dp[i] = Math.min(dp[i], 1 + subProblem);
+                dp[i] = Math.min(dp[i], 1 + dp[subProblem]);
             }
         }
         return dp[amount];

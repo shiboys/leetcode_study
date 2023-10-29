@@ -70,7 +70,8 @@ public class LongestIncreasingSubsequence {
             // 将 top 数组的 0-pile 区间看作是堆顶的二分区间
             int left = 0;
             int right = pile;
-            while (left < right) { // 根据阿东二分法分析的规律得出，这里使用 < 是因为 right = pile 即堆数，而不是 pile -1,元素放在哪个堆上是 i-1。
+            // 找到合适最左侧放置的位置
+            while (left < right) { // 循环退出条件是 left==right
                 // 因此每次搜索的区间是 [left,pile) 左闭右开。而终止条件是 left == right。
                 int middle = left + (right - left) / 2;
                 if (top[middle] > pork) {

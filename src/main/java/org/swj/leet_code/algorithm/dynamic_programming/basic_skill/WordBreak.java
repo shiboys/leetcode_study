@@ -203,7 +203,7 @@ public class WordBreak {
             if (wordSet.contains(prefix)) {
                 boolean subProblem = dp(s, i + prefix.length());
                 // 找到一个单词匹配 s[i..i+k]
-                // 只要 s[i+len..] 可以被必配出来，则 s[i..] 就能被整体匹配成功
+                // 只要 s[i+len..] 可以被匹配出来，则 s[i..] 就能被整体匹配成功
                 if (subProblem) { // 从 prefix 到 subProblem 都匹配成功，则 i 位置整体匹配成功
                     memo[i] = 1;
                     return true;
@@ -290,6 +290,7 @@ public class WordBreak {
         if (memoResult[i] != null) {
             return memoResult[i];
         }
+        // 其实可以 for(int k=i+1;k<=s.length();k++) prefix=s.substring(i,k);
         for (int k = 1;  i+k <= s.length(); k++) {
             String prefix = s.substring(i, i+k);
             if (wordSet.contains(prefix)) {

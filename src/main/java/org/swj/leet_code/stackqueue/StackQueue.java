@@ -818,8 +818,7 @@ public class StackQueue {
 
     /**
      * 计算不包含括号的普通表达式
-     * 
-     * @param s
+     *
      * @return
      */
     int calculateSimple() {
