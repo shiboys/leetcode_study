@@ -2,6 +2,7 @@ package org.swj.leet_code.array;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Stack;
@@ -283,6 +284,32 @@ public class DoublePointerHandleArray {
         return res;
     }
 
+    /**
+     * 合并区间2，采用 List 集合 的方式，才考了 阿东的代码
+     * 
+     * @param intervals
+     * @return
+     */
+    public int[][] merge2(int[][] intervals) {
+        List<int[]> res = new ArrayList<>();
+        // 仍然是先按照区间开始排序
+        Arrays.sort(intervals, Comparator.comparing(a -> a[0]));
+        res.add(intervals[0]);
+        int[] last = null;
+        int start, end;
+        for (int i = 1; i < intervals.length; i++) {
+            start = intervals[i][0];
+            end = intervals[i][1];
+            last = res.get(res.size() - 1);
+            if (last[1] >= start) {
+                last[1] = Math.max(last[1], end);
+            } else {
+                res.add(intervals[i]);
+            }
+        }
+        return res.toArray(new int[res.size()][2]);
+    }
+
     public static void main(String[] args) {
         int[] arr = new int[] { 1, 1, 2 };
         DoublePointerHandleArray instance = new DoublePointerHandleArray();
@@ -324,13 +351,13 @@ public class DoublePointerHandleArray {
         System.out.println(instance.isHappy(2));
 
         int[][] intervals = new int[][] { { 1, 3 }, { 2, 6 }, { 8, 10 }, { 15, 18 } };
-        int[][] res = instance.merge(intervals);
+        int[][] res = instance.merge2(intervals);
         for (int[] array : res) {
             System.out.println(Arrays.toString(array));
         }
 
         intervals = new int[][] { { 1, 4 }, { 0, 0 } };
-        res = instance.merge(intervals);
+        res = instance.merge2(intervals);
         for (int[] array : res) {
             System.out.println(Arrays.toString(array));
         }

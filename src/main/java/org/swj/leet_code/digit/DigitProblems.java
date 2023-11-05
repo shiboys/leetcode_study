@@ -92,10 +92,56 @@ public class DigitProblems {
         }
         String s = sb.reverse().toString();
         if (s != null && s.length() > 0 && s.startsWith("0")) {
-            int idx = s.lastIndexOf("0");
+            // 这里 lastIndexOf 不对，需要找到第一个 > '0' 的字符
+            int idx = 0;
+            for (int i = 0; i < s.length(); i++) {
+                if (s.charAt(i) > '0') {
+                    idx = i;
+                    break;
+                }
+            }
             s = s.substring(idx);
         }
         return s;
+    }
+
+    /**
+     * 字符串相乘 更优解法
+     * 
+     * @param num1
+     * @param num2
+     * @return
+     */
+    public String multiply2(String num1, String num2) {
+        /**
+         * 这个解法是参考了 阿东的解题思路，
+         * 用数组装入最终的计算结果
+         */
+        int m = num1.length();
+        int n = num2.length();
+        // nums1*nums2 的数组最长结果不会超过 m*n
+        int[] res = new int[m + n];
+        // 从个位开始逐渐相乘
+        for (int i = num1.length() - 1; i >= 0; i--) {
+            for (int j = num2.length() - 1; j >= 0; j--) {
+                int multi = (num1.charAt(i) - '0') * (num2.charAt(j) - '0');
+                // 乘积在 res 上对应的位置
+                int p1 = i + j, p2 = i + j + 1;
+                // 可以再看看图，61+12 =>1 +12 =13 => res[p2]=3, resp[p] += sum/10;
+                int sum = multi + res[p2];
+                res[p2] = sum % 10;
+                res[p1] += sum / 10;
+            }
+        }
+        int i = 0;
+        while ( i<res.length && res[i] == 0) {
+            i++;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (; i < res.length; i++) {
+            sb.append(res[i]);
+        }
+        return sb.length() == 0 ? "0" : sb.toString();
     }
 
     /**
@@ -286,7 +332,7 @@ public class DigitProblems {
         // instance.addTwoNumNode(head, head2);
         // ListNodeUtil.printLinkedNode(head);
 
-        // System.out.println(instance.multiply("123", "456"));
+        System.out.println(instance.multiply2("123", "456"));
         // System.out.println(instance.multiply("9", "9"));
         // System.out.println(instance.multiply("9", "99"));
         // System.out.println(instance.multiply("9133", "0"));

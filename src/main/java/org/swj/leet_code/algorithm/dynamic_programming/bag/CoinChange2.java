@@ -38,9 +38,6 @@ public class CoinChange2 {
                     // 1、不把第 coins[i-1] 的金额放进书包/加入，而是继承之前的结果凑出 j 的种类数。
                     // 2、加入 coins[i-1] 的金额，但之前的金额的是 j-coins[i-1]
                     dp[i][j] = dp[i - 1][j] + dp[i][j - coins[i - 1]];
-                    if(i==coins.length && j == amount) {
-                        System.out.println("dp[i - 1][j] is " + dp[i - 1][j] +", and dp[i][j - coins[i - 1]] is "  + dp[i][j - coins[i - 1]] );
-                    }
                 } else {
                     dp[i][j] = dp[i - 1][j];
                 }

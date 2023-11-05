@@ -2,6 +2,8 @@ package org.swj.leet_code.algorithm.dfs_bfs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -73,6 +75,7 @@ public class BackTrack {
     /**
      * leetcode 90 题 『子集 II』
      * 带有重复元素的子集问题
+     * 
      * @param nums
      * @return
      */
@@ -280,6 +283,12 @@ public class BackTrack {
         System.out.println(instance.combinationSum(nums, 7));
 
         System.out.println(instance.generateParenthesis(3));
+
+        // nums = new int[] {4,3,2,3,5,2,1};
+        // System.out.println(instance.canPartitionKSubsets2(nums, 4));
+
+        nums = new int[] {2,2,2,2,3,4,5};
+        System.out.println(instance.canPartitionKSubsets2(nums, 4));
     }
 
     /**
@@ -324,4 +333,176 @@ public class BackTrack {
         track.deleteCharAt(track.length() - 1);
 
     }
+
+    /**
+     * 698. 划分为k个相等的子集
+     * 给定一个整数数组 nums 和一个正整数 k，找出是否有可能把这个数组分成 k 个非空子集，其总和都相等。
+     * 示例 1：
+     * 
+     * 输入： nums = [4, 3, 2, 3, 5, 2, 1], k = 4
+     * 输出： True
+     * 说明： 有可能将其分成 4 个子集（5），（1,4），（2,3），（2,3）等于总和。
+     * 
+     * @param nums
+     * @param k
+     * @return
+     */
+    public boolean canPartitionKSubsets(int[] nums, int k) {
+        // 解法1 ，数字的视角
+        int n = nums.length;
+        if (k > n) {
+            return false;
+        }
+        int sum = Arrays.stream(nums).sum();
+        if (sum % k != 0) { // 能否整除
+            return false;
+        }
+        int target = sum / k;
+        // k 个桶
+        int[] bucket = new int[k];
+
+        // 将 nums 倒序排列
+        int[] tmp = Arrays.copyOf(nums, n);
+        // Arrays.sort() 带 comparator 的是 泛型 T[] 数组，不适合用 primitive type，这里有点坑爹
+        Arrays.sort(tmp);
+        for (int i = n - 1; i >= 0; i--) {
+            nums[n - 1 - i] = tmp[i];
+        }
+
+        return backTrack(nums, bucket, 0, target);
+    }
+
+    public boolean canPartitionKSubsets2(int[] nums, int k) {
+        // 解法1 ，数字的视角
+        int n = nums.length;
+        if (k > n) {
+            return false;
+        }
+        int sum = Arrays.stream(nums).sum();
+        if (sum % k != 0) { // 能否整除
+            return false;
+        }
+        int target = sum / k;
+ 
+        // 将 nums 倒序排列
+        int[] tmp = Arrays.copyOf(nums, n);
+        // Arrays.sort() 带 comparator 的是 泛型 T[] 数组，不适合用 primitive type，这里有点坑爹
+        Arrays.sort(tmp);
+        for (int i = n - 1; i >= 0; i--) {
+            nums[n - 1 - i] = tmp[i];
+        }
+        // 使用位图技巧
+        int used = 0;
+
+        return backTrack2(k, 0, nums, 0, used, target);
+    }
+
+    boolean backTrack(int[] nums, int[] buckets, int index, int target) {
+        if (index == nums.length) { // 数字递归完了
+            // 判断所有桶是否都等于 target
+            return Arrays.stream(buckets).allMatch(x -> x == target);
+        }
+        for (int i = 0, len = buckets.length; i < len; i++) {
+            if (buckets[i] + nums[index] > target) { // 剪枝
+                continue;
+            }
+            // 做选择
+            buckets[i] += nums[index];
+            // 回溯
+            if (backTrack(nums, buckets, index + 1, target)) {
+                // 这里为什么要 return true 而不是撤销选择之后再 return true。
+                // 这是因为 回溯方法的前面验证逻辑，要验证所有的桶里的数字是否等于 target
+                // 如果这里给撤销选择， 那永远都验证不了了。
+                return true;
+            }
+            // 撤销选择
+            buckets[i] -= nums[index];
+        }
+        return false;
+    }
+
+    HashMap<String, Boolean> memo = new HashMap<>();
+
+    boolean backTrack(int k, int bucketSum, int[] nums, int start, boolean[] used, int target) {
+        // base case
+        if (k == 0) {
+            // 所有的桶都装满了，而且桶用完了
+            // 因为 target = sum/k, 同时 bucketSum == target 的时候，才递归 k-1
+            return true;
+        }
+        String state = Arrays.toString(used);
+        if (bucketSum == target) { // 当前桶已经装满，则递归下一个桶。下一个桶也是要从第一个数字开始遍历
+            boolean result = backTrack(k - 1, 0, nums, 0, used, target);
+            // 把当前状态装入备忘录
+            memo.put(state, result);
+            return result;
+        }
+        if (memo.containsKey(state)) {
+            // 如果当前状态曾经计算过，就直接返回，不再递归穷举了。
+            return memo.get(state);
+        }
+        // 从 start 开始探查有效的 nums[i] 装入当期那桶中
+        for (int i = start; i < nums.length; i++) {
+            // 仍然需要剪枝
+            if (used[i]) {
+                continue;
+            }
+            if (bucketSum + nums[i] > target) {
+                // 当前桶装不下 nums[i]
+                continue;
+            }
+            // 做选择
+            used[i] = true;
+            bucketSum += nums[i];
+            // 回溯下一个数字是否可以装入桶中. 注意，下一个数字是 i+1, 而不是 start +1
+            if (backTrack(k, bucketSum, nums, i + 1, used, target)) {
+                return true;
+            }
+            used[i] = false;
+            trackSum -= nums[i];
+        }
+        // 穷举了所有数字，都无法装入当前桶中。
+        return false;
+    }
+
+    HashMap<Integer, Boolean> memo2 = new HashMap<>();
+
+    boolean backTrack2(int k, int bucketSum, int[] nums, int start, int used, int target) {
+        // base case
+        if (k == 0) {
+            return true;
+        }
+        if (bucketSum == target) { // 当前桶已经装满, 递归下一个
+            boolean result = backTrack2(k - 1, 0, nums, 0, used, target);
+            // k 的运算结果成功与否取决于 k-1 的运算结果
+            memo2.put(used, result);
+            return result;
+        }
+        if (memo2.containsKey(used)) {
+            return memo2.get(used);
+        }
+        for (int i = start; i < nums.length; i++) {
+            
+            if (((used >> i) & 1) == 1) { // 表示 nums[i] 这个数字被别的桶使用了
+                continue;
+            }
+            if (bucketSum + nums[i] > target) {
+                continue;
+            }
+            // 选择
+            bucketSum += nums[i];
+            // used |= ((used >> i) ^ 1);
+            used |= 1 << i; // 将第 i 位置置为 1.
+            // 回溯
+            if (backTrack2(k, bucketSum, nums, i + 1, used, target)) {
+                return true;
+            }
+            // 取消选择
+            bucketSum -= nums[i];
+            used ^= 1 << i; // 使用 异或运算将 i 位置恢复为 0
+        }
+        return false;
+    }
+
+    
 }

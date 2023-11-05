@@ -664,3 +664,343 @@ void backtrack(int n, int i, StringBuilder track) {
 那么，现在就能够打印所有的括号组合了，如何从他们中筛选出来合法的括号组合那？很简单，加几个条件进行「剪枝」就行了。
 
 对于 `2n` 个位置，必然有 `n` 个左括号，`n` 个右括号，所以我们不是简单的记录穷举位置 `i`, 而是**用 `left` 记录还可以使用多少可左括号，用`right` 记录还可以使用多少个右括号**，这样就可以通过刚在总结的合法括号规律进行筛选了：
+
+
+### 回溯算法穷举的两种视角
+
+经过前面对回溯算法的了解，你就会发现回溯算法是笔试中最好用的算法，只要你没有什么思路，就用回溯算法暴力求解，即便不能通过全部用例，也能多少过一点。
+
+回溯算法的技巧也不难，前文说过，回溯算法就是穷举一颗决策树，只要在递归前「做选择」，在递归后 『撤销选择』就行了。
+
+**但是，就算暴力穷举，不同的思路也有优劣之分**。
+
+本章节，我们就来探讨一道非常经典的回溯算法问题，leetcode 698 『划分为 k 个相等的子集』。这道题可以帮我们深刻理解回溯算法的思维，得心应手地写出回溯函数
+
+698. 划分为k个相等的子集。给定一个整数数组  nums 和一个正整数 k，找出是否有可能把这个数组分成 k 个非空子集，其总和都相等。
+
+示例 1：
+
+>输入： nums = [4, 3, 2, 3, 5, 2, 1], k = 4
+>输出： True
+>说明： 有可能将其分成 4 个子集（5），（1,4），（2,3），（2,3）等于总和。
+
+
+示例 2:
+
+>输入: nums = [1,2,3,4], k = 3
+>输出: false
+
+我们之前的背包问题子集划分 写过一次动态规划的子集划分方式，不过那道题只需要我们把子集划分成两个相等的集合，可以转化为背包问题用动态规划技巧求解。
+
+但是如果可以划分成多个相等的集合，解法一般只能通过暴力穷举，时间复杂度爆表，是学习回溯算和递归思维的好机会。
+
+#### 一、思路分析
+
+首先，我们回顾下以前学过的排列组合知识：
+
+在球盒模型中，我们提到过两种视角得到的不同公式，但是最终都可以转化为我们熟知的阶乘模式：
+
+![阶乘模式2](../dynamic_programming/imgs/arrange_pc_math1.png)
+
+把装有 n 个数字的数组 `nums` 分成 `k` 个和相同的集合，你可以想象将 `n` 个数字分配到 `k` 个「桶」离，最后这 `k` 个「桶」里的数字之和要相同。
+
+前文回溯算法框架 讲过，回溯算算法的关键在哪里？
+
+**关键要知道怎么「做选择」，这样才能利用递归函数进行穷举**。
+
+那么模仿排列公式的推导思路，将 `n` 个数字分配到 `k` 个桶里面，我们也可以有两种视角：
+
+**视角一，如果我们切换到这 `n` 个数字的视角，每个数字都要选择进入 `k` 个桶中的某一个**。
+
+![划分为k个相等的子集](../dynamic_programming/imgs/k-sum-eq5.png)
+
+**视角而，如果我们切换到这 `k` 个桶的视角，对于每个桶，都要遍历 `nums` 中的 `n` 个数字，然后选择是否将当前遍历到的数组装入自己的桶中。**。
+
+![划分为k个相等的子集](../dynamic_programming/imgs/k-sum-eq6.png)
+
+你可能问，这两种视角有什么不同？
+
+**用不同的视角进行穷举，虽然结果相同，但是解法代码的逻辑完全不同，进而算法的效率也会不同；对比不同的穷举视角，可以帮你更深刻地理解回溯算法，我们慢慢道来**。
+
+#### 二、以数字的视角
+
+用 for 循环遍历 `nums` 数组，我们都会：
+```java
+for (int index = 0; index < nums.length; index++) {
+    System.out.println(nums[index]);
+}
+```
+
+递归遍历数组你会不会？其实也很简单
+```java
+void traverse(int[] nums, int index) {
+    if (index == nums.length) {
+        return;
+    }
+    System.out.println(nums[index]);
+    traverse(nums, index + 1);
+}
+```
+我们只要调用 `traverse(nums,0)`, 效果和 for 循环完全一样的。
+
+那么回到这题，以数字的视角，选择 `k` 个桶，用 for 循环写出来就是下面这样：
+
+```java
+// k 个桶（集合），记录每个桶装的数字之和
+int[] bucket = new int[k];
+
+// 穷举 nums 中的每个数字
+for (int index = 0; index < nums.length; index++) {
+    // 穷举每个桶
+    for (int i = 0; i < k; i++) {
+        // nums[index] 选择是否要进入第 i 个桶
+        // ...
+    }
+}
+```
+
+如果改成递归的形式，就是下面这段代码的逻辑：
+
+```java
+// k 个桶（集合），记录每个桶装的数字之和
+int[] bucket = new int[k];
+
+// 穷举 nums 中的每个数字
+void backtrack(int[] nums, int index) {
+    // base case
+    if (index == nums.length) {
+        return;
+    }
+    // 穷举每个桶
+    for (int i = 0; i < bucket.length; i++) {
+        // 选择装进第 i 个桶
+        bucket[i] += nums[index];
+        // 递归穷举下一个数字的选择
+        backtrack(nums, index + 1);
+        // 撤销选择
+        bucket[i] -= nums[index];
+    }
+}
+
+```
+
+虽然上述代码仅仅是穷举逻辑，还不能解决我们的问题，但是只要略加修改完善即可：
+
+请参考 BackTrack.canPartitionKSubsets() 方法
+
+主要看 `backTrack` 函数的递归部分：
+
+```java
+for (int i = 0, len = buckets.length; i < len; i++) {
+            if (buckets[i] + nums[index] > target) { // 剪枝
+                continue;
+            } 
+
+            if (backTrack(nums, buckets, index + 1, target)) {
+                return true;
+            }
+           
+        }
+```
+
+**如果我们想让尽可能多的情况命中剪枝的那个 if 分支，就可以减少递归调用的次数，一定程度上减少时间复杂度**。
+
+如何尽可能多的命中这个 if 分支那？我们知道 index 参数是从 0 开始递增的，也就是递归递从 0 开始遍历 `nums` 数组。
+
+如果我们提前对 `nums` 数组排序，把大的数字排在前面，那么大的数字就会被分配优先分配到 bucket 中，对于之后的数字，`buckets[i] + nums[index]` 会更大，更容易触发剪枝的 if 条件。
+
+```java
+// 将 nums 倒序排列
+        int[] tmp = Arrays.copyOf(nums, n);
+        // Arrays.sort() 带 comparator 的是 泛型 T[] 数组，不适合用 primitive type，这里有点坑爹
+        Arrays.sort(tmp);
+        for (int i = n - 1; i >= 0; i--) {
+            nums[n - 1 - i] = tmp[i];
+        }
+```
+这个解法可以得到正确答案，但是耗时较多，已经无法通过所有测试用例，接下来看看另一种视角的解法
+
+#### 三、以桶的视角
+
+文章开头说，**以桶的视角进行穷举，每个桶都要遍历 `nums` 中的所有数字，决定是否把当前数字装进桶中；当装满一个桶之后，还要装下一个桶，直到所有的桶都被装满为止。**
+
+这个思路可以用用下面这段代码表示出来
+
+```java
+// 装满所有桶为止
+while (k > 0) {
+    // 记录当前桶中的数字之和
+    int bucket = 0;
+    for (int i = 0; i < nums.length; i++) {
+        // 决定是否将 nums[i] 放入当前桶中
+        if (canAdd(bucket, num[i])) {
+            bucket += nums[i];
+        }
+        if (bucket == target) {
+            // 装满了一个桶，装下一个桶
+            k--;
+            break;
+        }
+    }
+}
+
+```
+
+那么我们也可以把这个 while 循环改写成递归函数，不过比刚才略微复杂一些，首先写一个 backTrack 的递归函数
+
+```java
+backTrack(int k,int bucketSum, int[] nums,int start,boolean used,int target )
+```
+
+不要被这么多参数下到，接下来逐个介绍这些参数。**如果大家能够透彻理解本章节，也能得心应手地写出这样的回溯函数**。
+
+这个 backTrack 函数的参数可以这样解释：
+
+现在 `k` 号桶正在思考是否应该把 `nums[start]` 这个元素装进来；目前 `k` 号桶里面已经装的数字之和为 `bucketSum`;`used` 标志某一个元素是否已经被装入到桶中；`target` 是每个桶要达成的目标和。
+
+根据这个函数的定义可以这样调用 `backTrack` 函数
+
+```java
+boolean canPartitionKSubsets(int[] nums, int k) {
+    // 排除一些基本情况
+    //省略基本逻辑
+    
+    boolean[] used = new boolean[nums.length];
+    int target = sum / k;
+    // k 号桶初始什么都没装，从 nums[0] 开始做选择
+    return backtrack(k, 0, nums, 0, used, target);
+}
+```
+实现 `backTrack` 函数逻辑之前，再重复一遍，从桶的视角：
+
+1、需要遍历 `nums` 中的所有数字，决定哪些数字需要装到当前桶中。
+2、如果当前桶装满了(桶内数字和达到 `target`)，则让下一个桶开始执行第 1 步。
+
+代码逻辑如下：
+
+```java
+boolean backTrack(int k, int bucketSum, int[] nums, int start, boolean[] used, int target) {
+        // base case
+        if (k == 0) {
+            // 所有的桶都装满了，而且桶用完了
+            // 因为 target = sum/k, 同时 bucketSum == target 的时候，才递归 k-1
+            return true;
+        }
+        if (bucketSum == target) { // 当前桶已经装满，则递归下一个桶。下一个桶也是要从第一个数字开始遍历
+            return backTrack(k - 1, 0, nums, 0, used, target);
+        }
+        // 从 start 开始探查有效的 nums[i] 装入当期那桶中
+        for (int i = start; i < nums.length; i++) {
+            // 仍然需要剪枝
+            if (used[i]) {
+                continue;
+            }
+            if (bucketSum + nums[i] > target) {
+                //当前桶装不下 nums[i]
+                continue;
+            }
+            // 做选择
+            used[i] = true;
+            bucketSum += nums[i];
+            // 回溯下一个数字是否可以装入桶中. 注意，下一个数字是 i+1, 而不是 start +1
+            if (backTrack(k, bucketSum, nums, i + 1, used, target)) {
+                return true;
+            }
+            used[i] = false;
+            trackSum -= nums[i];
+        }
+        // 穷举了所有数字，都无法装入当前桶中。
+        return false;
+    }
+```
+
+**这段代码是可以得出正确答案的，但是效率很低，我们可以思考一下是否还有优化空间**。
+
+首先，在这个解法中每个痛都是没有差异的，但是我们的回溯算法却会对它们却别对待，这里救护出现重复统计的情况。
+
+什么意思？我们的回溯算法，说到底就是穷举所有的可能的组合，然后看看是否能够找出和为 target 的 `k` 个桶(子集)。
+
+那么，比如下面这种情况，`targete=5`, 算法会在第一个桶里面装入 `1,4`:
+
+![划分为k个相等的子集](../dynamic_programming/imgs/k-sum-eq1.png)
+
+现在第一个桶装满了，开始装第二个桶，算法会装入 `2,3` :
+
+
+![划分为k个相等的子集](../dynamic_programming/imgs/k-sum-eq2.png)
+
+然后依次类推，对后面的元素进行穷举，凑出若干个和为 5 的桶（子集）。
+
+但是问题是，如果最后发现无法凑出和为 target 的 `k` 个自己，算法会怎么做？
+
+回溯算法会回溯到第一个桶，重新开始青桔，现在它知道第一个桶里面装的 `1,4` 是不可行的，它会尝试把 `2,3` 装入到第一个桶中：
+
+![划分为k个相等的子集](../dynamic_programming/imgs/k-sum-eq3.png)
+
+现在第一个桶装满了，就开始第二个桶 ,算法会装入 `1,4`:
+
+![划分为k个相等的子集](../dynamic_programming/imgs/k-sum-eq4.png)
+
+好，我们现在已经看出问题了，这种情况其实和之前的那种情况是一样的。也就是说，导致鳄梨你其实已经知道不需要再穷举了，必然凑不出和为 `target` 的 `k` 个子集。
+
+但是我们的算法还是会傻乎乎地继续穷举，因为在它看来，第一个桶和第二个桶里面装的元素不一样，那这就是两种不一样的情况呀。
+
+那么我们怎么让算法的智商提高，识别出这种情况，避免冗余计算那？
+
+你注意这两种情况的 `used` 数组肯定长得一样(因为 1,2,3,4 都是被 used 了)，所以 `used` 数组可以认为是回溯过程中的「状态」。
+
+**所以，我们可以用一个 `memo` 备忘录，在装满一个桶的时候记录当前 `used` 的状态，如果当期那 `used` 的状态曾经出现过，那就不用再穷举，从而起到剪枝避免冗余计算的作用。**
+
+有人肯定回文，`used` 一个布尔数组，怎么作为键进行存储那？这其实是小问题，比如我们可以把数组转化成字符串，这样就可以作为哈希表的键来进行存储了。
+
+稍微改写 `backTrack` 函数即可
+
+```java
+HashMap<String,Boolean> memo = new HashMap<>();
+    boolean backTrack(int k, int bucketSum, int[] nums, int start, boolean[] used, int target) {
+        // base case
+        if (k == 0) {
+            // 所有的桶都装满了，而且桶用完了
+            return true;
+        }
+        String state = Arrays.toString(used);
+        if (bucketSum == target) { // 当前桶已经装满，则递归下一个桶。下一个桶也是要从第一个数字开始遍历
+            boolean result = backTrack(k - 1, 0, nums, 0, used, target);
+            // 把当前状态装入备忘录
+            memo.put(state,result);
+            return result;
+        }
+        //// 如果当前状态曾经计算过，就直接返回，不再递归穷举了。
+        if(memo.containsKey(state)) {
+            return memo.get(state);
+        }
+        // 其他逻辑不变
+    }
+```
+这样提交解法，发现执行效率依然很低，这次不是因为算法逻辑上的冗余计算，而是代码实现上的问题。
+
+**因为每次递归都要把 `used` 数组转化成字符串，这对于编程语言来说是一个不小的的开销。所以我们还可以进一步优化**。
+
+注意题目给的数据规模 `nums.length<= 16`, 也就是说 `used` 数组的长度不会超过 16，那么我们完全可以用「位图」的技巧，用一个 int 类型的 used 遍历来替代 used 数组。
+
+具体来说，我们可以用 used 的第 i 位(used>>i &1) 的 1/0 来表示 used[i] 的 true/false.
+
+这样一来，不仅节约了空间，而且整数 `used` 也可以直接作为键存储 HashMap, 省去数组转字符串的消耗。
+
+最终解法参考 backTrack2
+
+#### 最后总结
+
+本章节写的两种思路都可以算出正确的答案，不过第一种解法即便经过了优化，也明显比第二种慢很多，这是为什么？
+
+我们来分析下算法的时间复杂度，假设 `nums` 中的元素个数为 `n`。
+
+先说第一种解法，也就是从数字的角度进行穷举，`n` 个数字，每个数字有 `k` 个桶可以选择，所以组合出的结果数为 `k^n`(n个k相乘)，时间复杂度就是 `O(k^n)`。
+
+第二个解法每个桶要遍历 `n` 个数字，对每个数字有「装入」或者「不装入」两种选择，所以组合的结果有 `2^n`; 而我们有 k 个桶，所以总的时间复杂度为 `O(k*2^n)`。
+
+**当然，这是最坏的时间复杂度上界的粗略估算，实际的复杂度肯定要好很多，毕竟我们添加了那么多剪枝逻辑**。不过，从复杂度的上界已经可以看出第一种思路会慢很多。
+
+所以，谁说回溯算法没有技巧性？虽然回溯算法就是暴力穷举，但穷举也分聪明的穷举方式和低效的穷举方式，关键看你以谁的「视角」进行穷举。
+
+通俗来说，我们应该尽量「少量多次」，也就是说宁可选择多做几次选择

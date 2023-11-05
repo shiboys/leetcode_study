@@ -623,3 +623,118 @@ if(nums[mid] >= nums[left]) {
 ![旋转数组查找元素](../algorithm/dynamic_programming/imgs/search_rotate_array4.png)
 
 这样 `mid` 必然出现在山坡上，不会和 `nums[left],nums[right]` 相等，然后就可以正常执行第 2 步的逻辑了，和第 33 题的解法完全相同，参考 BinarySearchOther.search3() 方法
+
+
+### 二分法高效判定子序列
+
+#### 判断子序列
+
+二分法本身不难理解，难就难在如何巧妙地运用二分查找算法技巧
+
+对于一个问题，你可能很难想到它跟二分查找有关系，比如之前的最长递增子序列就借助一个纸牌游戏衍生的二分查找解法。
+
+今天我们要再说两道借助二分查找算法来巧妙解题的方法，问题一：leetcode  392 「判断子序列」
+
+给定字符串 s 和 t ，判断 s 是否为 t 的子序列。
+
+字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串。（例如，"ace"是"abcde"的一个子序列，而"aec"不是）。
+
+进阶：
+
+如果有大量输入的 S，称作 S1, S2, ... , Sk 其中 k >= 10亿，你需要依次检查它们是否为 T 的子序列。在这种情况下，你会怎样改变代码？
+
+举两个例子
+
+```text
+s = "abc", t = "**a**h**b**gd**c**", return true.
+
+s = "axc", t = "ahbgdc", return false.
+```
+
+题目很容易理解，而且看起来很简单，但很难想到这个问题跟二分法有关系对吧？
+
+##### 一、 问题分析
+
+首先一个简单的解法是这样的：
+
+```java
+public boolean isSubsequence(String s, String t) {
+        int i = 0, j = 0;
+        while (i < s.length() && j < t.length()) {
+            if (s.charAt(i) == t.charAt(j)) {
+                j++;
+            }
+            i++;
+        }
+        return j == t.length();
+    }
+```
+到这里，我们很多人都会问，这不就是最优解吗？时间复杂度只需要 O(N),N 为 `t` 的长度。
+
+是的，如果仅仅是这个我那天，这解法就足够好了，**不过这个问题有个 follow up**:
+
+「如果有大量输入的 S，称作 S1, S2, ... , Sk 其中 k >= 10亿，你需要依次检查它们是否为 T 的子序列。在这种情况下，你会怎样改变代码？」
+
+```java
+boolean[] isSubsequence(String[] sn, String t);
+```
+你也许回文，这不是很简单吗，刚才的逻辑价格 for 循环不就行了。
+
+可以，但是此解法处理的每个 `s` 的时间复杂度仍然是 O(N), 而如果巧妙运用二分查找，可以将时间复杂度降低，大浴室 O(MlogN)。由于 N 相对于 N相对于 M 大很多，所以后者效率更高。
+
+##### 二、二分思路
+
+二分思路主要是对 `t` 进行预处理，用一个字典 `index` 将每个字符出现的索引位置按顺序记录存储下来。
+```java
+ List<Integer>[] indexList = new ArrayList[256];
+        for (int i = 0, len = t.length(); i < len; i++) {
+            List<Integer> list = indexList[t.charAt(i)];
+            if (list == null) {
+                indexList[t.charAt(i)] = list = new ArrayList<>();
+            }
+            list.add(i);
+        }
+```
+如下图所示：
+
+![二分法子序列](../../algorithm/dynamic_programming/imgs/binary_search_subseq2.png)
+
+比如对于下面的情况, 匹配了 "ab", 应该匹配 "c" 了：
+
+![二分法子序列](../../algorithm/dynamic_programming/imgs/binary_search_subseq1.png)
+
+
+按照之前的解法，我们需要在 `j` 线性前进扫描字符串 "c", 但借助 `index` 中记录的信息，我们可以**恶人搜索 `index[c]` 中那个比 j 大的索引位置**，在上图的例子中，就是在 `[0,2,6]` 中搜索比 4 大的那个索引：
+
+![二分法子序列](../../algorithm/dynamic_programming/imgs/binary_search_subseq3.png)
+
+这样就可以得到下一个 "c" 的索引。现在的问题是，如何利用二分计算那个恰好比 4 大的索引那？答案是，寻找左侧边界的二分搜索就可以做到。
+
+##### 三、再谈二分查找
+
+在前面的 二分查找详解中，了解了如何正确写出是三种二分查找算法的细节。二分查找分会目标值 `val` 的索引，对于搜索 **左边界**的二分查找，有一个特殊性质：
+
+**当 `val` 不存在时，得到的索引恰好就是比 `val` 大的最小元素索引**。
+
+什么意思那，就是说如果在数组 `[0、1、3、4]` 中搜索元素 2，算法就会返回索引 2，也就是元素 3 的位置，元素 3 是数组中大于 2 的最小元素。所以我们可以利用二分搜索来避免线性扫描。
+具体代码参考 BinarySearchOther.isSubsequence2(String s, String t) 方法
+算法的执行过程如下所示：
+
+![二分法划分子序列](../../algorithm/dynamic_programming/imgs/binary_search_subseq2.gif)
+
+可见借助二分查找，算法的效率是可以大幅提升的。
+
+明白了这个思路，我们可以直接拿下 leetcode 792 题「匹配子序列的单词数」：给你输入一个字符串列表 `words` 和 一个字符串 `s`,问你 `words` 中有多少字符串是 `s` 的子序列
+
+函数签名如下：
+
+```java
+int numMatchingSubseq(String s, String[] words)
+```
+示例 1:
+
+>输入: s = "abcde", words = ["a","bb","acd","ace"]
+>输出: 3
+>解释: 有三个是 s 的子序列的单词: "a", "acd", "ace"。
+
+解题思路，参见 BinarySearchOther.numMatchingSubseq 方法

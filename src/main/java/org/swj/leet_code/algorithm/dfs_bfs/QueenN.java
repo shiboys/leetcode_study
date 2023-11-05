@@ -33,7 +33,7 @@ public class QueenN {
     /**
      * 
      * @param board 回溯的数据源
-     * @param i     从数据源的那一行开始回溯
+     * @param row   从数据源的那一行开始回溯
      * @param res   结果集收集器
      */
     void trackBack(char[][] board, int row, List<List<String>> res) {
@@ -47,6 +47,7 @@ public class QueenN {
         }
 
         int n = board[0].length;
+        // 行方向的冲突位置，是通过每行放置一个 queen 解决的
         for (int col = 0; col < n; col++) {
             if (!isValidQueenPos(board, row, col)) {
                 continue;
@@ -69,12 +70,12 @@ public class QueenN {
                 return false;
             }
         }
-        // 左上对角线的字符
+        // 右上对角线的字符
         for (int i = row, j = col; i >= 0 && j < n; i--, j++)
             if (board[i][j] == QUEEN_SIGN) {
                 return false;
             }
-        // 右上的字符
+        // 左上的字符
         for (int i = row, j = col; i >= 0 && j >= 0; i--, j--) {
             if (board[i][j] == QUEEN_SIGN) {
                 return false;

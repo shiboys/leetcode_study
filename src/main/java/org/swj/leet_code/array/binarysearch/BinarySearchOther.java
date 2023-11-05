@@ -1,7 +1,12 @@
 package org.swj.leet_code.array.binarysearch;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * @author shiweijie
@@ -196,7 +201,7 @@ public class BinarySearchOther {
         }
         int n = nums.length;
         // 这里 right 需要为 n-1 ,比较判断为 闭区间，
-        int left = 0, right = n-1;
+        int left = 0, right = n - 1;
 
         while (left < right) {// 由于不存在重复元素，因此 left == right 的时候就是答案。
             int mid = left + (right - left) / 2;
@@ -345,6 +350,7 @@ public class BinarySearchOther {
 
     /**
      * 81. 搜索旋转排序数组 II
+     * 
      * @param nums
      * @param target
      * @return
@@ -383,6 +389,117 @@ public class BinarySearchOther {
         return false;
     }
 
+    /**
+     * leetcode 392. 判断子序列
+     * 
+     * @param s
+     * @param t
+     * @return
+     *         简单的解法就是直接遍历两个数组，两个指针对比
+     */
+    public boolean isSubsequence(String s, String t) {
+        int i = 0, j = 0;
+        while (i < s.length() && j < t.length()) {
+            if (s.charAt(i) == t.charAt(j)) {
+                j++;
+            }
+            i++;
+        }
+        return j == t.length();
+    }
+
+    public boolean isSubsequence2(String s, String t) {
+
+        List<Integer>[] indexList = new ArrayList[256];
+        for (int i = 0, len = t.length(); i < len; i++) {
+            List<Integer> list = indexList[t.charAt(i)];
+            if (list == null) {
+                indexList[t.charAt(i)] = list = new ArrayList<>();
+            }
+            list.add(i);
+        }
+        // j 是 t 上的指针
+        int j = 0;
+        char ch;
+        for (int i = 0, len = s.length(); i < len; i++) {
+            ch = s.charAt(i);
+            // t 中没有 s 的字符 s[i]
+            if (indexList[ch] == null) {
+                return false;
+            }
+            int pos = left_bound(indexList[ch], j);
+            if (pos < 0) { // 二分搜索没有找到 字符 ch
+                return false;
+            }
+            // t 字符串上的指针 j 向前一步
+            j = indexList[ch].get(pos) + 1;
+        }
+        return true;
+    }
+
+    int left_bound(List<Integer> list, int target) {
+        int left = 0, right = list.size();
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            int midVal = list.get(mid);
+            if (midVal < target) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        if (left == list.size()) {
+            return -1;
+        }
+        return left;
+    }
+
+    public int numMatchingSubseq(String s, String[] words) {
+        /**
+         * 
+         * 解题思路，根据上一题的二分法来辨别子序列的方式，我们可以沿用这个思想
+         * 对每个 word 进行判断，对，就是这么简单
+         */
+        List<Integer>[] index = new List[256];
+        char ch;
+        for (int i = 0; i < s.length(); i++) {
+            ch = s.charAt(i);
+            List<Integer> list = index[ch];
+            if (list == null) {
+                index[ch] = list = new ArrayList<>();
+            }
+            list.add(i);
+        }
+        int i = 0, j = 0;
+        int res = 0;
+        // 这里其实可以将上一题的二分查找给重构出来以便重复使用
+        for (String w : words) {
+            // w 字符的指针
+            i = 0;
+            // s 字符的指针
+            j = 0;
+            for (; i < w.length(); i++) {
+                ch = w.charAt(i);
+                // 不包含 ch 字符，当期的 w 就不是 s 的子序列
+                if (index[ch] == null) {
+                    break;
+                }
+                int pos = left_bound(index[ch], j);
+                if (pos < 0) { // 没有找到当前合适位置的 ch 字符
+                    break;
+                }
+                // 将 j 的位置推进一下
+                j = index[ch].get(pos) + 1;
+            }
+            if (i == w.length()) {
+                res++;
+            }
+        }
+        return res;
+    }
+
+    
+
     public static void main(String[] args) {
         int[][] matrix = new int[][] { { 1, 3, 5, 7 }, { 10, 11, 16, 20 }, { 23, 30, 34, 60 } };
         BinarySearchOther instance = new BinarySearchOther();
@@ -416,16 +533,19 @@ public class BinarySearchOther {
         // arr = new int[] { 5, 7, 7, 8, 8, 10 };
         // System.out.println(instance.search(arr, 6));
 
-        arr = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 9 };
-        System.out.println(instance.missingNumber(arr));
+        // arr = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 9 };
+        // System.out.println(instance.missingNumber(arr));
 
-        arr = new int[] { 4, 5, 6, 7, 0, 1, 2 };
-        System.out.println(instance.search2(arr, 0));
-        System.out.println(instance.search2(arr, 3));
+        // arr = new int[] { 4, 5, 6, 7, 0, 1, 2 };
+        // System.out.println(instance.search2(arr, 0));
+        // System.out.println(instance.search2(arr, 3));
 
-        arr = new int[] { 3,1 };
-        System.out.println(instance.search3(arr, 0));
-        System.out.println(instance.search3(arr, 1));
+        // arr = new int[] { 3, 1 };
+        // System.out.println(instance.search3(arr, 0));
+        // System.out.println(instance.search3(arr, 1));
+
+        String[] words = new String[] { "a", "bb", "acd", "ace" };
+        System.out.println(instance.numMatchingSubseq("abcde", words));
     }
 
 }

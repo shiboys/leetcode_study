@@ -61,6 +61,12 @@ public class BfsUsage {
         }
     }
 
+    /**
+     * 双向 BFS 解决密码锁的问题
+     * @param deadends
+     * @param target
+     * @return
+     */
     public int openLockDual(String[] deadends, String target) {
         Set<String> deadendsSet = new HashSet<>(Arrays.asList(deadends));
         Set<String> s1 = new HashSet<>();
@@ -86,7 +92,8 @@ public class BfsUsage {
                 for (int i = 0; i < 4; i++) {
                     String plusOne = plusOneString(cur, i);
                     if (!visitedSet.contains(plusOne)) {
-                        // visitedSet 放这里不行，这里就会提前包含了 s1 和 s2 的交集，导致 s1 和 s2 无法相交，最后中返回 -1。
+                        // visitedSet.add 放这里不行，这里就会提前包含了 s1 和 s2 的交集，导致 s1 和 s2 无法相交，最后返回 -1。
+                        // 取出来之后才叫 visited,跟队列稍微有些区别
                         // visitedSet.add(plusOne);
                         temp.add(plusOne);
                     }
@@ -189,11 +196,16 @@ public class BfsUsage {
         return -1;
     }
 
+    /**
+     * leetcode 773 题，「滑动谜题」
+     * @param board
+     * @return
+     */
     public int slidingPuzzle(int[][] board) {
         String target = "123450";
         int[][] neighbors = new int[][] {
                 { 1, 3 }, // 2x3 二维数组的 0 位置的上下左右索引在一维空间的映射为 {1,3}, 其中 1 是 右，3 是下
-                { 0, 4, 2 }, // 索引 1 的 左，下，右 相邻索引
+                { 0, 4, 2 }, // 索引 1 的 左，下，右 相邻索引,规律是二维索引从左到右的顺序
                 { 1, 5 },
                 { 0, 4 },
                 { 3, 1, 5 }, // 顺时针
@@ -248,7 +260,6 @@ public class BfsUsage {
                 sb.append(item);
             }
         }
-        ;
         return sb.toString();
     }
 
