@@ -2,7 +2,7 @@ package org.swj.leet_code.digit;
 
 import org.swj.leet_code.linked_list.ListNode;
 
-/**
+/**q
  * 数字问题
  * 
  * @author shiweijie

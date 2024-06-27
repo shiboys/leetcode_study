@@ -1,16 +1,14 @@
 package org.swj.leet_code.array;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-
-import javafx.scene.layout.Priority;
-import lombok.val;
+import java.util.Queue;
 
 /**
  * @author shiweijie
@@ -23,6 +21,7 @@ public class HeapPriorityQueue {
      * leetcode 451. 根据字符出现频率排序
      * 给定一个字符串 s ，根据字符出现的 频率 对其进行 降序排序 。一个字符出现的 频率 是它出现在字符串中的次数。
      * 返回 已排序的字符串 。如果有多个答案，返回其中任何一个。
+     * leetcode 中文版，我使用 数组 + Arrays.sort(Comparable<?>[]) 的方式解决，更加省内存
      * 
      * @param s
      * @return
@@ -105,7 +104,7 @@ public class HeapPriorityQueue {
         }
         // 小顶堆，里面存储的数据都是大数
         PriorityQueue<Map.Entry<Integer, Integer>> queue = new PriorityQueue<>((a, b) -> {
-            return b.getValue() - a.getValue();
+            return a.getValue() - b.getValue();
         });
         for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
             queue.offer(entry);
@@ -113,10 +112,11 @@ public class HeapPriorityQueue {
                 queue.poll();
             }
         }
-        int counter = 0;
-        while (!queue.isEmpty()) {
+        int counter = k;
+        // 最大的数在队尾，因此这里需要从后向前给数组赋值
+        while (k >= 0 && !queue.isEmpty()) {
             Map.Entry<Integer, Integer> entry = queue.poll();
-            res[counter++] = entry.getKey();
+            res[counter--] = entry.getKey();
         }
         return res;
     }
@@ -269,9 +269,7 @@ public class HeapPriorityQueue {
             triples.add(new int[] { task[0], task[1], taskCounter++ });
         }
         // 根据开始时间排序
-        Collections.sort(triples, (a, b) -> {
-            return a[0] - b[0];
-        });
+        Collections.sort(triples, Comparator.comparingInt(a -> a[0]));
 
         // 上半部分 负责推进时间
         // 时间的推进有两种形式，1、从队列中取出任务，执行任务，累加任务的时长。
@@ -305,10 +303,80 @@ public class HeapPriorityQueue {
         return arr;
     }
 
+
+    public int[] getOrder2(int[][] tasks) {
+        Map<Integer,List<int[]>> taskMap = new HashMap<>();
+        List<Integer> resultList = new ArrayList<>();
+        Queue<int[]> queue = new PriorityQueue<int[]> ((a, b)->{
+            // 任务用时短，优先级高；任务用时相等，则索引小的，优先极高
+            if(a[1] == b[1]) {
+                return a[0] - b[0];
+            }
+            return a[1] - b[1];
+        });
+        int i=0,minStartTime =Integer.MAX_VALUE;
+        int startTime=0;
+        for(int[] task : tasks) {
+            startTime = task[0];
+            minStartTime = Math.min(minStartTime, startTime);
+            if(!taskMap.containsKey(startTime)) {
+                taskMap.put(startTime,new ArrayList<>());
+            }
+            // 索引，时长
+            taskMap.get(startTime).add(new int[] {i++, task[1]});
+        }
+
+        List<int[]> firstTaskList = taskMap.remove(minStartTime);
+
+        for(int[] task : firstTaskList) {
+            queue.offer(task);
+        }
+
+        int  time = minStartTime;
+        int finishTime = minStartTime;;
+
+        while(!queue.isEmpty() || !taskMap.isEmpty()) {// 进队列或者未进队列的任务不为空
+            // 将当前到时间的任务，从容器中取出，放入队列中
+            List<int[]> taskList = taskMap.remove(time);
+            if(taskList != null && !taskList.isEmpty()) {
+                for(int[] task : taskList) {
+                    queue.offer(task);
+                }
+            }
+            // 查看正在执行的任务是否到时间了？
+            if(time >= finishTime) { // 到时间了，计算下一个任务的
+                // 取出任务时间最短的，计算下当前任务的完成时间 finishTime
+                int[] task = queue.poll();
+                // 将任务从队列中出来的顺序作为 执行顺序
+                resultList.add(task[0]);
+                // 单线程，一次出来一个任务,更新下次任务到期时间
+                finishTime+=task[1];
+            }
+
+            // 推进时间
+            time++;
+        }
+
+        int[] result = new int[resultList.size()];
+        int idx=0;
+        for(Integer re : resultList) {
+            result[idx++] = re;
+        }
+        return result;
+    }
+
+
     public static void main(String[] args) {
         HeapPriorityQueue instance = new HeapPriorityQueue();
-        System.out.println(instance.frequencySort("tree"));
-        System.out.println(instance.frequencySort("cccaaa"));
-        System.out.println(instance.frequencySort("Aabb"));
+//        System.out.println(instance.frequencySort("tree"));
+//        System.out.println(instance.frequencySort("cccaaa"));
+//        System.out.println(instance.frequencySort("Aabb"));
+        int[][] tasks = new int[][] {
+            { 1,2},
+            {2,4},
+            {3,2},
+            {4,1}
+        };
+        instance.getOrder2(tasks);
     }
 }

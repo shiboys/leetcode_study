@@ -43,15 +43,16 @@ public class MergeSortWithBinaryTree {
             return;
         }
         int i = start, j = mid + 1;
+        // copy排序前的数据到临时数组
         for (int k = start; k <= end; k++) {
             temp[k] = arr[k];
         }
         for (int p = start; p <= end; p++) {
-            if (i == mid + 1) { // i..mid 已经归并完毕
+            if (i == mid + 1) { // 索引位置判断。i..mid 已经归并完毕
                 arr[p] = temp[j++];
             } else if (j == end + 1) {
                 arr[p] = temp[i++];
-            } else if (temp[i] < temp[j]) {
+            } else if (temp[i] < temp[j]) {// 数值判断
                 arr[p] = temp[i++];
             } else {
                 arr[p] = temp[j++];
@@ -64,7 +65,7 @@ public class MergeSortWithBinaryTree {
     /**
      * 找出数组中比当前元素 nums[i] 小的元素个数。 leetcode 315 题。
      * 这道题那，暴力解法就不说了，for 循环
-     * 这里仍然借用 阿东的方法，利用归并排序的思想，思路见 complex.md 中有关归并排序在二叉树中的使用
+     * 这里仍然借用 阿东的方法，利用归并排序的思想，思路见 binary_tree_complex.md 中有关归并排序在二叉树中的使用
      * 
      * @param nums
      * @return
@@ -146,7 +147,7 @@ public class MergeSortWithBinaryTree {
     }
 
     /**
-     * leetcode 493 反转对，利用归并排序的链表有序的规则，仍然是以夹带私货的方式求出反转对的数量
+     * leetcode 493 反转对，利用归并排序的数组有序的规则，仍然是以夹带私货的方式求出反转对的数量
      * 
      * @param nums
      * @param start
@@ -180,6 +181,7 @@ public class MergeSortWithBinaryTree {
             // 退出循环时，nums[i] <= 2*nums[hi] ,此时判断 nums[i] 位置满足条件的个数是多少
             reversePairCount += hi - (mid + 1);
         }
+        // 总体上还是应用了归并排序的局部有序性
 
         int i = start, j = mid + 1;
         for (int p = start; p <= end; p++) {
@@ -199,7 +201,7 @@ public class MergeSortWithBinaryTree {
     int reversePairCount;
 
     /**
-     * 区间和的个数。leetcode 327 题
+     * 区间和的子数组个数。leetcode 327 题
      * 
      * @param nums
      * @param lower
@@ -255,10 +257,10 @@ public class MergeSortWithBinaryTree {
         // 这个区间的总数量
         for (int i = start; i <= mid; i++) {
             int lo = mid + 1, hi = mid + 1;
-            while (lo <= end && nums[i] - nums[i] < lower) {// 找到 >= lower 的停止
+            while (lo <= end && nums[lo] - nums[i] < lower) {// 找到 >= lower 的停止
                 lo++;
             }
-            while (hi <= end && nums[hi] - nums[i] <= upper) { // 找到 > upper 的则停止
+            while (hi <= end && nums[hi] - nums[i] <= upper) { // 找到 > upper 的则停止, 这是因为查找的是索引，计算的是个数
                 hi++;
             }
             rangeCount += hi - lo;
@@ -285,13 +287,13 @@ public class MergeSortWithBinaryTree {
         // instance.mergeSort(arr);
         // System.out.println(Arrays.toString(arr));
 
-        arr = new int[] { 1,9,7,8,5 };
+        arr = new int[] { 1, 9, 7, 8, 5 };
         System.out.println(instance.countSmaller(arr));
         // arr = new int[] { 2, 4, 3, 5, 1 };
         // System.out.println(instance.reversePair(arr));
 
-        // arr = new int[] { -2, 5, -1 };
-        // System.out.println(instance.countRangeSum(arr, -2, 2));
+        arr = new int[] { 0, 0 };
+        System.out.println(instance.countRangeSum(arr, 0, 0));
     }
 
     static class Pair {

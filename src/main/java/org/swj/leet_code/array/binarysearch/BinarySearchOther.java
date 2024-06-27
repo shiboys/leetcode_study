@@ -1,12 +1,8 @@
 package org.swj.leet_code.array.binarysearch;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
 
 /**
  * @author shiweijie
@@ -30,8 +26,8 @@ public class BinarySearchOther {
      */
     public boolean searchMatrix(int[][] matrix, int target) {
         /**
-         * 思路，将二维矩阵映射为 i*n+j, 其中 n 为列数，然后使用二分法来查找元素，因为矩阵刚好满足二分查找的单调性
-         * 同时也可以将 k 接下为二维矩阵的索引
+         * 思路，将二维矩阵映射为 i*n+j（i,j) 为元素在矩阵中的索引, 其中 n 为列数，然后使用二分法来查找元素，因为矩阵刚好满足二分查找的单调性
+         * 同时也可以将 k 转换为二维矩阵的索引
          * i=k/n,j=k%n
          */
         if (matrix == null || matrix.length < 1) {
@@ -129,6 +125,7 @@ public class BinarySearchOther {
             return null;
         }
         LinkedList<Integer> res = new LinkedList<>();
+        // 查找到 x 的位置或者 > x 的第一个元素位置
         int pos = leftBound(arr, x);
         System.out.println("pos is " + pos);
         int left = pos - 1, right = pos;
@@ -331,13 +328,13 @@ public class BinarySearchOther {
                 return mid;
             }
             if (nums[left] < nums[mid]) { // mid 落在了断崖前
-                if (nums[left] <= target && target < nums[mid]) { // targete 落在 [left..mid-1] 之间，收缩右边界
+                if (nums[left] <= target && target < nums[mid]) { // target 落在 [left..mid-1] 之间，收缩右边界
                     right = mid - 1;
                 } else {
                     left = mid + 1; // target 落在了 [mid+1...right] 中，收缩左边界
                 }
             } else { // 前面大于后面，mid 落在了断崖以后。nums[mid..right] 是有序的
-                if (nums[mid] < target && target >= nums[right]) {
+                if (nums[mid] < target && target <= nums[right]) {
                     left = mid + 1;
                 } else {
                     right = mid - 1;
@@ -421,6 +418,7 @@ public class BinarySearchOther {
         // j 是 t 上的指针
         int j = 0;
         char ch;
+        // 判断 s 是否为 t 的子序列
         for (int i = 0, len = s.length(); i < len; i++) {
             ch = s.charAt(i);
             // t 中没有 s 的字符 s[i]
@@ -459,6 +457,8 @@ public class BinarySearchOther {
          * 
          * 解题思路，根据上一题的二分法来辨别子序列的方式，我们可以沿用这个思想
          * 对每个 word 进行判断，对，就是这么简单
+         *
+         * 总结，这道题缺失非常难以想到使用二分法，主要 target 有点难以寻找
          */
         List<Integer>[] index = new List[256];
         char ch;
@@ -498,8 +498,6 @@ public class BinarySearchOther {
         return res;
     }
 
-    
-
     public static void main(String[] args) {
         int[][] matrix = new int[][] { { 1, 3, 5, 7 }, { 10, 11, 16, 20 }, { 23, 30, 34, 60 } };
         BinarySearchOther instance = new BinarySearchOther();
@@ -518,8 +516,8 @@ public class BinarySearchOther {
         // System.out.println(instance.searchMatrix2(matrix, 5));
         // System.out.println(instance.searchMatrix2(matrix, 20));
 
-        int[] arr = new int[] { 1, 2, 3, 4, 5 };
-        // System.out.println(instance.findClosestElements(arr, 4, -1));
+        int[] arr = new int[] { 3, 5, 8, 10 };
+        System.out.println(instance.findClosestElements(arr, 2, 15));
 
         // arr = new int[] { 1, 2, 1, 3, 5, 6, 4 };
         // System.out.println(instance.findPeakElement(arr));

@@ -2,9 +2,9 @@ package org.swj.leet_code.array;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-
-import org.swj.leet_code.string.MaxPalindromeString;
+import java.util.stream.Collectors;
 
 /**
  * @author shiweijie
@@ -24,7 +24,7 @@ public class NSumAndRain {
     for (int i = 0; i < nums.length; i++) {
       for (int j = i + 1; j < nums.length; j++) {
         if (nums[i] + nums[j] == target) {
-          return new int[] { i, j };
+          return new int[] {i, j};
         }
       }
     }
@@ -43,7 +43,7 @@ public class NSumAndRain {
       int targetNum = target - curr;
       if (map.containsKey(targetNum)) {
         // map 里面的数据是数组的第一个元素
-        return new int[] { map.get(targetNum), i };
+        return new int[] {map.get(targetNum), i};
       }
       map.put(curr, i);
     }
@@ -52,7 +52,7 @@ public class NSumAndRain {
 
   /**
    * 两数之和的泛型版，用于解决 3 数之和，nSum 系列。前提是 nums 是排序数组
-   * 
+   *
    * @param nums
    * @param target
    * @return
@@ -117,7 +117,7 @@ public class NSumAndRain {
 
   /**
    * 4 数之和，leetcode 18 题。跟 3Sum 一个套路
-   * 
+   *
    * @param nums
    * @param target
    * @return
@@ -143,7 +143,7 @@ public class NSumAndRain {
 
   /**
    * 调用 n nSumTarget 的前提是 nums 已经是排好序的。
-   * 
+   *
    * @param nums
    * @param n
    * @param start
@@ -201,7 +201,7 @@ public class NSumAndRain {
 
   /**
    * leetcode 42 接雨水，暴力解法
-   * 
+   *
    * @param height
    * @return
    */
@@ -250,7 +250,7 @@ public class NSumAndRain {
 
   /**
    * 时空复杂度最小的，采用边走边算的方式计算可乘雨水数
-   * 
+   *
    * @param height
    * @return
    */
@@ -281,7 +281,7 @@ public class NSumAndRain {
 
   /**
    * leetcode 11 题，盛最多水的容器
-   * 
+   *
    * @param height
    * @return
    */
@@ -363,15 +363,98 @@ public class NSumAndRain {
     return minSum;
   }
 
+
+  // 先求解 3 数之和，然后求四数之和
+  public List<List<Integer>> fourSumNew(int[] nums, int target) {
+    if (nums == null || nums.length < 1) {
+      return null;
+    }
+    Arrays.sort(nums);
+    List<List<Integer>> result = new ArrayList<>();
+    for (int i = 0; i < nums.length; i++) {
+      int val = nums[i];
+      List<List<Integer>> tripleList = tripleSum(nums, i + 1, (long)target - val);
+      if (tripleList == null) {
+        continue;
+      }
+      for (List<Integer> triple : tripleList) {
+        triple.add(0, val);
+        result.add(triple);
+      }
+      // 将首个数字排重
+      while (i < nums.length - 1 && val == nums[i + 1]) {
+        i++;
+      }
+    }
+    return result;
+  }
+
+
+  // 前提条件 nums 必须有序
+  List<List<Integer>> tripleSum(int[] nums, int start, long target) {
+    List<List<Integer>> result = null;
+    for (int i = start; i < nums.length; i++) {
+      int val = nums[i];
+      List<Long> sumList = twoSumTarget(nums, i + 1, target - val);
+      if (sumList == null) {
+        continue;
+      }
+
+      if (result == null) {
+        result = new ArrayList<>();
+      }
+      for (long sum : sumList) {
+        result.add(new ArrayList<>(Arrays.asList(val, (int) (sum >> 32), (int) sum)));
+      }
+      // 对首个数字排重
+      while (i < nums.length - 1 && val == nums[i + 1]) {
+        i++;
+      }
+    }
+    return result;
+  }
+
+  List<Long> twoSumTarget(int[] nums, int start, long target) {
+    int lo = start, hi = nums.length - 1;
+    int lv, rv, sum;
+    List<Long> result = null;
+    while (lo < hi) {
+      lv = nums[lo];
+      rv = nums[hi];
+      sum = lv + rv;
+      if (sum < target) {
+        // 排除重复项
+        while (lo < nums.length && lv == nums[lo])
+          lo++;
+      } else if (sum > target) {
+        // 排除重复项
+        while (hi >= 0 && rv == nums[hi])
+          hi--;
+      } else { // sum == target
+        long merged = ((long) lv << 32 | rv);
+        if (result == null) {
+          result = new ArrayList<>();
+        }
+        result.add(merged);
+        // 排除重复项
+        while (lo < nums.length && lv == nums[lo])
+          lo++;
+        while (hi >= 0 && rv == nums[hi])
+          hi--;
+      }
+    }
+    return result;
+  }
+
   public static void main(String[] args) {
-    int[] arr = new int[] { 2, 7, 11, 15 };
+    int[] arr = new int[] {2, 7, 11, 15};
     int target = 22;
     NSumAndRain instance = new NSumAndRain();
     // System.out.println(Arrays.toString(instance.twoSum(arr, target)));
     // System.out.println(Arrays.toString(instance.twoSum2(arr, target)));
 
-    // arr = new int[] { -1, 0, 1, 2, -1, -4 };
-    // System.out.println(instance.threeSumTarget(arr, 0, 0));
+//     arr = new int[] { -1,0,1,2,-1,-4 };
+//     System.out.println(instance.threeSum(arr));
 
     // arr = new int[] { 1, 0, -1, 0, -2, 2 };
     // System.out.println(instance.fourSum(arr, 0));
@@ -381,7 +464,15 @@ public class NSumAndRain {
     // System.out.println(instance.nSumTarget(arr, 4, 0, 0));
 
     arr = new int[] { 1000000000, 1000000000, 1000000000, 1000000000 };
-    // target = -294967296;
+    //arr = new int[] {-1,0,-5,-2,-2,-4,0,1,-2};
+
+     target = -294967296;
+    //long v = ((long) -1 << 32 | 1);
+//    System.out.println("value is " + v);
+//    System.out.println("restore to i = "+ (int)(v >> 32) +", j =" +(int)v );
+    System.out.println(instance.fourSumNew(arr, target));
+
+
     // Arrays.sort(arr);
     // System.out.println(instance.nSumTarget(arr, 4, 0, target));
     // System.out.println(target - 2 * arr[0]);
@@ -398,13 +489,15 @@ public class NSumAndRain {
     // System.out.println((-1 >>> 16) & mask);
     // System.out.println(-1 ^ (-1 >>> 16));
 
-    arr = new int[] { -1, 2, 1, -4 };
+    arr = new int[] {-1, 2, 1, -4};
+
+
     System.out.println(instance.threeSumClosest(arr, 1));
-    arr = new int[] { 0, 0, 0 };
+    arr = new int[] {0, 0, 0};
     System.out.println(instance.threeSumClosest(arr, 1));
-    arr = new int[] { 0, 1, 2 };
+    arr = new int[] {0, 1, 2};
     System.out.println(instance.threeSumClosest(arr, 3));
-    arr = new int[] { 833, 736, 953, -584, -448, 207, 128, -445, 126, 248, 871, 860, 333, -899, 463, 488, -50, -331,
+    arr = new int[] {833, 736, 953, -584, -448, 207, 128, -445, 126, 248, 871, 860, 333, -899, 463, 488, -50, -331,
         903, 575, 265, 162, -733, 648, 678, 549, 579, -172, -897, 562, -503, -508, 858, 259, -347, -162, -505, -694,
         300, -40, -147, 383, -221, -28, -699, 36, -229, 960, 317, -585, 879, 406, 2, 409, -393, -934, 67, 71, -312, 787,
         161, 514, 865, 60, 555, 843, -725, -966, -352, 862, 821, 803, -835, -635, 476, -704, -78, 393, 212, 767, -833,
@@ -412,9 +505,9 @@ public class NSumAndRain {
         168, 337, -345, -948, 145, 625, 901, 34, -306, -546, -536, 332, -467, -729, 229, -170, -915, 407, 450, 159,
         -385, 163, -420, 58, 869, 308, -494, 367, -33, 205, -823, -869, 478, -238, -375, 352, 113, -741, -970, -990,
         802, -173, -977, 464, -801, -408, -77, 694, -58, -796, -599, -918, 643, -651, -555, 864, -274, 534, 211, -910,
-        815, -102, 24, -461, -146 };
-        
-  target = -7111;
-  System.out.println(instance.threeSumClosest(arr, target));
+        815, -102, 24, -461, -146};
+
+    target = -7111;
+    System.out.println(instance.threeSumClosest(arr, target));
   }
 }

@@ -47,7 +47,10 @@ public class CustomizedSet {
             // 索引维护
             valToIndex.put(temp, idx);
         }
-        // 删除操作
+        // 删除操作 直接这个操作也可以呀？
+        // remove 本身提供了这个函数？ 但是不能用，因为要 O(1）时间，
+        // remove(Object) 这个 API 不是 O(1) 时间复杂度
+        //valList.remove(Integer.valueOf(val));
         valList.remove(lastIndex);
         // 维护索引
         valToIndex.remove(val);

@@ -55,7 +55,7 @@ count[i] = COUNT(j) where j > i and nums[j] < nums[i];
 
 ![计算右侧小于当前元素的个数](../algorithm/dynamic_programming/imgs/binary_tree_merge_sort_7.png)
 
-**欢聚话说，在对 nums[lo..hi] 合并的过程中，每当执行 nums[p] = temp[j] 时，就可以确定 temp[i] 这个元素后面比它小的元素个数为 j-mid-1**。(j是开区间，个数刚刚 j - (mid+1))。
+**换句话说，在对 nums[lo..hi] 合并的过程中，每当执行 nums[p] = temp[j] 时，就可以确定 temp[i] 这个元素后面比它小的元素个数为 j-mid-1**。(j是开区间，个数刚刚 j - (mid+1))。
 
 发现这个规律后，我们需要在 merge 中添加两行代码即可解决这个问题。
 
@@ -72,7 +72,7 @@ count[i] = COUNT(j) where j>i and nums[i] > 2*nums[j]
 
 然后求出这个 count 数组的所有元素之和。
 
-你看这样说骑士和题目一个以上，而且和上一道题非常类似，只不过上一题求的是 nums[i] > nums[j], 这里求的是 nums[i] > 2*nums[j] 罢了
+你看这样说其实和题目一个以上，而且和上一道题非常类似，只不过上一题求的是 nums[i] > nums[j], 这里求的是 nums[i] > 2*nums[j] 罢了
 
 详细方法参见 mergeAndReversePair
 

@@ -116,6 +116,7 @@ public class RemoveDuplicateChars {
             if (inStack[ch - 'a']) {
                 continue;
             }
+            //循环从栈中弹出元素。
             while (!stack.isEmpty() && ch < stack.peek() && charCount[stack.peek() - 'a'] > 0) {
                 inStack[stack.pop() - 'a'] = false;
             }

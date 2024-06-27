@@ -46,7 +46,7 @@ leetcode 704 二分查找
 
 这个算法中使用的是 `[lfet,right]` 两段都是闭区间。**这个区间其实就是每次搜索的区间**。
 
-什么时候应该停止搜索那？当然，找到了目标值的时候可以终止。如果没有找打，就需要 while 循环终止，然后返回 -1。while 循环什么时候应该终止，**搜索区间为空的时候应该终止**。
+什么时候应该停止搜索那？当然，找到了目标值的时候可以终止。如果没有找到，就需要 while 循环终止，然后返回 -1。while 循环什么时候应该终止，**搜索区间为空的时候应该终止**。
 
 `while(left<=right)` 的终止条件是 `left = right+1`。当然， 如果我们非要使用 `while(left<righg)` 也可以，我们已经知道了出错的原因，打个补丁就好
 ```java
@@ -62,7 +62,7 @@ leetcode 704 二分查找
 答：这也是二分法的一个难点，不过我们只要能理解前面的内容， 就很容易判断。
 
 刚才明确了「搜索区间」的概念，而且这个算法搜索区间是两端都闭。那当我们发现我们搜索的 mid 不是要找的 target，下一步去哪里搜素？
-当然是去区间 `[left,mid=1]` 或者 区间 `[mid+1, right]` 对不对？**因为 mid 已经搜索过了，应该从该区间中删除**。
+当然是去区间 `[left,mid-1]` 或者 区间 `[mid+1, right]` 对不对？**因为 mid 已经搜索过了，应该从该区间中删除**。
 
 **3、此算法有什么缺陷**?
 
@@ -84,11 +84,11 @@ int leftBound(int[] nums, int target) {
         while(left < right) {
             int mid = left + (right - left) / 2;
             if(nums[mid] == target) {
-                mid = right;//
+                right = mid;//
             } else if(nums[mid] < target) {
                 left = mid+1;
             } else if(nums[mid] > target) {
-                mid = right; // 注意
+                right = mid; // 注意
             } 
         }
         return  left;// 注意
@@ -102,12 +102,12 @@ int leftBound(int[] nums, int target) {
 
 **2、为什么没有返回 -1 的操作？如果 `nums` 中不存在 target 这个值，怎么办** ?
 
-答：这个很简单，在返回的时候判断一下 `nums[left]` 是否等于 `target` 就行了，如果不等于，说明 target 不存在。与要注意的时候，访问数组索引之前要保证索引不越界
+答：这个很简单，在返回的时候判断一下 `nums[left]` 是否等于 `target` 就行了，如果不等于，说明 target 不存在。需要注意的是，访问数组索引之前要保证索引不越界
 ```java
 while(left < right) {
     //...
 }
-//判断下 left 索引位的值是否等于 target
+//判断下 left 索引位的值是否越界
 if(left <0 || left >= nums.length) {
     return -1;
 }
@@ -148,9 +148,9 @@ int rightBound(int[] nums,int target) {
         while(left < right) {
             int mid = left  + (right-left) /2;
             if(nums[mid] > target) {
-                right = mid; // right 是开区间
+                right = mid; // right 是开区间，所以可以赋值为 mid
             } else if(nums[mid] == target) {
-                left = mid + 1; //这里注意， mid 已经搜索过了，下次需要排除，left 是开区间。
+                left = mid + 1; //这里注意， mid 已经搜索过了，下次需要排除。left 是闭区间，所以需要 + 1
             } else if(nums[mid] < target) {
                 left = mid +1;
             }
@@ -176,7 +176,7 @@ if (nums[mid] == target) {
     // 这样想: mid = left - 1。然后最后需要的最后一个相等的 mid，因此返回 left -1
 ```
 
-![二分法最右侧查找示意图](../algorithm/dynamic_programming/imgs/binary_search3.png)
+![二分法最右侧查找示意图](../../algorithm/dynamic_programming/imgs/binary_search3.png)
 
 
 
@@ -244,31 +244,31 @@ ___
 
 leetcode 528 题，按权重随机选择，题目描述如下：
 
-![按权重随机选择](../algorithm/dynamic_programming/imgs/binary_search_weight_title.png)
+![按权重随机选择](../../algorithm/dynamic_programming/imgs/binary_search_weight_title.png)
 
-我们就来思考一下这个味哪天，解决按权重随机选择元素的问题。
+我们就来思考一下这个问题，解决按权重随机选择元素的问题。
 
 这道题我们用前文出现的 前缀技巧 加上 二分法搜索 能够解决带权重的随机选择算法。
 
 这个随机选择算法和前缀以及二分搜索技巧能扯上啥关系，我们慢慢分析
 
-假设题目给我们的输入权重数组是 ` w = [1,3,2,1]`, 我们想让概率复核权重，那么可以抽象一下，根据权重画出一条彩色的线段
-![按权重随机选择](../algorithm/dynamic_programming/imgs/binary_search_weight_presum1.png)
+假设题目给我们的输入权重数组是 ` w = [1,3,2,1]`, 我们想让概率符合权重，那么可以抽象一下，根据权重画出一条彩色的线段
+![按权重随机选择](../../algorithm/dynamic_programming/imgs/binary_search_weight_presum1.png)
 如果我们在线段上面随机丢一个石子，石子落在哪个颜色上，我们就寻找改颜色对应的权重索引，那么每个索引被选中的概率是不就是就和权重相关联了？
 
 **所以，我们在仔细看看这条彩色线段像什么？这不就是 前缀和数组 嘛**：
 
-![按权重随机选择](../algorithm/dynamic_programming/imgs/binary_search_weight_presum2.png)
+![按权重随机选择](../../algorithm/dynamic_programming/imgs/binary_search_weight_presum2.png)
 
 那么接下来，如何模拟在线段上扔石子？
 
 当然是随机数，比如上述 前缀和数组 `preSum`, 取值范围为 `[1, 7]`, 那么我们生成一个在这个区间的随机数 `target=5`，就好像在这条线段中随机扔了一颗石子：
 
-![按权重随机选择](../algorithm/dynamic_programming/imgs/binary_search_weight_presum3.png)
+![按权重随机选择](../../algorithm/dynamic_programming/imgs/binary_search_weight_presum3.png)
 
 还有个问题，`preSum` 中并没有 5 这个元素，我们应该选择比 5 大的最小元素，也就是 6，即 `preSum` 素组的索引 3：
 
-![按权重随机选择](../algorithm/dynamic_programming/imgs/binary_search_weight_presum4.png)
+![按权重随机选择](../../algorithm/dynamic_programming/imgs/binary_search_weight_presum4.png)
 
 **如何快速寻找数组中大于等于目标值的最小元素？二分搜索法是我们想要的**。
 
@@ -280,24 +280,24 @@ leetcode 528 题，按权重随机选择，题目描述如下：
 
 3、最后对这个索引减一(因为前缀和数组中有一位索引偏移)，就可以作为权重数组的索引，即最终答案：
 
-![按权重随机选择](../algorithm/dynamic_programming/imgs/binary_search_weight_presum5.png)
+![按权重随机选择](../../algorithm/dynamic_programming/imgs/binary_search_weight_presum5.png)
 
 
 ##### 解法代码：
 
 上述思路应该不难理解，但是写代码的时候，坑可就多了。
 
-要知道设计开闭区间，索引偏移UI及二分搜索的题目，需要我们对算法的细节把控非常精确，否则会出现各种难以排查的 Bug。
+要知道设计开闭区间，索引偏移以及二分搜索的题目，需要我们对算法的细节把控非常精确，否则会出现各种难以排查的 Bug。
 
 下面来继续抠细节, 继续前面的例子：
 
-![按权重随机选择](../algorithm/dynamic_programming/imgs/binary_search_weight_presum3.png)
+![按权重随机选择](../../algorithm/dynamic_programming/imgs/binary_search_weight_presum3.png)
 
 比如这个 `preSum` 数组，你觉得随机数 `target` 应该在什么取值范围？闭区间 `[0, 7]` 还是左闭右开 `[0, 7)` ?
 
 都不是，应该在区间 `[1, 7]` 中选择，**因为「前缀和数组」中的 0 本质上是个占位符**, 仔细体会下：
 
-![按权重随机选择](../algorithm/dynamic_programming/imgs/binary_search_weight_presum6.png)
+![按权重随机选择](../../algorithm/dynamic_programming/imgs/binary_search_weight_presum6.png)
 
 所以代码要这样写：
 
@@ -334,7 +334,7 @@ ___
 
 给你一个升序排列的有序数组 `nums` 以及一个目标元素 `target`, 请你计算 `target` 在数组中的索引位置，如果有多个目标元素，返回最小的索引。
 
-这就是「搜索最左侧边界」这个基本题型，接发代码之前都写了，但这里面 `x，f(x), target` 分别是什么那？
+这就是「搜索最左侧边界」这个基本题型，这些代码之前都写了，但这里面 `x，f(x), target` 分别是什么那？
 
 我们可以把数组中的元素索引认为是自变量 `x`, 函数关系 `f(x)` 就可以这样设定：
 
@@ -354,7 +354,7 @@ int f(int x, int[] nums) {
 
 画个图，如下：
 
-![二分法使用场景1](../algorithm/dynamic_programming/imgs/binary_search_usage3.png)
+![二分法使用场景1](../../algorithm/dynamic_programming/imgs/binary_search_usage3.png)
 
 **如果遇到一个算法问题，能够把它抽象成这幅图，就可以对它运用二分搜索法**。
 
@@ -426,13 +426,15 @@ int solution (int[] nums, int target) {
 
 **3、根据题目要求，确定应该使用搜索左侧还是搜索右侧的二分搜索算法，写出解法代码**
 
+（2024.06.19 今天刚看了 Kafka 的 AbstractIndex 索引搜索的源码，其方法 indexSlotRangeFor 就是运用了带有 LRU 优化后的二分法，其中的 compareIndexEntry 就是这里的 f(x) 函数，看完源码，直接来复习算法，就是这么衔接)。
+
 ##### 例题一，珂珂吃香蕉。
 
 leetcode 875 题，爱吃香蕉的珂珂
 
-![珂珂吃香蕉。](../algorithm/dynamic_programming/imgs/binary_search_usage_title1.png)
+![珂珂吃香蕉。](../../algorithm/dynamic_programming/imgs/binary_search_usage_title1.png)
 
-珂珂每小时最多只能吃一堆香蕉，如果吃不完的话留到下个小时再吃；如果吃完了这一对还有胃口，也会等到下个小吃才吃下一堆。
+珂珂每小时最多只能吃一堆香蕉，如果吃不完的话留到下个小时再吃；如果吃完了这一堆还有胃口，也会等到下个小吃才吃下一堆。
 
 它想在警卫回来之前吃完所有香蕉，让我们确定吃香蕉的**最小速度 `K`**。函数签名如下：
 
@@ -443,7 +445,7 @@ int minEatingSpeed(int[] piles, int H);
 
 **1、确定 `x, f(x)， target` 分别是什么，并写出函数 `f` 的代码**。
 
-自变量 x 是什么那？会议之前的函数图像，二分搜索的本质是在搜索自变量。
+自变量 x 是什么那？回忆之前的函数图像，二分搜索的本质是在搜索自变量。
 
 所以，题目让求什么，就把什么设为自变量，因此珂珂吃香蕉的速度就是自变量 `x`。
 
@@ -487,7 +489,7 @@ int right = 1000000000;
 
 现在我们明确了自变量 x 是吃香蕉的速度，f(x) 是单调递减的函数，target 就是吃香蕉的时间限制 H，题目要求我们计算最小速度，也就是 x 的取值竟可能小,如下图所示：
 
-![珂珂吃香蕉。](../algorithm/dynamic_programming/imgs/binary_search_usage4.png)
+![珂珂吃香蕉。](../../algorithm/dynamic_programming/imgs/binary_search_usage4.png)
 
 这就是搜索左边界的二分搜索嘛，不过注意 `f(x)` 是单调递减的，不要盲目套框架，需要结合上图进行思考，参考方法 koko_eat_bananas
 
@@ -495,7 +497,7 @@ int right = 1000000000;
 
 leetcode 1011 题，在 D 天内送达包括的能力
 
-![运送货物](../algorithm/dynamic_programming/imgs/binary_search_usage_title2.png)
+![运送货物](../../algorithm/dynamic_programming/imgs/binary_search_usage_title2.png)
 
 要在 `D` 天内按顺序运输完所有货物，货物不可分割，如何确定运输量的最小载重那？
 
@@ -507,7 +509,7 @@ leetcode 1011 题，在 D 天内送达包括的能力
 
 leetcode 410 题，题目的描述如下：
 
-![分割数组](../algorithm/dynamic_programming/imgs/binary_search_usage_title3.png)
+![分割数组](../../algorithm/dynamic_programming/imgs/binary_search_usage_title3.png)
 
 这道题目有点类似动态规划的 「高楼扔鸡蛋」，题目比较绕，又是最大值又是最小值的。
 
@@ -559,7 +561,7 @@ leetcode 410 题，题目的描述如下：
 
 把一个排好序的数组就好比一段斜向上的山坡，沿着一个元素旋转数组，相当于将山坡切断并旋转，在原本平滑的山坡上产生一个「断崖」：
 
-![旋转数组查找元素](../algorithm/dynamic_programming/imgs/search_rotate_array1.png)
+![旋转数组查找元素](../../algorithm/dynamic_programming/imgs/search_rotate_array1.png)
 
 注意「断崖」左侧的所有元素都比右侧所有元素大，我们是可以在这一一个存在断崖的山坡上二分搜索算法搜索元素，主要分成两步：
 
@@ -576,7 +578,7 @@ if(nums[mid] >= nums[left]) {
     // mid 落在断崖右侧，此时 nums[mid..right] 有序
 }
 ```
-![旋转数组查找元素](../algorithm/dynamic_programming/imgs/search_rotate_array2.png)
+![旋转数组查找元素](../../algorithm/dynamic_programming/imgs/search_rotate_array2.png)
 
 假设 mid 在断崖左侧，那么可以肯定 nums[left..mid] 是连续且有序的，如果 `nums[left]<= target < nums[mid]` 可以收缩右边界 right = mid-1，否则 (target >= nums[mid])应该收缩左边界 left = mid+1
 
@@ -584,7 +586,7 @@ if(nums[mid] >= nums[left]) {
 
 #### 81. 搜索旋转排序数组 II
 
-已知存在一个按非降序拍立的整数数组 nums,**数组中存在重复元素**。
+已知存在一个按非降序排列的整数数组 nums,**数组中存在重复元素**。
 
 在传递给函数之前，`nums` 在预先未知的某个下标 k (`0<=k<= nums.length`) 上进行了**旋转**，使数组变为 `[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]`。例如 `[0,1,2,4,4,4,5,6,6,7]` 在下标 `5` 处旋转可变为 `[4,5,6,6,7,0,1,2,4,4]`。
 
@@ -614,13 +616,13 @@ if(nums[mid] >= nums[left]) {
 
 对于这道题，`nums` 中存在重复元素，会影响到第 1 步，你比如说旋转后数组 `nums=[2,2,2,2,0,1,2]` ，画成图就是这样：
 
-![旋转数组查找元素](../algorithm/dynamic_programming/imgs/search_rotate_array3.png)
+![旋转数组查找元素](../../algorithm/dynamic_programming/imgs/search_rotate_array3.png)
 
 如上图：`mid` 会落在左侧的直线上，此时 `nums[left] == nums[mid] == mums[right]`, 无法根据他们的相对大小判断「断崖」到底在 mid 的左侧还是右侧，从而无法进入第 2 步的逻辑
 
 而我们的解决方案就是，不出现 `nums[left] == nums[mid] == mums[right]` 的情况，**即在计算 `mid`之前，提前收缩`left,right` 的边界，提前消除重复元素**：
 
-![旋转数组查找元素](../algorithm/dynamic_programming/imgs/search_rotate_array4.png)
+![旋转数组查找元素](../../algorithm/dynamic_programming/imgs/search_rotate_array4.png)
 
 这样 `mid` 必然出现在山坡上，不会和 `nums[left],nums[right]` 相等，然后就可以正常执行第 2 步的逻辑了，和第 33 题的解法完全相同，参考 BinarySearchOther.search3() 方法
 
@@ -678,9 +680,9 @@ public boolean isSubsequence(String s, String t) {
 ```java
 boolean[] isSubsequence(String[] sn, String t);
 ```
-你也许回文，这不是很简单吗，刚才的逻辑价格 for 循环不就行了。
+你也许会问，这不是很简单吗，刚才的逻辑加个 for 循环不就行了。
 
-可以，但是此解法处理的每个 `s` 的时间复杂度仍然是 O(N), 而如果巧妙运用二分查找，可以将时间复杂度降低，大浴室 O(MlogN)。由于 N 相对于 N相对于 M 大很多，所以后者效率更高。
+可以，但是此解法处理的每个 `s` 的时间复杂度仍然是 O(N), 而如果巧妙运用二分查找，可以将时间复杂度降低，大约是 O(MlogN)。由于 N相对于 M 大很多，所以后者效率更高。
 
 ##### 二、二分思路
 
@@ -704,7 +706,7 @@ boolean[] isSubsequence(String[] sn, String t);
 ![二分法子序列](../../algorithm/dynamic_programming/imgs/binary_search_subseq1.png)
 
 
-按照之前的解法，我们需要在 `j` 线性前进扫描字符串 "c", 但借助 `index` 中记录的信息，我们可以**恶人搜索 `index[c]` 中那个比 j 大的索引位置**，在上图的例子中，就是在 `[0,2,6]` 中搜索比 4 大的那个索引：
+按照之前的解法，我们需要在 `j` 线性前进扫描字符串 "c", 但借助 `index` 中记录的信息，我们可以**有意搜索 `index[c]` 中那个比 j 大的索引位置**，在上图的例子中，就是在 `[0,2,6]` 中搜索比 4 大的那个索引：
 
 ![二分法子序列](../../algorithm/dynamic_programming/imgs/binary_search_subseq3.png)
 

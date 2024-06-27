@@ -2,7 +2,6 @@ package org.swj.leet_code.algorithm.dfs_bfs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -287,7 +286,7 @@ public class BackTrack {
         // nums = new int[] {4,3,2,3,5,2,1};
         // System.out.println(instance.canPartitionKSubsets2(nums, 4));
 
-        nums = new int[] {2,2,2,2,3,4,5};
+        nums = new int[] { 2, 2, 2, 2, 3, 4, 5 };
         System.out.println(instance.canPartitionKSubsets2(nums, 4));
     }
 
@@ -383,7 +382,7 @@ public class BackTrack {
             return false;
         }
         int target = sum / k;
- 
+
         // 将 nums 倒序排列
         int[] tmp = Arrays.copyOf(nums, n);
         // Arrays.sort() 带 comparator 的是 泛型 T[] 数组，不适合用 primitive type，这里有点坑爹
@@ -482,7 +481,7 @@ public class BackTrack {
             return memo2.get(used);
         }
         for (int i = start; i < nums.length; i++) {
-            
+
             if (((used >> i) & 1) == 1) { // 表示 nums[i] 这个数字被别的桶使用了
                 continue;
             }
@@ -504,5 +503,4 @@ public class BackTrack {
         return false;
     }
 
-    
 }

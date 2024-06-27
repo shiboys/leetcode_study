@@ -161,7 +161,7 @@ public class TopologyOrderGraph {
                 }
             }
         }
-        // count == numCourses 的时候，就表示图是无环的，课程所在的图是无环的图，那么久可以完成所有的课程。
+        // count == numCourses 的时候，就表示图是无环的，课程所在的图是无环的图，那么就可以完成所有的课程。
         // 至于为啥 count == numCourses ，就表示无环，具体原因请参考 topology.md 文档有关 BFS 遍历无环图部分。
         return count == numCourses;
     }

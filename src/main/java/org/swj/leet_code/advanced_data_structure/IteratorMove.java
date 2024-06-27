@@ -1,11 +1,8 @@
 package org.swj.leet_code.advanced_data_structure;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
-import lombok.val;
 
 /**
  * 自定义的迭代器
@@ -142,7 +139,7 @@ public class IteratorMove {
 
         int[] arr = new int[] { 1, 2, 3 };
         List<Integer> list = new ArrayList<>();
-        for(int val : arr) {
+        for (int val : arr) {
             list.add(val);
         }
 

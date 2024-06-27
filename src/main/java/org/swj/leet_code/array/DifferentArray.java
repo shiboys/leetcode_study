@@ -33,8 +33,9 @@ public class DifferentArray {
             if (i < 0 || i > j) {
                 return;
             }
+            // 就像渡轮过长江三峡一样， 这段给升高 3 米，
             diff[i] += val;
-            if (j + 1 < diff.length) {
+            if (j + 1 < diff.length) { // 相应地 下一段距离这一段的落差要减少 3 米
                 diff[j + 1] -= val;
             }
         }

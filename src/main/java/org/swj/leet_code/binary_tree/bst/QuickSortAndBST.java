@@ -1,5 +1,7 @@
 package org.swj.leet_code.binary_tree.bst;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Arrays;
 import java.util.Random;
 
@@ -9,6 +11,7 @@ import java.util.Random;
  * @since 2023/08/30 15:27
  *        快速排序和 BST 的关系
  */
+@Slf4j
 public class QuickSortAndBST {
 
     static class Quick {
@@ -44,16 +47,17 @@ public class QuickSortAndBST {
         }
 
         private static int partition(int[] nums, int start, int end) {
-            int pivort = nums[start];
-            int i = start; // 或者 i = start+1
+            int pivot = nums[start];
+            //int i = start; // 或者 i = start+1
+            int i = start+1;
             int j = end;
             while (i <= j) { // 当 i>j 时循环结束，以保证区间 [start, end] 都被覆盖。
-                while (i <= j && nums[i] <= pivort) {// == 的时候，不交换
-                    // 找到 左边大于 pivort 的 i。 while 退出时 nums[i] > pivort
+                while (i <= j && nums[i] <= pivot) {// == 的时候，不交换
+                    // 找到 左边大于 pivot 的 i。 while 退出时 nums[i] > pivot
                     i++;
                 }
-                while (i <= j && nums[j] > pivort) {
-                    // 找到右边 小于 pivort 的元素。while 退出时 nums[j] <= pivort
+                while (i <= j && nums[j] > pivot) {
+                    // 找到右边 小于 pivot 的元素。while 退出时 nums[j] <= pivot
                     j--;
                 }
 
@@ -63,7 +67,7 @@ public class QuickSortAndBST {
                 }
 
             }
-            // 将 j 的位置和 pivort 交换，因为此时 j 位置的元素比 start 小，符合 j 位置左侧的都比 arr[j] 大
+            // 将 j 的位置和 pivot 交换，因为此时 j 位置的元素比 start 小，符合 j 位置左侧的都比 arr[j] 大
             swap(nums, j, start);
 
             return j;
@@ -108,18 +112,18 @@ public class QuickSortAndBST {
 
     public static void main(String[] args) {
         // Quick quick = new Quick();
-        int[] arr = new int[] { 7, 6, 5, 4, 3, 2, 1 };
+        int[] arr = new int[] { 7, 6, 5, 4, 3, 2, 1,8,9,10,20,14,11,18 };
         Quick.sort(arr);
         System.out.println(Arrays.toString(arr));
-
-        int k = 3;
-        System.out.println(Quick.findKthLargest(arr, k));
-
-        arr = new int[] { 3, 2, 1, 5, 6, 4 };
-        k = 2;
-        System.out.println(Quick.findKthLargest(arr, k));
-        arr = new int[] {3,2,3,1,2,4,5,5,6};
-        k = 4;
-        System.out.println(Quick.findKthLargest(arr, k));
+//
+//        int k = 3;
+//        System.out.println(Quick.findKthLargest(arr, k));
+//
+//        arr = new int[] { 3, 2, 1, 5, 6, 4 };
+//        k = 2;
+//        System.out.println(Quick.findKthLargest(arr, k));
+//        arr = new int[] {3,2,3,1,2,4,5,5,6};
+//        k = 4;
+//        System.out.println(Quick.findKthLargest(arr, k));
     }
 }

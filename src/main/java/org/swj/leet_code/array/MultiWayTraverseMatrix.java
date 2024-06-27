@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class MultiWayTraverseMatrix {
 
     /**
-     * leetcode 48 题，将二维矩阵顺时候旋转 90 度。
+     * leetcode 48 题，将 nxn 的二维矩阵顺时候旋转 90 度。
      * 
      * @param matrix
      */
@@ -71,7 +71,7 @@ public class MultiWayTraverseMatrix {
                 res.add(matrix[i][rightIndex]);
             }
             rightIndex--;
-            // 增加判断你的原因是右方向的遍历可能会跟左方向的是同一行，右方向已经遍历了，就不需要遍历左方向
+            // 增加判断的原因是右方向的遍历可能会跟左方向的是同一行，右方向已经遍历了，就不需要遍历左方向
             // 左
             if (topIndex <= bottomIndex) {
                 for (int j = rightIndex; j >= leftIndex; j--) {
@@ -93,6 +93,7 @@ public class MultiWayTraverseMatrix {
 
     /**
      * leetcode 59 题，螺旋矩阵II，生成矩阵
+     * 
      * @param n
      * @return
      */

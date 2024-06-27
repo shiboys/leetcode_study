@@ -76,7 +76,7 @@ String longestPalindrome(String s);
 
 找回文的难点在于，回文串的长度可能是奇数也可能是偶数，**解决该问题的核心是从中心向两端扩散的双指针技巧**。
 
-如果回文串的长度为奇数，则它有一个中心字符串；如果回文串的长度为偶数，则可以认为它有两个中心字符串。我们可以先实现一个获取回文的方法
+如果回文串的长度为奇数，则它有一个中心字符串；如果回文串的长度为偶数，则可以认为它有两个中心字符串。我们可以先实现一个从中间获取回文的方法
 ```java
 String palindromeString(String s,int i, int j) {
     while(i>=0 && j <= s.length()-1 &&
@@ -110,7 +110,7 @@ String palindromeString(String s,int i, int j) {
 
 常规思路就是操作哪个区间，就在哪个区间加一个 for 循环呗，还能咋样？这种思路的时间复杂度是 O(N), 由于这个场景下对 `nums` 的修改非常频繁，所以效率会非常低下。
 
-这里就需要用到查分数组，类似「前缀和」的构造技巧 `preSum` 数组，我们先对 `nums` 数组构造一个查分数组 `diff`, `diff[i]` 就是 `nums[i]` 和 `nums[i-1]` 之差。
+这里就需要用到差分数组，类似「前缀和」的构造技巧 `preSum` 数组，我们先对 `nums` 数组构造一个差分数组 `diff`, `diff[i]` 就是 `nums[i]` 和 `nums[i-1]` 之差。
 
 **最牛逼的地方来了，通过这个 `diff` 查分数组可以反推出原始数组 `nums` 的**
 
@@ -122,13 +122,13 @@ String palindromeString(String s,int i, int j) {
 
 #### 算法实践
 
-leetcode 370 题，「区间加法」直接考察了差分数组的技巧。
+leetcode 370 题，「区间加法」直接考察了差分数组的技巧(leetcode 会员)。
 
 ![差分数组](../algorithm/dynamic_programming/imgs/different_array.png)
 
-实现方法参加 Different 类
+实现方法参加 DifferentArray 类
 
-然而，实际上的算法可能需要我们对题目进行联想和抽此昂，不会那么直接地让我们看出来要用差分数组技巧，这里看一下 leetcode 1109 题「航班预订统计」：
+然而，实际上的算法可能需要我们对题目进行联想和抽象，不会那么直接地让我们看出来要用差分数组技巧，这里看一下 leetcode 1109 题「航班预订统计」：
 
 ![差分数组](../algorithm/dynamic_programming/imgs/different_array2.png)
 
@@ -226,7 +226,7 @@ s="java world hello"
 
 ![矩阵反转1](../algorithm/dynamic_programming/imgs/rotate_matrix_1.png)
 
-**然后在对矩阵的每一行进行反转**:
+**然后再对矩阵的每一行进行反转**:
 ![矩阵反转1](../algorithm/dynamic_programming/imgs/rotate_matrix_3.png)
 
 发现结果就是 `matrix ` 顺时针旋转 90 度的结果，将上述思想翻译成代码，即可解决本问题
@@ -334,7 +334,7 @@ for(int i=0;i<s.length();i++) {
 
 ![滑动窗口图文解释](../algorithm/dynamic_programming/imgs/sliding_window2.png)
 
-现在开始缩小窗口`[left, right)`，增加 `keft`:
+现在开始缩小窗口`[left, right)`，增加 `left`:
 
 ![滑动窗口图文解释](../algorithm/dynamic_programming/imgs/sliding_window3.png)
 
@@ -342,7 +342,7 @@ for(int i=0;i<s.length();i++) {
 
 ![滑动窗口图文解释](../algorithm/dynamic_programming/imgs/sliding_window4.png)
 
-之后重复上述过程，先移动 `right`，在移动 `left`... 直到 `right` 指针到达字符串 `S` 的末端，算法结束。
+之后重复上述过程，先移动 `right`，再移动 `left`... 直到 `right` 指针到达字符串 `S` 的末端，算法结束。
 
 在开始套模板之前，需要思考一下几个问题：
 1、什么时候应该移动 right 扩大窗口？窗口加入字符时，应该更新哪些数据？
@@ -355,7 +355,7 @@ for(int i=0;i<s.length();i++) {
 接下来我们来回答上述 3 个问题：
 1、每遇到一个字符的时候就应该移动 right 扩大窗口。窗口加入字符，应该进行当前字符计数器的更新，使用 map 来维护。如果窗口内的当前字符 c 和 目标字符c 的数量一致，则还要更新符合记录的数量
 
-2、当满足有一个完整覆盖的时候，停止扩大窗口，开始移动 left 缩小窗口。从窗口中移出字符数时，跟移入字符时一个逆操作，就是要先根据条件判断是否需要减少符合条件的字符个数，然后再减少当前窗口内当前字符的技术
+2、当满足有一个完整覆盖的时候，停止扩大窗口，开始移动 left 缩小窗口。从窗口中移出字符数时，跟移入字符时一个逆操作，就是要先根据条件判断是否需要减少符合条件的字符个数，然后再减少当前窗口内当前字符的计数
 
 3、我们要的结果是要在获取覆盖字符后缩小窗口前进下计算，从而获取最小的覆盖字符串
 
@@ -380,7 +380,7 @@ leetcode 第 567 题，字符串的排列
 #### 查找所有字母异位词
 
 leetcode 438 题，「查找字符串中所有字母异位词」，描述如下
-![leetcode 428 题，查找以为此](../algorithm/dynamic_programming/imgs/sliding_window_title3.png)
+![leetcode 438 题，查找以为此](../algorithm/dynamic_programming/imgs/sliding_window_title3.png)
 
 这里的字母异位词，不就是排列嘛，整个高端的说法就能糊弄人？**相当于，输入一个串 `S`, 一个串 `T`，找到 S 中所有的 T 的排列，并返回他们的起始索引**。
 
@@ -439,7 +439,7 @@ for(int i=n-1;i>-0;i--) {
     if(nums1[i] > nums2[i]) {
         // 比得过，跟他比
     } else {
-        //比不过，换个垫底的赖送人头。
+        //比不过，换个垫底的来送人头。
     }
 }
 ```
