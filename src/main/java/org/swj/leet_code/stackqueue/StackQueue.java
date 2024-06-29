@@ -1,22 +1,15 @@
 package org.swj.leet_code.stackqueue;
 
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.Map;
-import java.util.List;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.swj.leet_code.linked_list.ListNode;
-
-import javafx.scene.layout.Priority;
-import lombok.val;
 
 /**
  * 

@@ -17,12 +17,15 @@ public class ReverseLinkList {
      * @return
      */
     ListNode reverseNode(ListNode head) {
-        if (head != null && head.next == null) {
+        if (head == null || head.next == null) {
             return head;
         }
         ListNode reverseHead = reverseNode(head.next);
         // 不能用 reverseHead，因为 reverseHead 是翻转后的头结点
         // head.next.next = head，只能在递归中使用，再循环中使用，会造成死循环。
+
+        // 将 head 的next 属性摘除，这个目的是为了实现原链表的首节点变成尾结点后 next == null
+        // 而 普通节点的 next 属性被摘除之后，下次递归后的 head.next.next = head; 会重新设置回来
         head.next.next = head;
         head.next = null;
         return reverseHead;
@@ -162,7 +165,7 @@ public class ReverseLinkList {
     ListNode left;
 
     /**
-     * 判断链表是否符合回文链表
+     * leetcode 234 判断链表是否符合回文链表
      * 
      * @param head
      * @return
@@ -203,6 +206,9 @@ public class ReverseLinkList {
         while (fast != null && fast.next != null) {
             slow = slow.next;
             fast = fast.next.next;
+        }
+        if (slow == head) { // base case 判断，只有 1 个节点
+            return true;
         }
         // 如果链表节点为奇数，则需要再前进一步
         if (fast != null) {
@@ -323,7 +329,7 @@ public class ReverseLinkList {
         }
         // 尾结点连上头结点
         oldTail.next = head;
-        
+
         ListNode newTail = head;
         // 找到第 k 个节点
         for (int i = 0; i < n - 1 - k % n; i++) {

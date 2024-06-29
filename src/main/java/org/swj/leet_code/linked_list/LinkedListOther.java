@@ -71,7 +71,8 @@ public class LinkedListOther {
      * --> y 。
      * 返回复制链表的头节点。
      * 分析过程
-     * 这道题我想了半天，也想到用 map 做辅助来做，后来一想使用 map 空间复杂度肯定高，就放弃了。
+     * 这道题我想了半天，也想到用 map 做辅助来做，后来一想使用 map 空间复杂度肯定高，就放弃了。(PS:Map 的空间复杂度不高
+     * 我后来用了 IdentityHashMap，空间复杂度一点都不高)
      * map 的解决方式是 借助哈希表把原始节点和克隆节点的映射存储起来，然后把克隆节点的结构连接起来即可。
      * 但是其他想法我想了半天，实在是没想起来。最后参考了别的想法，一点就会
      * 就是将每个节点深复制自己放到自己的next 指针上。然后再设置 random 属性
@@ -91,6 +92,7 @@ public class LinkedListOther {
         }
         Node p = head;
         Node copyP = null;
+        // 把复制节点插入原节点的后面
         while (p != null) {
             copyP = new Node(p.val);
             Node pNext = p.next;
@@ -107,7 +109,7 @@ public class LinkedListOther {
             }
             p = p.next.next;
         }
-        // 切分链表
+        // 拆分链表
         Node oldPtr = head;
         Node newHead = head.next;
         Node newPtr = newHead;
@@ -192,7 +194,7 @@ public class LinkedListOther {
     }
 
     /**
-     * leetcode 1836，从未排序的链表中删除重复的元素
+     * leetcode 1836，从未排序的链表中删除重复的元素，plus 成员
      * 输入：head = [1,2,3,2]
      * 输出：[1,3]
      * 解释：2 在链表中出现了两次，所以所有的 2 都需要被删除。删除了所有的 2 之后，我们还剩下 [1,3]。
@@ -220,6 +222,33 @@ public class LinkedListOther {
         }
 
         return dummy.next;
+    }
+
+    public boolean isUgly(int n) {
+        if (n <= 0) {
+            return false;
+        }
+        if (n == 1) {
+            return true;
+        }
+        while (n >= 4) {
+            if (n % 2 == 0) {
+                n = n / 2;
+            } else if (n % 3 == 0) {
+                n /= 3;
+            } else if (n % 5 == 0) {
+                n /= 5;
+            }
+        }
+        System.out.println("n is " + n);
+        if (isBaseUgly(n)) {
+            return true;
+        }
+        return false;
+    }
+
+    boolean isBaseUgly(int n) {
+        return 1 <= n && n <= 5;
     }
 
     /**
@@ -444,7 +473,7 @@ public class LinkedListOther {
     }
 
     /**
-     * leetcode 360 题，有序转化数组。
+     * leetcode 360 题，有序转化数组。 plus 会员
      * 给你一个已经排好序的整数数组 nums 和整数 `a,b,c`。对于数组中的每一个元素 nums[i], 计算函数值 f(x)=ax2 + bx + c
      * ，请按升序返回结果数组。
      * 实例1：
@@ -508,27 +537,29 @@ public class LinkedListOther {
     public static void main(String[] args) {
         LinkedListOther instance = new LinkedListOther();
         // testLinkedList(instance);
-        System.out.println(instance.nthUglyNumber(11));
+        // System.out.println(instance.nthUglyNumber(11));
+        System.out.println("8 is ugly = " + instance.isUgly(8));
 
-        int[][] matrix = new int[][] { { 1, 5, 9 }, { 10, 11, 13 }, { 12, 13, 15 } };
-        System.out.println(instance.kthSmallestMatrix(matrix, 8));
-        System.out.println(instance.kthSmallestMatrix(matrix, 6));
+        // int[][] matrix = new int[][] { { 1, 5, 9 }, { 10, 11, 13 }, { 12, 13, 15 } };
+        // System.out.println(instance.kthSmallestMatrix(matrix, 8));
+        // System.out.println(instance.kthSmallestMatrix(matrix, 6));
 
-        int[] nums1 = { 1, 7, 11 };
-        int[] nums2 = { 2, 4, 6 };
-        System.out.println(instance.kSmallestPairs(nums1, nums2, 3));
+        // int[] nums1 = { 1, 7, 11 };
+        // int[] nums2 = { 2, 4, 6 };
+        // System.out.println(instance.kSmallestPairs(nums1, nums2, 3));
 
-        nums1 = new int[] { 1, 2, 3, 0, 0, 0 };
-        nums2 = new int[] { 2, 5, 6 };
-        instance.mergeTwoSortedArray(nums1, 3, nums2, 3);
-        System.out.println(Arrays.toString(nums1));
+        // nums1 = new int[] { 1, 2, 3, 0, 0, 0 };
+        // nums2 = new int[] { 2, 5, 6 };
+        // instance.mergeTwoSortedArray(nums1, 3, nums2, 3);
+        // System.out.println(Arrays.toString(nums1));
 
-        nums1 = new int[] { -4, -1, 0, 3, 10 };
-        System.out.println((int) Math.pow(-4, 2));
-        System.out.println(Arrays.toString(instance.sortedSquares(nums1)));
+        // nums1 = new int[] { -4, -1, 0, 3, 10 };
+        // System.out.println((int) Math.pow(-4, 2));
+        // System.out.println(Arrays.toString(instance.sortedSquares(nums1)));
 
-        nums1 = new int[] { -4, -2, 2, 4 };
-        System.out.println(Arrays.toString(instance.sortTransformedArray(nums1, 1, 3, 5)));
+        // nums1 = new int[] { -4, -2, 2, 4 };
+        // System.out.println(Arrays.toString(instance.sortTransformedArray(nums1, 1, 3,
+        // 5)));
     }
 
     private static void testLinkedList(LinkedListOther instance) {

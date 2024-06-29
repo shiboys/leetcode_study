@@ -30,9 +30,11 @@ public class MonotonyStackQueue {
         // 存放答案的数组
         int[] res = new int[nums.length];
         Stack<Integer> stack = new Stack<>();
+        // 为什么要从后向前遍历，是因为我们要找的是右侧比 nums[i] 大的元素，因此先把
+        // 右侧的元素入栈
         // 从后往前遍历，将小于等于于当前 nums[i] 的栈中的元素全部弹出
         for (int i = nums.length - 1; i >= 0; i--) {
-            // 判定个子高矮。比我小的弹出
+            // 判定个子高矮。比我小的弹出，或者叫压扁也行
             while (!stack.isEmpty() && nums[i] >= stack.peek()) {
                 // 矮个起开，反正也被挡着了。。。
                 stack.pop();
