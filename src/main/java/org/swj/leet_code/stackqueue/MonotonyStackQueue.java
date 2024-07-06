@@ -439,7 +439,8 @@ public class MonotonyStackQueue {
      * 输出：2
      * [2,4] 最大绝对差 |2-4| = 2 <= 4.
      * [4,7] 最大绝对差 |4-7| = 3 <= 4.
-     * 因此，满足题意的最长子数组的长度为 2 。
+     * [2,4,7] 最大绝对差 |2-7| = 5 > 4.
+     * 因此，满足题意的最长子数组的长度为 2, 其他组合都不满足 。
      * 
      * @param nums
      * @param limit
@@ -459,7 +460,7 @@ public class MonotonyStackQueue {
         if (nums == null || nums.length < 1) {
             return 0;
         }
-        int left = 0, right = 0;
+        int right = 0;
         int span = -1;
         int windowSize = 0;
         org.swj.leet_code.stackqueue.MonotonicQueue<Integer> window = new org.swj.leet_code.stackqueue.MonotonicQueue<>();
@@ -474,7 +475,6 @@ public class MonotonyStackQueue {
             // window.min());
             while (!window.isEmpty() && window.max() - window.min() > limit) {
                 window.pop();
-                left++;
                 windowSize--;
             }
             span = Math.max(span, windowSize);
@@ -562,7 +562,7 @@ public class MonotonyStackQueue {
         for (int i = 1; i < preSumArr.length; i++) {
             preSumArr[i] = preSumArr[i - 1] + nums[(i - 1) % nums.length];
         }
-        int left = 0, right = 0;
+        int right = 0;
         long maxSum = 0;
         // while (right < preSumArr.length) {
         // right++;

@@ -78,12 +78,19 @@ public class CustomLFU {
 
     void deleteMinFreq() {
         Set<Integer> keys = freqToKeys.get(minFreq);
-        // 最小频率且最早使用的元素。
-        int key = keys.iterator().next();
-        valMap.remove(key);
-        int freq = keyToFreq.remove(key);
-        // 维护 freq:key
+        if(keys == null && !freqToKeys.isEmpty()) {
+            // todo, 去寻找 freq 最小的，后来想了一下，这个场景基本不会出现
+            // 因为不会出现连续被删，删除不是一个外部 API，是内部的一个主动措施，被删除一次
+            // map 就会有空间，可以执行正常的插入，这时候 minFreq 会被重置
+            minFreq = freqToKeys.keySet().stream().min(Integer::compareTo).orElse(1);
+            keys = freqToKeys.get(minFreq);
+        }
         if (keys != null && !keys.isEmpty()) {
+            // 最小频率且最早使用的元素。
+            int key = keys.iterator().next();
+            valMap.remove(key);
+            int freq = keyToFreq.remove(key);
+            // 维护 freq:key
             keys.remove(key);
             if (keys.isEmpty()) { // 将该 freq 的 entry 从 map 中删除
                 freqToKeys.remove(freq);

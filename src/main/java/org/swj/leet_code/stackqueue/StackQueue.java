@@ -349,7 +349,7 @@ public class StackQueue {
      * 150. 逆波兰表达式求值
      * 
      * 有效的运算符包括 +-、*、/。每个运算对象都可以是整数，也可以是另一个逆波兰表达式，两个整数之间的除法保留整数部分。
-     * 可以保证给定的逆波兰表达式总是有效的。换句话说，表达式得出的有效数值不存在征世为 0 的情况，当然也能够被正确解析。
+     * 可以保证给定的逆波兰表达式总是有效的。换句话说，表达式得出的有效数值不存在真实为 0 的情况，当然也能够被正确解析。
      * 
      * 示例1：
      * 输入：tokens = ["2","1","+","3","*"]
@@ -416,10 +416,10 @@ public class StackQueue {
             // "xxx".lastIndexOf("\t") == -1
             int level = path.lastIndexOf("\t") + 1;
             // 这个逻辑需要细细品味才能知晓其中的逻辑
-            // 就是把叔辈路径给 弹出，栈中只留父路径
+            // 就是把兄弟路径还有侄子辈路径给 弹出，栈中只留父路径
             // 比如说现在 level ==2 ，那就是 "\t\txxx", 当前路径要是入栈，就必须将 "\t\t\txxx" 和 其他 "\t\txxx" 弹出去
             // 只留 "\txxx"。level ==1 时，stack 弹出到只剩一个，就是 dir 根目录，此时正好是 path 的父目录
-            while (level < stack.size()) {
+            while (level < stack.size()) { // 不应该是 <= 吗？不行，等于的话，比如 size = 1,此时会把根路径弹出
                 stack.removeLast();
             }
             stack.addLast(path.substring(level));
@@ -788,6 +788,7 @@ public class StackQueue {
                     numStack.push(calculateSimple());
                 }
             } else {
+                // 先清空 numSb
                 numSb.delete(0, numSb.length());
                 // 有可能是多个数字字符,比如，50,500
                 j = i;
@@ -829,7 +830,7 @@ public class StackQueue {
             if (!numStack.isEmpty()) {
                 n2 = numStack.pop();
             } else {
-                if (op == '-') {
+                if (op == '-') { // 只有一个负数，确实复杂了。
                     // 压入计算结果
                     numStack.push(-n1);
                     continue;
