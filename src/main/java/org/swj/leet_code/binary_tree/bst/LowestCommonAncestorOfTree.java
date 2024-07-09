@@ -44,7 +44,7 @@ public class LowestCommonAncestorOfTree {
         // 这里判断左右目标子节点都不为空，说明找到了 2 个目标子节点，则 root 就是最近公共祖先
         // 满足情况 2 左右子节点分别分布在左右子树上。
         if (leftTargetNode != null && rightTargetNode != null) {
-              // 左子树和右子树都找到了目标节点，则后续遍历的第一个 root 节点便是最近公共祖先
+            // 左子树和右子树都找到了目标节点，则后续遍历的第一个 root 节点便是最近公共祖先
             return root;
         }
         // 将找到的目标节点一级级的返回。不是返回 node，也就是不是返回父节点， 这里要注意
@@ -53,6 +53,7 @@ public class LowestCommonAncestorOfTree {
 
     /**
      * 若干节点的公共最小祖先
+     * 
      * @param root
      * @param nodes
      * @return
@@ -84,7 +85,7 @@ public class LowestCommonAncestorOfTree {
     boolean foundP2 = false;
 
     /**
-     * 查找 p1 和 p2 的最近公共自祖先节点，p1 和 p2 可能不存在于二叉树上，这时候应该返回 null，如果存在则返回 LCA
+     * 查找 p1 和 p2 的最近公共祖先节点，p1 和 p2 可能不存在于二叉树上，这时候应该返回 null，如果存在则返回 LCA
      * 该解法需要借助外部变量
      * 
      * @param root
@@ -143,7 +144,7 @@ public class LowestCommonAncestorOfTree {
         if (root == null) {
             return null;
         }
-        // 比 最小值 val1 小，去又子节点查找
+        // 比 最小值 val1 小，去右子节点查找
         if (root.val < val1) {
             return findOfBst(root.right, val1, val2);
         }
@@ -157,7 +158,8 @@ public class LowestCommonAncestorOfTree {
     }
 
     TreeNodeP lowestCommonAncestor(TreeNodeP p, TreeNodeP q) {
-        // 通过双链表指针技巧解决
+        // 通过双链表指针技巧解决, 就跟双链表相交节点优先类似，就是 p1 指针把 a 链表遍历完毕，开始遍历 b 链表，同理 p2 也是
+        // p1 和 p2 相交的节点就是他们的第一个相交节点，也是他们的最小公共祖先，这个思路还是挺妙的
         TreeNodeP p1 = p;
         TreeNodeP q1 = q;
         while (p1 != q1) {
@@ -165,17 +167,19 @@ public class LowestCommonAncestorOfTree {
             if (p1 == null) {
                 p1 = q;
             } else {
+                // 有父节点指针的情况下
                 p1 = p1.parent;
             }
-            
+
             // q1 同样走一步，如果走到 根节点，指向 p 节点
-            
+
             if (q1 == null) {
                 q1 = p;
             } else {
                 q1 = q1.parent;
-            }            
+            }
         }
+        // 此时 p
         return p1;
     }
 

@@ -34,7 +34,7 @@ public class BinarySearchTreeCommon {
         if (max != null && root.val >= max.val)
             return false;
 
-        return isValidBST(root.left, min, root) && // 在这个地柜里面 root 作为 max 会一直传递下去
+        return isValidBST(root.left, min, root) && // 在这个递归里面 root 作为 max 会一直传递下去
                 isValidBST(root.right, root, max); // 在这个递归里面，root 作为 min 会一直传递下去
 
     }

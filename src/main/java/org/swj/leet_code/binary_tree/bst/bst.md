@@ -17,7 +17,7 @@ leetcode 98 题，「验证二叉搜索树」，就是让你判断输入的 BST 
 
 leetcode 700 题，「二叉搜索树中的搜素」，就是让你在 BST 中搜索值为 target 的节点
 
-跟怒 bSt 的特性，我们搜素的时候 让 根节点和 target 比较，如果 根节点 < target ，则去 右子树，如果 根节点 <  target 则取左子树搜索
+跟怒 bst 的特性，我们搜素的时候 让 根节点和 target 比较，如果 根节点 < target ，则去 右子树，如果 根节点 <  target 则取左子树搜索
 这样就能实现二分搜索 BST 
 
 
@@ -29,7 +29,7 @@ leetcode 700 题，「二叉搜索树中的搜素」，就是让你在 BST 中�
 
 #### 在 BST 中删除一个元素
 
-这个问题稍微复杂，跟插入操作类似，先「找」在「找」，先把框架写出来再说
+这个问题稍微复杂，跟插入操作类似，先「找」再「删」，先把框架写出来再说
 ```java
 TreeNode deleteNode(TreeNode root, int key) {
     if(root.val == key) {
@@ -44,7 +44,7 @@ TreeNode deleteNode(TreeNode root, int key) {
     return root；
 }
 ```
-找到了目标节点，比如说是节点 A， 如何删除这个节点，这是难点。因为删除节点的同事不能破坏 BST 的性质。有三种情况，用图片来说明。
+找到了目标节点，比如说是节点 A， 如何删除这个节点，这是难点。因为删除节点的同时不能破坏 BST 的性质。有三种情况，用图片来说明。
 
 **情况1**：`A` 恰好是末端节点，两个子节点都为空，那么它可以当初去世了。
 
@@ -56,7 +56,7 @@ if(root.left == null && root.right == null) {
 }
 ```
 
-**情况2**：`A` 只有一个非空子节点，那么它要让这个孩子解题自己的位置
+**情况2**：`A` 只有一个非空子节点，那么它要让这个孩子接替自己的位置
 
 ![bst 节点删除情况2](../../algorithm/dynamic_programming/imgs/bst_deletion_case_2.png)
 
@@ -89,7 +89,7 @@ leetcode 第 230 题，「寻找搜索树中第 k 小的元素」，题目如下
 
 ![bst kth](../../algorithm/dynamic_programming/imgs/bst_kth_title.png)
 
-这个需求很常见，一个直接的思路就是升序排序，然后找第 `k` 个元素呗。BST 的中序遍历其实就是生序排序的结果，寻找第 `k` 个元素肯定不是什么难事
+这个需求很常见，一个直接的思路就是升序排序，然后找第 `k` 个元素呗。BST 的中序遍历其实就是升序排序的结果，寻找第 `k` 个元素肯定不是什么难事
 
 ```java
 TreeNode kthNode;
@@ -143,6 +143,8 @@ TreeNode kthNode;
 有了 size 字段，外加 BST 节点左小右大的性质，对于每个节点就可以通过 node.left 推导出 node 的排名？(有些节点 node.left 为null，但是有排名)
 
 当然，size 字段需要在增删元素的时候维护。（后面我们会重写一般参考算法 4 的 BST，在增删元素的时候维护 size 值）
+
+(PS: 最终我使用剑指 offer 中的循环方式实现遍历，解决了此问题，leetcode 中运行耗时为 0ms)
 
 
 

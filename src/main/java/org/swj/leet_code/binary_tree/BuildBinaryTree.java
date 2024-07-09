@@ -10,7 +10,7 @@ import java.util.Map;
  *        二叉树的构造
  */
 public class BuildBinaryTree {
-    
+
     Map<Integer, Integer> valToIndex;
 
     /**
@@ -149,7 +149,7 @@ public class BuildBinaryTree {
         int leftRootVal = preOrder[preStart + 1];
 
         int leftRootIdx = valToIndex.get(leftRootVal);
-        // 左子树长度
+        // 左子树长度, 需要包含左子树的根节点这个长度 1
         int leftLength = leftRootIdx - postStart + 1;
         root.left = buildTreeNodeFromPrePost(preOrder, preStart + 1, preStart + leftLength, postOrder, postStart,
                 leftRootIdx);

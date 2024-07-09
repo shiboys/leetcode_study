@@ -8,6 +8,7 @@ import java.util.List;
  * @version 1.0.0
  * @since 2023/08/28 20:27
  *        归并排序使用二叉树版本
+ *        todo:需要在复习一次
  */
 public class MergeSortWithBinaryTree {
 

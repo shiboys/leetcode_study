@@ -521,7 +521,7 @@ public class MonotonyStackQueue {
             // 判断窗口内元素元素跟当前元素的子数组之和(就是 preSumArr[right] - window.min()) 是否满足条件
             while (right < preSumArr.length && !window.isEmpty()
                     && preSumArr[right] - window.min() >= k) { // 找到了满足条件元素
-                // 至于治理为啥要用一个 preSumArr[right] 这个还没进入窗口的元素，这是因为当前的 right 经过 ++ 之后，表示的就是
+                // 至于这里为啥要用一个 preSumArr[right] 这个还没进入窗口的元素，这是因为当前的 right 经过 ++ 之后，表示的就是
                 // nums 数组的 [right-1] 索引的元素，left 到 right 之间的窗口大小满足条件，只需要计算最小距离即可
                 res = Math.min(res, right - left);
                 // 缩小窗口。窗口被移出的元素，也一定是 window.pop() 出的元素

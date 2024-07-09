@@ -162,7 +162,7 @@ public class BinaryTreeArch {
         }
         int leftMaxDepth = maxDepth3(node.left);
         int rightMaxDepth = maxDepth3(node.right);
-        // 在统计最大深度的同事，把最大直径顺便统计了
+        // 在统计最大深度的同时，把最大直径顺便统计了
         // 后续位置，顺便计算最大直径
         // 对每个节点计算直径
         int diameter = rightMaxDepth + leftMaxDepth;
@@ -271,6 +271,7 @@ public class BinaryTreeArch {
             p.right = rightNode;
             p = p.right;
         }
+        // 方法2 使用中序遍历，参见 leetcode 中文网的该题解决思路
 
         // 方法3 ，采用后续遍历的方式。
         // flattenNode3(root);
@@ -471,6 +472,12 @@ public class BinaryTreeArch {
         return node;
     }
 
+    /**
+     * leetcode 103 锯齿状遍历二叉树
+     * 
+     * @param root
+     * @return
+     */
     public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
         List<List<Integer>> res = new ArrayList<>();
         if (root == null) {
