@@ -1,4 +1,4 @@
-package org.swj.leet_code.binary_tree.bst;
+package org.swj.leet_code.algorithm.sort;
 
 import lombok.extern.slf4j.Slf4j;
 

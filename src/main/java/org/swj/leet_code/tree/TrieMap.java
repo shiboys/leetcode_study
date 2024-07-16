@@ -75,7 +75,7 @@ public class TrieMap<V> implements TrieTree<V> {
         if (node.val != null) { // 递归回来路径上的父节点, 不能删除
             return node;
         }
-        // 如果当前节点是更节点，即 当前节点的所有子节点都为 null ，则可以把父节点删除
+        // 如果当前节点是根节点，即 当前节点的所有子节点都为 null ，则可以把父节点删除
         for (int s = 0; s < E; s++) {
             // 只要有一个不为 null ，则不能删除
             if (node.children[s] != null) {

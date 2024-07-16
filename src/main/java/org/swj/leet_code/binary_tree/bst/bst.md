@@ -204,7 +204,8 @@ static class Quick {
             shuffle(nums, random);
             sort(nums, 0, nums.length - 1);
         }
-
+        // 剑指推荐的快速排序是使用随机对象选取数组中的一个
+        // 随机数, 来达到避免选取到排序数组的头部或者尾部元素
         static void shuffle(int[] nums, Random random) {
             for (int i = 0; i < nums.length; i++) {
                 int j = i + random.nextInt(nums.length - i);
@@ -221,7 +222,7 @@ static class Quick {
             nums[j] = temp;
         }
 
-        static void sort(int[] nums, int start, int end) {
+        static void sort(int[] nums, int start, int end) {  
             if (start >= end) {
                 return;
             }
@@ -284,13 +285,13 @@ N + (N-1) + (N-2) +....+1 = O(N^2)
 
 不过我们不用担心，经过随机化的 partition 函数很难出现极端情况，所以快速排序的效率还是很高的。
 
-**还有一点需要注意，快速排序时「不稳定排序」，与之相对的，归并排序是「稳定排序」**。
+**还有一点需要注意，快速排序是「不稳定排序」，与之相对的，归并排序是「稳定排序」**。
 
 对于序列中相同的元素，如果排序之后他们的相对位置没有发生变化，则称该排序算法为「稳定排序」，反之称为「不稳定排序」。
 
 如果单单排序 int 数组，那么稳定性没有什么意义。但如果排序一些结构复杂的数据，那么稳定排序就有更大的优势。
 
-比如说你有若干顶大， 已经按照订单号排好序了，向左你相对订单的交易日期再进行排序；
+比如说你有若干订单， 已经按照订单号排好序了，现在你要对订单的交易日期再进行排序；
 
 如果使用稳定排序算法(比如归并排序)，那么这些订单不仅按照交易任期排好序了，而且相同的交易日期的订单的订单号依然是有序的。
 
