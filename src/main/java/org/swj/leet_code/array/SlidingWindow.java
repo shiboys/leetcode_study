@@ -163,7 +163,7 @@ public class SlidingWindow {
 
     /**
      * leetcode 3.最长不重复的子序列
-     *
+     * 使用 char 数组效率更高
      * @param s
      * @return
      */

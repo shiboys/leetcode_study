@@ -132,7 +132,7 @@ public class SlidingWindow2 {
         int left = 0, right = 0;
         int minLen = preSumArr.length;
         while (right < preSumArr.length) {
-            while (left < right && right < preSumArr.length && preSumArr[right] - preSumArr[left] >= target) {
+            while (left < right && preSumArr[right] - preSumArr[left] >= target) {
                 minLen = Math.min(minLen, right - left);
                 left++;
             }

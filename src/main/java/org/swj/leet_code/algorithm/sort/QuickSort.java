@@ -177,65 +177,6 @@ public class QuickSort {
     quickSort3WayRecur(array, p3way.right + 1, end);
   }
 
-  /**
-   * 双轴快速排序，跟 3 项目快速排序非常类似，具体说明参见说明文档
-   *
-   * @param array
-   */
-  public void dualPivotQuickSort(int[] array) {
-
-  }
-
-  void dualPivotQuickSortRecur(int[] array, int start, int end) {
-    if (start >= end) {
-      return;
-    }
-
-  }
-
-  Partition3Way partitionDualPivot(int[] array, int start, int end) {
-    int i = start, k = i + 1, j = end;
-
-    int pivot1 = array[i], pivot2 = array[j];
-    if (pivot1 > pivot2) {
-      swap(array, i, j);
-      pivot1 = array[i];
-      pivot2 = array[j];
-    }
-
-
-    OUT_LOOP:
-    while (k < j) {
-      if (array[k] < pivot1) {
-        i++; // 这都符合单轴的 单向排序
-        swap(array, i, k);
-        k++;
-      } else if (array[k] >= pivot1 && array[k] <= pivot2) {
-        k++;
-      } else {
-        while (array[--j] > pivot2) {
-          if (j <= k) {
-            break OUT_LOOP;
-          }
-        }
-        if (array[j] >= pivot1 && array[j] <= pivot2) {
-          swap(array, k, j);
-          k++;
-        } else {
-          i++;
-          // 两个轴
-          swap(array, j, k);
-          swap(array, k, i);
-          k++;
-        }
-      }
-    }
-    // 一遍循环完毕，找到 pivot1 和 pivot2 的正确位置
-    swap(array, start, i);
-    swap(array, end, j);
-    return new Partition3Way(i, j);
-  }
-
   private Partition3Way partition3Way(int[] array, int start, int end) {
 
     int i = start, k = i + 1, j = end;
@@ -276,6 +217,82 @@ public class QuickSort {
     return new Partition3Way(i, j);
   }
 
+
+  /**
+   * 双轴快速排序，跟 3 项目快速排序非常类似，具体说明参见说明文档
+   *
+   * @param array
+   */
+  public void dualPivotQuickSort(int[] array) {
+    dualPivotQuickSortRecur(array, 0, array.length - 1);
+  }
+
+  void dualPivotQuickSortRecur(int[] array, int start, int end) {
+    if (start >= end) {
+      return;
+    }
+    Partition3Way partition3Way = partitionDualPivot(array, start, end);
+    dualPivotQuickSortRecur(array, start, partition3Way.left - 1);
+    dualPivotQuickSortRecur(array, partition3Way.left + 1, partition3Way.right - 1);
+    dualPivotQuickSortRecur(array, partition3Way.right + 1, end);
+  }
+
+  /**
+   * 双走方法非常复杂，但是写完之后，非常牛逼
+   * @param array
+   * @param start
+   * @param end
+   * @return
+   */
+  Partition3Way partitionDualPivot(int[] array, int start, int end) {
+    // 这里的起始点一定是不包括 pivot 的，否则会导致死循环
+    int i = start+1, k = start + 1, j = end-1;
+
+    // 保证 pivot1 <= pivot2
+    if (array[start] > array[end]) {
+      swap(array, start, end);
+    }
+
+    int pivot1 = array[start], pivot2 = array[end];
+
+    OUT_LOOP:
+    while (k <= j) {
+      if (array[k] < pivot1) {
+        swap(array, i, k);
+        i++; // 这都符合单轴的 单向排序
+        k++;
+      } else if (array[k] >= pivot1 && array[k] <= pivot2) {
+        k++;
+      } else {
+        while (array[j] > pivot2) {
+          j--;
+          if (j <= k) {
+            break OUT_LOOP;
+          }
+        }
+
+        if (array[j] >= pivot1 && array[j] <= pivot2) {
+          swap(array, k, j);
+          k++;
+          j--;
+        } else { // array[j] < pivot1
+          // array[k] > pivot2
+          swap(array, j, k);
+          j--;
+          // 此时 k 不动，因为需要用 array[k]< pivot1 来推进 i++ 和 k++
+        }
+      }
+    }
+
+    // 一遍循环完毕，找到 pivot1 和 pivot2 的正确位置
+    // i 和 j 需要找到正确的位置
+    i--;
+    j++;
+    swap(array, start, i);
+    swap(array, end, j);
+    return new Partition3Way(i, j);
+  }
+
   static class Partition3Way {
     public int left;
     public int right;
@@ -286,6 +303,34 @@ public class QuickSort {
     }
   }
 
+  /**
+   * leetcode 215 & lcr 076 计算第 k 大的元素
+   *
+   * @param nums
+   * @param k
+   * @return
+   */
+  public int findKthLargest(int[] nums, int k) {
+    if (nums == null || nums.length < 1) {
+      return -1;
+    }
+    if (nums.length < k) {
+      return -1;
+    }
+    int target = nums.length - k;
+    int p = partitionSimple(nums, 0, nums.length - 1);
+    while (p != target) {
+      if (p > target) {
+        p = partitionSimple(nums, 0, p - 1);
+      } else {
+        p = partitionSimple(nums, p + 1, nums.length - 1);
+      }
+      if (p < 0) {
+        return -1;
+      }
+    }
+    return nums[p];
+  }
 
 
   private void swap(int[] array, int i, int j) {
@@ -302,7 +347,7 @@ public class QuickSort {
     QuickSort instance = new QuickSort();
     System.out.println("before sort:" + Arrays.toString(arr));
     //instance.quickSortSimple(arr);
-    instance.quickSort3Way(arr);
+    instance.dualPivotQuickSort(arr);
     System.out.println(Arrays.toString(arr));
   }
 }

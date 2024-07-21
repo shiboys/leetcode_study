@@ -30,7 +30,8 @@ public class BfsUsage {
         if (root == null) {
             return 0;
         }
-        AtomicInteger depthCounter = new AtomicInteger();
+        // 根节点到叶子节点的节点数量,所以初始化为 1.
+        AtomicInteger depthCounter = new AtomicInteger(1);
         traverseBinaryTreeHorizonially(root, depthCounter);
         return depthCounter.get();
     }
@@ -42,8 +43,6 @@ public class BfsUsage {
         Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
         while (!queue.isEmpty()) {
-            // 深度增加
-            depthCounter.incrementAndGet();
             for (int i = 0, len = queue.size(); i < len; i++) {
                 TreeNode node = queue.poll();
                 // 找到子节点
@@ -57,12 +56,14 @@ public class BfsUsage {
                     queue.offer(node.right);
                 }
             }
-
         }
+        // 深度增加，正如 md 文档中的二叉树广度优先遍历的图所示，while 负责控制深度
+        depthCounter.incrementAndGet();
     }
 
     /**
      * 双向 BFS 解决密码锁的问题
+     * 
      * @param deadends
      * @param target
      * @return
@@ -93,7 +94,8 @@ public class BfsUsage {
                     String plusOne = plusOneString(cur, i);
                     if (!visitedSet.contains(plusOne)) {
                         // visitedSet.add 放这里不行，这里就会提前包含了 s1 和 s2 的交集，导致 s1 和 s2 无法相交，最后返回 -1。
-                        // 取出来之后才叫 visited,跟队列稍微有些区别
+                        // 取出来之后才叫 visited,跟单队列稍微有些区别，其实单队列也应该是这个逻辑，只有经过比较不匹配才被认为是 visited 了
+                        // 只是单队列 visited 集合原来越大，queue 也越来越大，需要尽早判断是否重复访问过，提高程序的执行效率。
                         // visitedSet.add(plusOne);
                         temp.add(plusOne);
                     }
@@ -144,7 +146,7 @@ public class BfsUsage {
         }
         Queue<String> queue = new LinkedList<>();
         Set<String> visitedSet = new HashSet<>();
-        // 每个密码有 8 个相邻密码，也就是 8 个相邻节点， 
+        // 每个密码有 8 个相邻密码，也就是 8 个相邻节点，
         queue.offer(source);
         visitedSet.add(source);
         int step = 0;
@@ -198,6 +200,7 @@ public class BfsUsage {
 
     /**
      * leetcode 773 题，「滑动谜题」
+     * 
      * @param board
      * @return
      */
@@ -208,7 +211,7 @@ public class BfsUsage {
                 { 0, 4, 2 }, // 索引 1 的 左，下，右 相邻索引,规律是二维索引从左到右的顺序
                 { 1, 5 },
                 { 0, 4 },
-                { 3, 1, 5 }, // 顺时针
+                { 3, 1, 5 }, // 遵循 左上右下的 顺时针
                 { 4, 2 }
         };
         Set<String> visited = new HashSet<>();
@@ -305,9 +308,9 @@ public class BfsUsage {
         BfsUsage instance = new BfsUsage();
 
         // TreeNode right = new TreeNode(20, new TreeNode(15), new TreeNode(7));
-        // TreeNode root = new TreeNode(3, new TreeNode(9), right);
+        TreeNode root = new TreeNode(3, null, null);
 
-        // System.out.println(instance.minDepth(root));
+        System.out.println(instance.minDepth(root));
 
         // right = new TreeNode(3, null, new TreeNode(4, null, new TreeNode(5, null, new
         // TreeNode(6))));
@@ -321,7 +324,7 @@ public class BfsUsage {
 
         String[] deadends = new String[] { "0201", "0101", "0102", "1212", "2002" };
         String targetStr = "0202";
-        System.out.println(instance.openLockDual(deadends, targetStr));
+        System.out.println("dual is" + instance.openLockDual(deadends, targetStr));
 
         // deadends = new String[] { "8888" };
         // targetStr = "0009";

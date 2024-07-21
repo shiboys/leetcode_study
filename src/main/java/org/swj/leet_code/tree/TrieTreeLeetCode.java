@@ -6,105 +6,80 @@ package org.swj.leet_code.tree;
  * @since 2024/07/13 18:47
  */
 public class TrieTreeLeetCode {
-  static final int E = 26;
-  static final char a = 'a';
-  final TrieTree<String> tree;
+  static final int E = 2;
+  private int maxSum = Integer.MIN_VALUE;
+  TrieTree<Boolean> tree;
 
-  public TrieTreeLeetCode() {
+  // 这个解法是错误的，正确的在 leetcode lrc67
+  public int findMaximumXOR(int[] nums) {
     tree = new TrieTree<>();
-  }
-
-  public void buildDict(String[] dictionary) {
-    for (String dict : dictionary) {
-      tree.put(dict, dict);
+    for (int num : nums) {
+      tree.put(num, true);
     }
+    return maxSum;
   }
 
-  public boolean search(String searchWord) {
-    return tree.search(searchWord, 1);
-  }
-
-  static class TrieTree<V> {
+  class TrieTree<V> {
     TrieNode<V> root;
+    private int maxCounter = 0;
+    private int size;
 
-    public void put(String key, V value) {
+    public void put(int key, V value) {
+      int v = key, r, sum = 0, counter = 0;
+
       if (root == null) {
-        root = new TrieNode();
+        root = new TrieNode<>();
       }
-      TrieNode p = root;
-      char ch;
-      for (int i = 0, len = key.length(); i < len; i++) {
-        ch = key.charAt(i);
-        if (p.children[ch - a] == null) {
-          p.children[ch - a] = new TrieNode();
-        }
-        if (i == len - 1) {
-          p.children[ch - a].value = value;
-        }
-        p = p.children[ch - a];
-      }
-    }
-
-    /**
-     * k 是变更字符串的次数
-     */
-    public boolean search(String searchWord, int k) {
-      if (searchWord == null || searchWord.isEmpty()) {
-        return false;
-      }
-      TrieNode node = getNode(root, searchWord, 0, k);
-
-      return node != null && node.value != null;
-    }
-
-    TrieNode getNode(TrieNode node, String key, int i, int changeCount) {
-      if (key == null || key.isEmpty()) {
-        return null;
-      }
-      if (node == null) {
-        return null;
-      }
-      if (changeCount < 0) {
-        return null;
-      }
-      if (i == key.length()) {
-        if (changeCount == 0 && node.value != null) {
-          return node;
-        }
-        return null;
-      }
-      char ch = key.charAt(i);
-      // 优先找不匹配的
-      TrieNode resNode = null;
-      for (int j = 0; j < E; j++) {
-        if (node.children[j] == null) {
-          continue;
-        }
-        if (ch == a + j) { // 匹配字符
-          resNode = getNode(node.children[j], key, i + 1, changeCount);
+      TrieNode node = root, prevNode = null;
+      while (v != 0) {
+        r = v & 1;
+        if (node.children[r] == null) {
+          node.children[r] = new TrieNode<>();
+          if (size > 0) {
+            sum = sum | (1 << counter);
+          }
         } else {
-          // 不匹配字符
-          resNode = getNode(node.children[j], key, i + 1, changeCount - 1);
+          //sum = sum << 1;
         }
-        if (key.equals("bcb")) {
-          if (resNode != null) {
-            System.out.println("resNode is not null and char is " + (char) (a + j));
+
+        prevNode = node;
+        node = node.children[r];
+
+        v = v >> 1;
+
+        counter++;
+      }
+      if (prevNode != null) {
+        prevNode.value = value;
+      }
+
+      if (counter < maxCounter) {
+        // 当前 value 已经被左移成为 0，但是前缀树还有其他数字没有遍历完，
+        // value 此时的 bit 全部为 0，跟其他前缀树的bit 进行比对，比如 [8,10,2] case, 8 xor 2 == 10
+        // 2 先被左移为 0 ，剩下的需要跟 8 跟 10的 bit 位， 需要 跟 0 进行异或
+        while (counter < maxCounter && node != null) {
+          // 剩下的 bit 位只有1 的情况下，才有意义
+          if (node.children[1] != null) {
+            sum = sum | (1 << counter);
+            node = node.children[1];
+          } else {
+            node = node.children[0];
           }
 
+          counter++;
         }
-        if (resNode != null) { // 找到完全匹配字符串了
-          return resNode;
-        }
+      } else {
+        maxCounter = counter;
       }
-
-      return null;
+      maxSum = Math.max(sum, maxSum);
+      size++;
     }
   }
 
 
-  static class TrieNode<V> {
+  class TrieNode<V> {
     public V value;
-    public TrieNode<V>[] children;
+    public TrieNode[] children;
 
     public TrieNode() {
       children = new TrieNode[E];
@@ -121,10 +96,21 @@ public class TrieTreeLeetCode {
         "a", "b", "ab", "abc", "abcabacbababdbadbfaejfoiawfjaojfaojefaowjfoawjfoawj", "abcdefghijawefe",
         "aefawoifjowajfowafjeoawjfaow", "cba", "cas", "aaewfawi", "babcda", "bcd", "awefj"
     };
+    //int[] arr = new int[] {14,70,53,83,49,91,36,80,92,51,66,70};
+    int[] arr = new int[] {49, 91, 36, 80};
+    int len = arr.length;
+    int max = 0;
     TrieTreeLeetCode instance = new TrieTreeLeetCode();
-    instance.buildDict(dictionary);
-    String keyWord = "bcb";
-    boolean result = instance.search(keyWord);
-    System.out.println(result);
+    for (int i = 0; i < len; i++) {
+
+      for (int j = i + 1; j < len; j++) {
+        if ((arr[i] ^ arr[j]) == 127 || (arr[i] ^ arr[j]) == 126) {
+          System.out.println(arr[i] + "," + arr[j]);
+        }
+      }
+    }
+    max = instance.findMaximumXOR(arr);
+
+    System.out.println(max);
   }
 }

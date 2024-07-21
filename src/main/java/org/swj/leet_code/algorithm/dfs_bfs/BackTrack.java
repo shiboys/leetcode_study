@@ -23,6 +23,7 @@ public class BackTrack {
     boolean[] visited;
 
     /**
+     * leetcode 78
      * nums 的所有子集。解集 不能 包含重复的子集。你可以按 任意顺序 返回解集。
      * 示例 1：
      * 输入：nums = [1,2,3]
@@ -98,6 +99,8 @@ public class BackTrack {
             // 上面的剪枝逻辑写错了。为什么写错，还是因为对 这个子集的问题没有弄清楚是怎么递归遍历的。
             // 从 start 到 i 的遍历，如果当前的 i 已经遍历过了，后面再遍历到 跟 i 相同的元素，肯定需要 continue 跳过的。
             // 需要根据剪枝的那张图仔细揣摩，然后对比代码就能理解该代码逻辑就是图中剪枝的实现
+            // 这道题也能使用 !visited[i-1] 表示的我大哥没有被访问，我就不能被访问的逻辑来剪枝
+            // 只是需要维护 visited[] 数组，但是这个 i > start 很难理解并记住
             if (i > start && nums[i] == nums[i - 1]) {
                 continue;
             }
@@ -501,6 +504,34 @@ public class BackTrack {
             used ^= 1 << i; // 使用 异或运算将 i 位置恢复为 0
         }
         return false;
+    }
+
+    /**
+     * 全排列 leetcode 46 题
+     * @param nums
+     * @param list
+     */
+    void traverseBackTrackFullArrangement(int[] nums, List<Integer> list) {
+        if (list.size() == nums.length) {
+            res.add(new LinkedList<>(list));
+            return;
+        }
+
+        // 回溯框架
+        for (int i = 0; i < nums.length; i++) {
+            // 排除路径上已经访问过的元素，避免像 1,1,1 或者 1,1,2 这种
+            if (visited[i]) {
+                continue;
+            }
+            int num = nums[i];
+            list.add(num);
+            visited[i] = true;
+
+            traverseBackTrackFullArrangement(nums, list);
+
+            list.remove(list.size() - 1);
+            visited[i] = false;
+        }
     }
 
 }
