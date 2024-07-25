@@ -49,18 +49,19 @@ public class PartitionEqualSubsetSum {
     sum = sum / 2;
     int m = nums.length;
     boolean[] dp = new boolean[sum + 1];
-    //空背包或者背包被填满则为 true
+    // 空背包或者背包被填满则为 true
     dp[0] = true;
     for (int i = 1; i <= m; i++) {
       // j 是倒着遍历的，卧槽，鸡贼呀，想不起来
       // 倒着遍历的目的是，每个物品或者说数字，只能用一次，以免以前的结果影响其他结果
       for (int j = sum; j >= 0; j--) {
         if (j - nums[i - 1] >= 0) {
+          // dp[j] 上一次装入本次不装入的结果；本次装入num[i-1]物品的结果dp[j - nums[i - 1]]
+          // 等于二维数组的 dp[i-1][j..] 的 i-1 没有了
           dp[j] = dp[j] || dp[j - nums[i - 1]];
         }
       }
     }
-    // 一维的完全看不懂意思
     return dp[sum];
   }
 

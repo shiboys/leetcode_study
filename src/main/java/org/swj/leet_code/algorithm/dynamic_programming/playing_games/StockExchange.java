@@ -10,6 +10,12 @@ import java.util.Arrays;
  */
 public class StockExchange {
 
+    /**
+     * leetcode 121
+     * 
+     * @param prices
+     * @return
+     */
     int maxProfit_k_1(int[] prices) {
         int n = prices.length;
         int dp[][] = new int[n][2];
@@ -30,7 +36,7 @@ public class StockExchange {
         int dp_i_0 = 0;
         int dp_i_1 = 0;
         for (int i = 0; i < n; i++) {
-            if (i - 1 == 0) {
+            if (i - 1 == -1) {
                 dp_i_0 = 0;
                 dp_i_1 = -prices[i];
                 continue;
@@ -42,7 +48,7 @@ public class StockExchange {
     }
 
     /**
-     * 求 k 为不限制交际次数的最大利润。
+     * 求 k 为不限制交际次数的最大利润。 leetcode 122
      * 
      * @param prices
      * @return
@@ -216,11 +222,11 @@ public class StockExchange {
                     dp[i][k][1] = -prices[i];
                     continue;
                 }
-                dp[i][k][0] = Math.max(dp[i-1][k][0],dp[i-1][k][1] + prices[i]);
-                dp[i][k][1] = Math.max(dp[i-1][k][1], dp[i-1][k-1][0] - prices[i]);
+                dp[i][k][0] = Math.max(dp[i - 1][k][0], dp[i - 1][k][1] + prices[i]);
+                dp[i][k][1] = Math.max(dp[i - 1][k][1], dp[i - 1][k - 1][0] - prices[i]);
             }
         }
-        return dp[n-1][max_k][0];
+        return dp[n - 1][max_k][0];
     }
 
     public static void main(String[] args) {
@@ -253,8 +259,8 @@ public class StockExchange {
         System.out.println(instance.maxProfit_k_2_2(arr));
 
         System.out.println("交易次数没有限制的股票交易获取收益最大：");
-        arr = new int[] {3,2,6,5,0,3};
-        System.out.println(getFormattedMsgInfo(arr) + instance.maxProfit_k_any(arr,2));
+        arr = new int[] { 3, 2, 6, 5, 0, 3 };
+        System.out.println(getFormattedMsgInfo(arr) + instance.maxProfit_k_any(arr, 2));
     }
 
     static String getFormattedMsgInfo(int[] arr) {

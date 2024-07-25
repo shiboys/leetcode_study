@@ -78,6 +78,7 @@ public class LongestIncreasingSubsequence {
                     right = middle; // 此处跟二分法稍微有些区别，这里为 middle，而不是 middle - 1，
                     // 是因为下面使用了 left 变量作为堆顶元素的访问下标，为了使 left 计算正确
                     // 之所以这里让 right = middle, 是因为在这个扑克牌的逻辑中，当前 pork 只能落在比它大的且是最左边的元素上。
+                    // 其实是为了找到一个比当前元素大的最左边的元素，落上去或者说叫替换
                     // 所以比 pork 小的话, 左指针 left 可以 ++，定位到最后一个比它大的元素时和跟他相等的元素时，right 右指针需要在此停住
                     // 以满足停在手中的扑克牌最左侧的上面的要求，请查看考 md 文件中的扑克牌摆放示意图
                 } else if (top[middle] < pork) {

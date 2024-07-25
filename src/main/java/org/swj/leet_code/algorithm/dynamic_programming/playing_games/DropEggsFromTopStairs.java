@@ -26,8 +26,8 @@ public class DropEggsFromTopStairs {
             Arrays.fill(arr, -1);
         }
         this.n = N;
-        //return dp(k, N);
-        return dp2(k, N);
+        return dp(k, N);
+        // return dp2(k, N);
     }
 
     int n;
@@ -126,17 +126,17 @@ public class DropEggsFromTopStairs {
     public static void main(String[] args) {
         DropEggsFromTopStairs instance = new DropEggsFromTopStairs();
         int k = 1, n = 2;
-        System.out.println(instance.superEggDrop(k, n));
-        k = 2;
-        n = 6;
-        System.out.println(instance.superEggDrop(k, n));
+        // System.out.println(instance.superEggDrop(k, n));
+        // k = 2;
+        // n = 6;
+        // System.out.println(instance.superEggDrop(k, n));
 
-        k = 3;
-        n = 14;
-        System.out.println(instance.superEggDrop(k, n));
+        // k = 3;
+        // n = 14;
+        // System.out.println(instance.superEggDrop(k, n));
 
-        k = 3;
-        n = 10;
+        k = 7;
+        n = 10000;
         System.out.println(instance.superEggDrop(k, n));
     }
 }

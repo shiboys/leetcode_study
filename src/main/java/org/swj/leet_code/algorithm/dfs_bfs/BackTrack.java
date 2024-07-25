@@ -508,6 +508,7 @@ public class BackTrack {
 
     /**
      * 全排列 leetcode 46 题
+     * 
      * @param nums
      * @param list
      */

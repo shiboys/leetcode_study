@@ -94,11 +94,11 @@ public class MinEditingDistance {
 
     public static void main(String[] args) {
         MinEditingDistance instance = new MinEditingDistance();
-        String word1 = "horse";
-        String word2 = "ros";
+        String word1 = "sea";
+        String word2 = "eat";
         System.out.println(instance.minDistance(word1, word2));
-        word1 = "intention";
-        word2 = "execution";
+        word1 = "";
+        word2 = "a";
         System.out.println(instance.minDistance(word1, word2));
         System.out.println(instance.minDistance_dpTable(word1, word2));
         System.out.println(instance.minDistance_dpNode(word1, word2));

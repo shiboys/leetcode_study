@@ -20,12 +20,17 @@ import java.util.Map;
  *        with at most k stops. If there is no such route, return -1.
  */
 public class FlightWithCheapestPrice {
+
+    // 1 <= price[i] <= 10^4, 1 <= n <= 100
+    static final int DV = 1000001;
+
     int src;
     int dst;
 
     Map<Integer, List<int[]>> indegreeMap;
 
     int[][] memo;
+
     /**
      * 
      * @param n       城市数量
@@ -40,9 +45,9 @@ public class FlightWithCheapestPrice {
         K++;
         this.src = src;
         this.dst = dst;
-        memo = new int[n][K+1];
-        for(int[] arr: memo) {
-            Arrays.fill(arr, -100);
+        memo = new int[n][K + 1];
+        for (int[] arr : memo) {
+            Arrays.fill(arr, DV);
         }
         indegreeMap = new HashMap<>();
         // 初始化入度 map ，将 航班信息转换成 入度信息
@@ -73,7 +78,7 @@ public class FlightWithCheapestPrice {
         if (k == 0) { // 中转次数用完了。
             return -1;
         }
-        if(memo[dst][k] != -100) {
+        if (memo[dst][k] != DV) {
             return memo[dst][k];
         }
         int res = Integer.MAX_VALUE;
@@ -119,7 +124,7 @@ public class FlightWithCheapestPrice {
         };
         System.out.println(instance.findCheapestPrice(n, src, dst, flights, k));
 
-        k=0;
+        k = 0;
         System.out.println(instance.findCheapestPrice(n, src, dst, flights, k));
     }
 

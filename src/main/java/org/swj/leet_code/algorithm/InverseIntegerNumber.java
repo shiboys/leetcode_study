@@ -3,14 +3,15 @@ package org.swj.leet_code.algorithm;
 /**
  * @author shiweijie
  * @version 1.0.0
- * @since 2023/03/03 16:29 
- * 整数反转 解题思路：跟 String to Int 有点类似，在循环中 除以 10 得到结果和mod，然后反转的数字 乘以10+余数
+ * @since 2023/03/03 16:29
+ *        整数反转 解题思路：跟 String to Int 有点类似，在循环中 除以 10 得到结果和mod，然后反转的数字 乘以10+余数
  */
 public class InverseIntegerNumber {
 
   public int inverseNumber(int num) {
     int inverseNum = 0;
     int opNum = num;
+    // 这个判断有问题，如果 num == Integer.MIN_VALUE ，这个转成正数就会溢出了,
     if (num < 0) {
       opNum = -num;
     }
@@ -33,6 +34,7 @@ public class InverseIntegerNumber {
 
   /**
    * 这个算法比上面灵活在不用计算 Integer.maxValue; 上面的算法其实也不需要正负来回转化
+   * 
    * @param x
    * @return
    */
@@ -44,6 +46,7 @@ public class InverseIntegerNumber {
       x /= 10;
       result = result * 10 + mod;
     }
+    // 这个会出现溢出
     if (result > Integer.MAX_VALUE || result < Integer.MIN_VALUE) {
       return 0;
     }
@@ -53,14 +56,19 @@ public class InverseIntegerNumber {
   public static void main(String[] args) {
     int i = 123;
     InverseIntegerNumber iin = new InverseIntegerNumber();
-    /*System.out.println(iin.inverseNumber(i));
-    i = -123;
-    System.out.println(iin.inverseNumber(i));
-    i = 120;
-    System.out.println(iin.inverseNumber(i));
-    i = 1534236469;
-    System.out.println(iin.inverseNumber(i));*/
-    System.out.println(iin.reverse(-123));
-    System.out.println(iin.reverse(Integer.MIN_VALUE));
+    /*
+     * System.out.println(iin.inverseNumber(i));
+     * i = -123;
+     * System.out.println(iin.inverseNumber(i));
+     * i = 120;
+     * System.out.println(iin.inverseNumber(i));
+     * i = 1534236469;
+     * System.out.println(iin.inverseNumber(i));
+     */
+    // System.out.println(iin.reverse(-123));
+    // System.out.println(iin.reverse(Integer.MIN_VALUE));
+
+    System.out.println(iin.inverseNumber(Integer.MIN_VALUE));
+    System.out.println(iin.inverseNumber(1534236469));
   }
 }
