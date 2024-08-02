@@ -27,7 +27,7 @@ public class Bipartite {
         int n = graph.length;
         visited = new boolean[n];
         color = new boolean[n];
-        // 遍历所有节点，因为有些节点可能独立于图中没有连同
+        // 遍历所有节点，因为有些节点可能独立于图中没有连通
         for (int i = 0; i < n; i++) {
             if (!visited[i]) {
                 traverseBipartite(graph, i);

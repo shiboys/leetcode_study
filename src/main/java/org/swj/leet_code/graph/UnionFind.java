@@ -40,7 +40,7 @@ public class UnionFind {
             return rootP == rootQ;
         }
 
-        // 带路径压缩的查找
+        // 带路径压缩的查找，将查找路径上的每一个 parent 都连通到 root
         int find(int x) {
             if (x != parent[x]) {
                 parent[x] = find(parent[x]);
@@ -115,7 +115,7 @@ public class UnionFind {
         // 此时遍历 board ，所有没有跟 dummy 相连的，都可以被替换掉
         for (int i = 1; i < m - 1; i++) {
             for (int j = 1; j < n - 1; j++) {
-                if (!uf.connected(dummy, i * n + j)) {
+                if (board[i][j] == 'O' && !uf.connected(dummy, i * n + j)) {
                     board[i][j] = 'X';
                 }
             }
@@ -152,7 +152,7 @@ public class UnionFind {
             if (e.charAt(1) == '!') {
                 int x = e.charAt(0) - 'a';
                 int y = e.charAt(3) - 'a';
-                if (uf.connected(x, y)) { // uf 判断是相连的，但是条件给出的是不相连，因此这里是不满足条件的
+                if (uf.connected(x, y)) { // uf 判断是相连的，但是当前的条件 e 给出的是不相连，因此这里是不满足条件的
                     return false;
                 }
             }
@@ -174,8 +174,6 @@ public class UnionFind {
         // 最后保证只形成了一棵树，只有一个连通分量。
         return uf.count() == 1;
     }
-
-
 
     public static void main(String[] args) {
         String[] equations = new String[] {

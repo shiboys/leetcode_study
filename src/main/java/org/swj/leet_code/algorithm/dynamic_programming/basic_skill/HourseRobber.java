@@ -61,7 +61,6 @@ public class HourseRobber {
         return dp[0];
     }
 
-
     /**
      * 打家劫舍 数组迭代解法2
      *
@@ -73,10 +72,10 @@ public class HourseRobber {
         int n = nums.length;
         int[] dp = new int[n + 2];
         // dp[n]=0
-        for (int i = 2; i < n+2 ; i++) {
-            dp[i] = Math.max(dp[i - 1], nums[i-2] + dp[i - 2]);
+        for (int i = 2; i < n + 2; i++) {
+            dp[i] = Math.max(dp[i - 1], nums[i - 2] + dp[i - 2]);
         }
-        return dp[n+1];
+        return dp[n + 1];
     }
 
     /**
@@ -160,36 +159,37 @@ public class HourseRobber {
 
     public int uniquePaths(int m, int n) {
         /**
-         解题思路
-         我看到向下和向右，我想起来 leetcode 22 题，一些列 n 对合法的小括号的 回溯解法
-         先尝试放左括号，然后尝试放右括号，组成所有合法的括号对，
-         然后就尝试着用回溯法解决，没想到确实可以。
-         但是但是，回溯法超时了
-         当然动态规划也能解决,但是动态规划没有超时，当然了，O(N) 的时间，肯定比回溯法的时间复杂度更低
+         * 解题思路
+         * 我看到向下和向右，我想起来 leetcode 22 题，一些列 n 对合法的小括号的 回溯解法
+         * 先尝试放左括号，然后尝试放右括号，组成所有合法的括号对，
+         * 然后就尝试着用回溯法解决，没想到确实可以。
+         * 但是但是，回溯法超时了
+         * 当然动态规划也能解决,但是动态规划没有超时，当然了，O(N) 的时间，肯定比回溯法的时间复杂度更低
          */
         memoPath = new int[m][n];
-        for(int[] arr : memoPath) {
-            Arrays.fill(arr,-1);
+        for (int[] arr : memoPath) {
+            Arrays.fill(arr, -1);
         }
 
-        return dp(m-1,n-1);
+        return dp(m - 1, n - 1);
     }
+
     int[][] memoPath;
 
-    //dp(i,j) 的定义为 从 (0,0) 到 (i,j) 的所有唯一路径数
-    int dp(int i,int j) {
-        if(i<0 || j <0) {
+    // dp(i,j) 的定义为 从 (0,0) 到 (i,j) 的所有唯一路径数
+    int dp(int i, int j) {
+        if (i < 0 || j < 0) {
             return 0;
         }
-        if(i==0 && j==0) {
+        if (i == 0 && j == 0) {
             return 1;
         }
-        if(memoPath[i][j] != -1) {
+        if (memoPath[i][j] != -1) {
             return memoPath[i][j];
         }
-        //状态转移公式，到 finish 的路径数=到 finish.left 的路径数+到 finish.top 的路径数
+        // 状态转移公式，到 finish 的路径数=到 finish.left 的路径数+到 finish.top 的路径数
         // 这道题的解法跟 跳楼梯 是一模一样的，都是将两种可能方式的动态规划结果进行相加
-        memoPath[i][j] = dp(i-1,j) + dp(i,j-1);
+        memoPath[i][j] = dp(i - 1, j) + dp(i, j - 1);
         return memoPath[i][j];
     }
 
@@ -206,7 +206,6 @@ public class HourseRobber {
         uniquePathBackTrack(grid, i, j + 1, counter);
     }
 
-
     /**
      * 打家劫舍 III
      * 小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 root 。
@@ -215,30 +214,32 @@ public class HourseRobber {
      * 如果 两个直接相连的房子在同一天晚上被打劫 ，房屋将自动报警。
      *
      * 给定二叉树的 root 。返回 在不触动警报的情况下 ，小偷能够盗取的最高金额 。
+     * 
      * @param root
      * @return
      */
     public int rob3(TreeNode root) {
         /**
-         沿二叉树进行抢劫
+         * 沿二叉树进行抢劫
          */
         return robTree(root);
     }
+
     // 使用 map 作为备忘录
-    Map<TreeNode,Integer> memoMap = new HashMap<>();
+    Map<TreeNode, Integer> memoMap = new HashMap<>();
 
     int robTree(TreeNode node) {
-        if(node == null ) {
+        if (node == null) {
             return 0;
         }
-        int res =0;
-        if(memoMap.containsKey(node)) {
+        int res = 0;
+        if (memoMap.containsKey(node)) {
             return memoMap.get(node);
         }
 
         // 抢
-        int doIt = node.val + (node.left == null? 0 : robTree(node.left.left)+ robTree(node.left.right))
-            + (node.right == null ? 0 : robTree(node.right.left) + robTree(node.right.right));
+        int doIt = node.val + (node.left == null ? 0 : robTree(node.left.left) + robTree(node.left.right))
+                + (node.right == null ? 0 : robTree(node.right.left) + robTree(node.right.right));
         // 当前节点不抢劫
         int notDo = robTree(node.left) + robTree(node.right);
         res = Math.max(doIt, notDo);
@@ -285,35 +286,34 @@ public class HourseRobber {
          * 这不就用上了最左侧的二分搜索了吗？
          * 然后最后一个问题，如何在我的抢劫能力=m 的情况下，抢劫最多的房子，这正好是动态规划的拿手好戏
          */
-        if(nums == null || nums.length<1) {
+        if (nums == null || nums.length < 1) {
             return 0;
         }
         cache4 = new int[nums.length];
-        int max =0;
-        //1 <= nums[i] <= 109
-        for(int num: nums) {
-            if(num > max) {
+        int max = 0;
+        // 1 <= nums[i] <= 10^9
+        for (int num : nums) {
+            if (num > max) {
                 max = num;
             }
         }
-        int left =0, right = max+1;
+        int left = 0, right = max + 1;
         // 使用最左侧的二分查找来找到 满足 k 的最小 偷窃能力
-        while(left < right) {
-            int mid = left +(right-left)/2;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
             Arrays.fill(cache4, -1);
             // 在二分法里面调用动态规划查找 mid 能力下的最大能够抢劫的房屋数量
             int res = dpOfMaxHousesWithGivenRobberPower(nums, mid, 0);
-            if(res > k) {
+            if (res > k) {
                 right = mid;
-            } else if(res < k) {
-                left = mid+1;
-            } else if(res == k) {// 根据最左原则
+            } else if (res < k) {
+                left = mid + 1;
+            } else if (res == k) {// 根据最左原则
                 right = mid;
             }
         }
         return left;
     }
-
 
     int[] cache4;
 
@@ -335,7 +335,7 @@ public class HourseRobber {
             return cache4[i];
         }
         int res = -1;
-        if (nums[i] > m) { // 房屋 nums[i] 的财富大于当前的抢劫能力，则不与抢劫
+        if (nums[i] > m) { // 房屋 nums[i] 的财富大于当前的抢劫能力，则不抢劫
             res = dpOfMaxHousesWithGivenRobberPower(nums, m, i + 1);
         } else {
             // 此时的房子 nums[i] 是可以被抢劫的，有两种方案，抢劫或者不抢劫，这就是打家劫舍第一个最入门的问题
@@ -353,7 +353,7 @@ public class HourseRobber {
         System.out.println(hr.uniquePaths(3, 2));
         System.out.println(hr.uniquePaths(3, 7));
 
-        int[] arr = new int[] {2,3,5,9};
+        int[] arr = new int[] { 2, 3, 5, 9 };
         System.out.println(hr.minCapability(arr, 2));
     }
 }

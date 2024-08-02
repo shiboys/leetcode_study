@@ -56,7 +56,7 @@ int[] dijkstra(int start, List<Integer>[] graph) {
 
 ```
 
-**相比于普通的 BFS 算法，我们可能会有一下疑问**
+**相比于普通的 BFS 算法，我们可能会有以以下疑问**
 
 **1、没有 `visited` 集合记录已访问的节点，所以一个节点会被访问多次，会被多次加入队列，那会不会导致队列永远不为空，造成死循环？**
 
@@ -68,7 +68,7 @@ int[] dijkstra(int start, List<Integer>[] graph) {
 
 对于这个问题，我们看看算法的 offer 和 poll 的时机
 
-`while`  循环没执行一次，都会 poll 弹出一个元素，但是如果想往队列里面插入元素，可能有很多限制了，必须满足下面这个条件：
+`while`  循环每执行一次，都会 poll 弹出一个元素，但是如果想往队列里面插入元素，可能有很多限制了，必须满足下面这个条件：
 ```java
 // 看看从 curNode 达到 nextNode 的距离是否会更短
 if (distTo[nextNodeID] > distToNextNode) {

@@ -193,7 +193,7 @@ public class ShortestPath {
 
                 // 经过测试发现，这里的 currMaxEffort 没有 != maxEfforTo[nodeX][nodeY], 这是因为
                 // 优先级队列弹出的 x,y 节点的最小 effor 总是 maxEfforTo[nodeX][nodeY],
-                // 而如果是 普通队列，则需要加此判断，因为普通队列是按照先进先出的顺序，陷进去的同一个位置元素的权重，可能被后进去的同一个位置的更小的权重替代
+                // 而如果是 普通队列，则需要加此判断，因为普通队列是按照先进先出的顺序，先进去的同一个位置元素的权重，可能被后进去的同一个位置的更小的权重替代
                 // 因此需要增加次判断，用来防止无效的的节点进入队列
                 // if (currMaxEffort != maxEfforTo[nodeX][nodeY]) {
                 // System.out.println("maxEffor=" + currMaxEffort + ", pathTo=" +
@@ -316,7 +316,7 @@ public class ShortestPath {
                 for (double[] edge : graph[to]) {
                     int nextNode = (int) edge[0];
                     double nextMaxWeight = edge[1];
-                    if(to != startNode) {
+                    if (to != startNode) {
                         nextMaxWeight *= weight;
                     }
                     if (distanceTo[nextNode] < nextMaxWeight) {
@@ -358,8 +358,8 @@ public class ShortestPath {
         succProb = new double[] { 0.5, 0.5, 0.3 };
         System.out.println(instance.maxProbability(n, edges, succProb, startNode, endNode));
 
-        edges = new int[][] { { 0, 1 }};
-        succProb = new double[] { 0.5};
+        edges = new int[][] { { 0, 1 } };
+        succProb = new double[] { 0.5 };
 
         System.out.println(instance.maxProbability(n, edges, succProb, startNode, endNode));
     }

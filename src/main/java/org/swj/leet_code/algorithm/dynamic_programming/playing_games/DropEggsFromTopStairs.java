@@ -25,12 +25,9 @@ public class DropEggsFromTopStairs {
         for (int[] arr : memo) {
             Arrays.fill(arr, -1);
         }
-        this.n = N;
         return dp(k, N);
         // return dp2(k, N);
     }
-
-    int n;
 
     int dp(int k, int n) {
         // base case
@@ -108,7 +105,7 @@ public class DropEggsFromTopStairs {
 
             int broken = dp2(k - 1, mid - 1); // 鸡蛋破碎的子问题，破碎了，则下一层进行尝试
             int notBroken = dp2(k, n - mid); // 没有破碎则选择 剩下 的 n-mid 层楼
-            // 根据该公式推导 res = min(res,1+max(broken,not_brokedn))
+            // 根据该公式推导 res = min(res,1+max(broken,not_broken))
             if (broken >= notBroken) {
                 right = mid;
                 res = Math.min(res, 1 + broken);

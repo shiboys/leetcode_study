@@ -38,6 +38,7 @@ public class Prim {
 
             int weight = edge[2];
             totalWeight += weight;
+            inMST[to] = true;
             // 加点 to 加入后，进行新一轮的切分，会产生更多的横切边
             cut(to);
         }

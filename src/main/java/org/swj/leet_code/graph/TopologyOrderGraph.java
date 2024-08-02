@@ -170,7 +170,7 @@ public class TopologyOrderGraph {
         int[] indegree = new int[numCourses];
         for (int[] courses : prerequisites) {
             // [1,0]
-            int from = courses[1], to = courses[0];
+            int to = courses[0];
             indegree[to]++;
         }
         return indegree;
@@ -208,7 +208,7 @@ public class TopologyOrderGraph {
         }
         // 路径中的所有节点并非环中的所有节点，取环中的所有节点
         int cycleStartIndex = -1;
-        for (int i=0;i < cyclePathNodeList.size();i++) {
+        for (int i = 0; i < cyclePathNodeList.size(); i++) {
             // 都是在路径上的，且当前节点 i 为环的入口
             if (cycleNode == cyclePathNodeList.get(i)) {
                 cycleStartIndex = i; // 首次找到入口
@@ -240,6 +240,7 @@ public class TopologyOrderGraph {
             hasCycle = true;
             // 也可以在这个地方收集所有的 onPath 为 true 的节点
             cycleNode = s;
+            // 为啥还要再加入集合？？？
             cyclePathNodeList.add(s);
         }
         if (visited[s] || hasCycle) {
@@ -257,12 +258,14 @@ public class TopologyOrderGraph {
 
     public static void main(String[] args) {
         int[][] prerequisites = new int[][] {
-                new int[] { 1, 0 }
+                { 1, 0 },
+                { 1, 2 },
+                { 0, 1 }
         };
         TopologyOrderGraph instance = new TopologyOrderGraph();
 
         // System.out.println(instance.canFinish(2, prerequisites));
-        System.out.println(instance.canFinishBFS(2, prerequisites));
+        System.out.println(Arrays.toString(instance.findOrderBfs(3, prerequisites)));
 
         prerequisites = new int[][] {
                 new int[] { 1, 0 },

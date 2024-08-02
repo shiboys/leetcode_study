@@ -14,7 +14,7 @@ import java.util.List;
 public class IteratorMove {
 
     /**
-     * leetcode 251 题
+     * leetcode 251 题 plus
      * 设计并实现一个能战展开二维向量的迭代器。该迭代器需要支持 next 和 hasNext 两种操作
      * Vector2D iterator = new Vector2D([[1,2],[3],[4]]);
      * 
@@ -41,7 +41,7 @@ public class IteratorMove {
             if (i >= m || i < 0) {
                 return false;
             }
-            return true;
+            return vector[i].length > 0;
         }
 
         @Override

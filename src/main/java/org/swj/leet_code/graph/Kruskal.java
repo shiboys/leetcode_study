@@ -15,7 +15,7 @@ import java.util.List;
 public class Kruskal {
 
     /**
-     * leetcode 第 1135 题，连通所有城市的最小成本
+     * leetcode 第 1135 题，连通所有城市的最小成本(plus)
      * 使用 Kruskal 最小生成树的解法
      * 
      * @param n
@@ -38,7 +38,7 @@ public class Kruskal {
             if (uf.connected(w, v)) {
                 continue;
             }
-            uf.connected(w, v);
+            uf.union(w, v);
             // 增加权重
             totalWeight += weight;
         }
@@ -66,7 +66,7 @@ public class Kruskal {
         });
 
         // 执行 Kruskal 算法
-        UnionFind.UF uf = new UnionFind.UF(m);
+        UF uf = new UF(m);
         int mst = 0;
         for (int[] edge : edges) {
             int v = edge[0];
@@ -80,5 +80,62 @@ public class Kruskal {
         }
 
         return uf.count() == 1 ? mst : -1;
+    }
+
+    class UF {
+        private int count;
+        private int[] parent;
+
+        public UF(int n) {
+            this.count = n;
+            this.parent = new int[n];
+            for (int i = 0; i < n; i++) {
+                this.parent[i] = i;
+            }
+        }
+
+        public void union(int p, int q) {
+            System.out.println("union " + p + ", " + q);
+            int rootP = findParent(p);
+            int rootQ = findParent(q);
+
+            // 这里有一个很重要的判断
+            if (rootP == rootQ) { // 已经联通了，不需要再联通
+                return;
+            }
+            System.out.println("rootP= " + rootP + ", rootQ=" + rootQ);
+            parent[rootQ] = rootP;
+            // 连通分量 --
+            this.count--;
+        }
+
+        public boolean connected(int p, int q) {
+            int rootP = findParent(p);
+            int rootQ = findParent(q);
+            return rootP == rootQ;
+        }
+
+        /**
+         * 将查询路径上的所有父节点打平
+         */
+        public int findParent(int x) {
+            // 记住，这里不是 while 而是 if
+            if (x != parent[x]) {
+                parent[x] = findParent(parent[x]);
+            }
+            return parent[x];
+        }
+
+        public int count() {
+            return count;
+        }
+    }
+
+    public static void main(String[] args) {
+        int[][] distances = new int[][] {
+                { 0, 0 }, { 2, 2 }, { 3, 10 }, { 5, 2 }, { 7, 0 }
+        };
+        Kruskal instance = new Kruskal();
+        System.out.println("min weight :" + instance.minCostConnectPoints(distances));
     }
 }
