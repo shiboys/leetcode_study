@@ -231,16 +231,17 @@ public class LinkedListOther {
         if (n == 1) {
             return true;
         }
-        while (n >= 4) {
+        while (n >= 5) {
             if (n % 2 == 0) {
                 n = n / 2;
             } else if (n % 3 == 0) {
                 n /= 3;
             } else if (n % 5 == 0) {
                 n /= 5;
+            } else {
+                return false;
             }
         }
-        System.out.println("n is " + n);
         if (isBaseUgly(n)) {
             return true;
         }
@@ -304,6 +305,7 @@ public class LinkedListOther {
                 product5 = 5 * ugly[p5];
                 p5++;
             }
+            // 有点像体制内的工作，只允许体制内的子弟继承，不允许外来人员接入。
         }
         return ugly[n];
     }
