@@ -271,5 +271,8 @@ public class MedianFinderLeetCode {
       instance.addNum(val);
       System.out.println(instance.findMedian());
     }
+
+
+    System.out.println(1e9 == Math.pow(10,9));
   }
 }

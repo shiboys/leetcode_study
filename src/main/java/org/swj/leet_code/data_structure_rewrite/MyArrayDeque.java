@@ -110,6 +110,7 @@ public class MyArrayDeque<E> {
      * @param newSize
      */
     private void resize(int newSize) {
+        // 其实应该可以缩容
         if (newSize < size) {
             throw new IllegalArgumentException("newSize is smaller than size. size=" + size + ", newSize=" + newSize);
         }

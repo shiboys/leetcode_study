@@ -143,7 +143,7 @@ public class LongestPalindromeSubSeq {
     String s = "sssss";
     LongestPalindromeSubSeq instance = new LongestPalindromeSubSeq();
     System.out.println(instance.longestPalindromeSubSeqNoDp(s));
-    s = "abcea";
+    s = "acaaba";
     System.out.println(instance.longestPalindromeSubSeqNoDp(s));
     System.out.println("min insertion:");
     System.out.println(instance.minInsertion(s));

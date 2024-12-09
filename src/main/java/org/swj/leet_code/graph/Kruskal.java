@@ -17,7 +17,9 @@ public class Kruskal {
     /**
      * leetcode 第 1135 题，连通所有城市的最小成本(plus)
      * 使用 Kruskal 最小生成树的解法
-     * 
+     * Kruskal 用连通分量来解决最小生成树的问题，使用了连通分量，边就不要考虑邻接的问题，
+     * 也就是不需要使用 adj(from) 或者 graph[from] 的问题，直接判断所有的边全部使用连通分量连接
+     * 在一起+排除重复连通的边，就可以得到最小生成树
      * @param n
      * @param connections
      * @return
@@ -25,7 +27,7 @@ public class Kruskal {
     public int mimimunCost(int n, int[][] connections) {
         // 因为题中给的连通节点起始索引为 1。
         UnionFind.UF uf = new UnionFind.UF(n + 1);
-        // 首先将 connections 按照权重进行排序
+        // 首先将 connections 按照权重进行从小到大排序
         Arrays.sort(connections, (a, b) -> {
             return a[2] - b[2];
         });
@@ -95,7 +97,6 @@ public class Kruskal {
         }
 
         public void union(int p, int q) {
-            System.out.println("union " + p + ", " + q);
             int rootP = findParent(p);
             int rootQ = findParent(q);
 

@@ -290,6 +290,15 @@ public class RandomAlgorithm {
         res ^= n;
         for (int i = 0; i < n; i++) {
             // 和其他的元素、索引做异或
+            /**
+             * 比如 case1 [3,0,1]
+             * 0,1 通过 ^ 运算被消除掉，3 通过和 n 做异或运算消除掉
+             * 所以只剩下 2 了。
+             * 其实这个有点难懂了，比较简单的表达是 res=0
+             * res = res ^ (num[i] ^ i) ^ (nums[i+1] ^ (i+1));
+             * 这样就只剩下 n 和 那个缺失的数 x 的异或运算结果
+             * 最后跳出循环后 res ^ n 则只剩下 x 了
+             */
             res ^= nums[i] ^ i;
         }
         return res;

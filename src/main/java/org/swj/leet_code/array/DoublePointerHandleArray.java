@@ -18,7 +18,7 @@ import java.util.TreeMap;
 public class DoublePointerHandleArray {
 
     /**
-     * leetcode 26 题，有序数组中，原地删除重复重复项，并返回删除后的数组长度
+     * leetcode 26 题，有序数组中，原地删除重复项，并返回删除后的数组长度
      *
      * @param nums
      * @return
@@ -398,10 +398,10 @@ public class DoublePointerHandleArray {
          * 输出：5, nums = [1,1,2,2,3]
          */
 
-        long v = (((long)-3) << 32);
+        long v = (((long) -3) << 32);
         v |= -1;
 
-        System.out.println("v = " + v + ",i = " + (v >> 32) +", j = " + (int)v);
+        System.out.println("v = " + v + ",i = " + (v >> 32) + ", j = " + (int) v);
         int[] arr = new int[] { 1, 1, 1, 2, 2, 3 };
 
         DoublePointerHandleArray instance = new DoublePointerHandleArray();

@@ -127,7 +127,7 @@ public class DigitProblems {
                 int multi = (num1.charAt(i) - '0') * (num2.charAt(j) - '0');
                 // 乘积在 res 上对应的位置
                 int p1 = i + j, p2 = i + j + 1;
-                // 可以再看看图，61+12 =>1 +12 =13 => res[p2]=3, resp[p] += sum/10;
+                // 可以再看看图，61+12=73=>1 +12 =13 => res[p2]=3, resp[p] += sum/10;
                 int sum = multi + res[p2];
                 res[p2] = sum % 10;
                 res[p1] += sum / 10;
@@ -259,6 +259,16 @@ public class DigitProblems {
         return res;
     }
 
+    long trailingZeroes3(long n) {
+        long sum = 0;
+        long dividor = 5;
+        while (n >= dividor) {
+            n = n / dividor;
+            sum += n;
+        }
+        return sum;
+    }
+
     public long trailingZeros2(long n) {
         long res = 0;
         for (long dividor = 5; dividor <= n; dividor *= 5) {
@@ -283,6 +293,9 @@ public class DigitProblems {
         // return 4;
         // }
         long left = leftBound(k);
+        //我第二次提交用的是 long right = leftBound(k+1) 求第 k+1 个0的最左侧个数
+        // 然后返回 (int)(right-left) 就不用写rightbound 了，但是这个 trailingZero 用的是
+        // trailingZeroes3,trailingZeroes2 测试不通过，不知道为啥
         long right = rightBound(k);
         return (int) (right - left + 1);
     }

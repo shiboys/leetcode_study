@@ -71,7 +71,7 @@ public class BinarySearchSkill {
     return nums[left] == target ? left : -1;
   }
 
-  int rightBound(int[] nums, int target) {
+  int rightBound(int[] nums, int target, boolean check) {
     int left = 0, right = nums.length;
     while (left < right) {
       int mid = left + (right - left) / 2;
@@ -87,7 +87,10 @@ public class BinarySearchSkill {
     if (pos < 0 || pos > nums.length - 1) {
       return -1;
     }
-    return nums[pos] == target ? pos : -1; // 或者是 left -1 因为 left == right 是退出条件
+    // 如果严格检查，则返回比对结果，不符合则返回 -1；如果不严格，则返回 大于等于 target 的元素索引
+    if (check)
+      return nums[pos] == target ? pos : -1; // 或者是 left -1 因为 left == right 是退出条件
+    return nums[pos] == target ? pos :  right;
   }
 
   int rightBound2(int[] nums, int target) {
@@ -166,7 +169,10 @@ public class BinarySearchSkill {
     //testIndexWeightWithBinarySearch(instance);
 
     testOtherBinarySearch(instance);
+    // -1 & 15 == 15 刷新了我的认知，我知道是 15，但是正负不能确定，没想到逻辑与运算把符号位也干掉了
+    System.out.println("-1&15=" + (-1 & 15));
 
+    System.out.println((int)Math.ceil(12/10));
   }
 
   private static void testIndexWeightWithBinarySearch(BinarySearchSkill instance) {
@@ -207,6 +213,9 @@ public class BinarySearchSkill {
 
     int[] arr = new int[] {2, 4, 6, 8, 10};
     int idx = instance.leftBound(arr, 5);
+    System.out.println(arr[idx]);
+
+    idx = instance.rightBound(arr, 7, false);
     System.out.println(arr[idx]);
   }
 

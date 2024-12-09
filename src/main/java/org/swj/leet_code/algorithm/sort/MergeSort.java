@@ -162,6 +162,7 @@ public class MergeSort {
   public static void main(String[] args) {
     int[] arr = {6, 1, 2, 7, 3, 4, 5, 10, 8};
     MergeSort instance = new MergeSort();
+    instance.temp = new int[arr.length];
     System.out.println("before sort:" + Arrays.toString(arr));
     //instance.quickSortSimple(arr);
     instance.mergeSort(arr);
