@@ -19,12 +19,23 @@ public class SortTest {
         SortTest instance = new SortTest();
         int[] arr = instance.randomGenerateArray(10);
         TraditionalSort ts = new TraditionalSort();
+
         // instance.testSort(arr, ts::insertSort);
 
-        arr = new int[] {
-                3, 2, 4, 1
-        };
-        instance.testSort(arr, ts::bubbleSort);
+        // arr = new int[] {3, 2, 4, 1};
+        // instance.testSort(arr, ts::bubbleSort);
+
+        // instance.testSort(arr, ts::insertSort);
+        System.out.println(Arrays.toString(arr));
+
+        QuickSort quickSort = new QuickSort();
+        for (int i = 1; i <= 10; i++) {
+            int[] copiedArr = Arrays.copyOf(arr, arr.length);
+            ts.insertSort(copiedArr);
+            int res = quickSort.bfprt(arr, i - 1);
+            System.out.println("插入排序法：第" + i + "小的元素是" + copiedArr[i - 1]);
+            System.out.println("buprt topK 方法：第" + i + "小的元素是" + res);
+        }
     }
 
     void testSort(int[] arr, Consumer<int[]> consumer) {
@@ -52,7 +63,7 @@ public class SortTest {
             throw new IllegalArgumentException(String.format("n is invalid range number.[n=%d]", n));
         }
         int[] res = new int[n];
-        int max = n * 10;
+        int max = 10_000;
         for (int i = 0; i < n; i++) {
             res[i] = random.nextInt(max);
         }

@@ -46,6 +46,14 @@ public class QuickSortAndBST {
             sort(nums, p + 1, end);
         }
 
+        /**
+         * 这里的快速选择分区没有使用传统的 随机 pivot ，因为方法调用之前，使用了 shuffle 方式进行了数值重排
+         * QuickSort.partitionSimple2 这个方法使用了随机 pivot 
+         * @param nums
+         * @param start
+         * @param end
+         * @return
+         */
         private static int partition(int[] nums, int start, int end) {
             int pivot = nums[start];
             //int i = start; // 或者 i = start+1

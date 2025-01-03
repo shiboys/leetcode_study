@@ -103,6 +103,7 @@ public class StackQueue {
             return queue.poll();
         }
 
+        // peek 的功能
         public int top() {
             return topEle;
         }
@@ -113,7 +114,7 @@ public class StackQueue {
     }
 
     /**
-     * 数据流的中位数，leetcode 346 题
+     * 数据流的中位数，leetcode 346 题 ,plus 会员题目
      * 给定一个数据流和一个窗口大小，根据该滑动窗口的大小，计算其所有整数的移动平均值。
      * 
      * 输入：
@@ -255,6 +256,9 @@ public class StackQueue {
          * 看到这道题，我的想法是从中间将链表切断，后半部的链表装入栈中，然后跟前半步的链表节点重排。中点怎么查找？快慢指针呀，不是之前学过吗？
          * 在看了阿东的解法思路后，发现他是将全部链表装入栈中，然后边进行重排，边通过相交点判断中点，然后将中点之后的链表切断。这种想法不太容易想起来，还是我的想法比较容易理解
          * 所以我这里会写两个方法，首先写 阿东的方法，在写我的方法
+         * LCR 026. 重排链表 我重写了一版，不使用额外的空间实现的。PS：JDK 的 stack 底层用的是 Vector，性能比较低，推荐使用
+         * ArrayDeque
+         * 具有栈的 API 函数
          */
         ListNode p = head;
         Stack<ListNode> stack = new Stack<>();
@@ -268,7 +272,7 @@ public class StackQueue {
             ListNode lastNode = stack.pop();
             next = p.next;
             // 下面这两种请覆盖了链表的节点个个数为奇数或者偶数的请
-            if (lastNode == next /* 节点个数为偶数 */ || lastNode.next == next /* 节点个数为奇数 */) {
+            if (lastNode == next /* 节点个数为奇数(p 先走一步) */ || lastNode.next == next /* 节点个数为偶数 */) {
                 lastNode.next = null;
                 break;
             }
@@ -413,20 +417,20 @@ public class StackQueue {
             // 这里，我对 jdk 的 string.lastIndexOf 有了新的认识
             // "\txxx".lastIndexOf("\t") ==0,"\t\txxx".lastIndexOf("\t")==1,
             // "\t\t\txxx".lastIndexOf("\t")==2
-            // "xxx".lastIndexOf("\t") == -1
+            // "xxx".lastIndexOf("\t") == -1 ，表明 \t 是一个字符
             int level = path.lastIndexOf("\t") + 1;
             // 这个逻辑需要细细品味才能知晓其中的逻辑
             // 就是把兄弟路径还有侄子辈路径给 弹出，栈中只留父路径
             // 比如说现在 level ==2 ，那就是 "\t\txxx", 当前路径要是入栈，就必须将 "\t\t\txxx" 和 其他 "\t\txxx" 弹出去
             // 只留 "\txxx"。level ==1 时，stack 弹出到只剩一个，就是 dir 根目录，此时正好是 path 的父目录
-            while (level < stack.size()) { // 不应该是 <= 吗？不行，等于的话，比如 size = 1,此时会把根路径弹出
+            while (level < stack.size()) { // 不应该是 <= 吗？不行，等于的话，比如 size = 1，level==1,此时会把根路径弹出
                 stack.removeLast();
             }
             stack.addLast(path.substring(level));
             // 当前路径是一个文件路径，计算其绝对路径长度
             if (path.contains(".")) {
                 int pathLength = stack.stream().mapToInt(String::length).sum();
-                // 加上路径分隔符 / 的长度
+                // 加上路径分隔符 / 的长度, 也可以 += level
                 pathLength += stack.size() - 1;
                 maxLength = Math.max(pathLength, maxLength);
             }
@@ -522,7 +526,7 @@ public class StackQueue {
                 return;
             }
             int val = stack.pop();
-            if (val == minStk.peek() && !minStk.isEmpty()) {
+            if (!minStk.isEmpty() && val == minStk.peek()) {
                 minStk.pop();
             }
         }

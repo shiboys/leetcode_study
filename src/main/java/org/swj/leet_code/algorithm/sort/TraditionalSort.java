@@ -14,7 +14,7 @@ public class TraditionalSort {
     /**
      * 插入排序
      * 插入排序，其实就像我们打牌的时候，从后面的待排序的扑克里面选择一个扑克插入之前已排序的扑克中
-     * 初始化的时候，就是从 1 到 n-1 遍历将将元素插入到 0 到 n-2 的位置
+     * 初始化的时候，就是 i 从 1 到 n-1 遍历将将元素插入到 i-1 到 0 的位置
      * 怎么插入之前已排序，就是将比当前待插入元素大的元素向后移动一步，在待插入元素的数组中找到正确的位置 j
      * 将当前待插入的元素插入当前位置
      * 
@@ -27,19 +27,14 @@ public class TraditionalSort {
         int target;
         for (int i = 1; i < arr.length; i++) {
             target = arr[i];
+            int j = i - 1;
             // 从后往前变查找边移动待插入元素前面已经排好序的元素
-            for (int j = i - 1; j >= 0; j--) { // 从后往前遍历，查找插入的位置
-                if (arr[j] > target) {
-                    // 向后移动元素
-                    arr[j + 1] = arr[j];
-                } else { // 找到插入的位置
-                    // 此时 arr[j+2] == arr[j+1] 因此 j+1 是重复元素，也是需要插入的位置
-                    if (j + 1 != i) {
-                        arr[j + 1] = target;
-                    }
-                    break;
-                }
+            for (; j >= 0 && arr[j] > target; j--) { // 从后往前遍历，查找插入的位置
+                // 向后移动元素
+                arr[j + 1] = arr[j];
             }
+             //则j + 1 为insert需要插入的元素
+            arr[j + 1] = target;
         }
     }
 

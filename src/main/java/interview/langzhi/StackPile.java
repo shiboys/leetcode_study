@@ -1,5 +1,7 @@
 package interview.langzhi;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * @author shiweijie
  * @version 1.0.0
@@ -8,9 +10,9 @@ package interview.langzhi;
 public class StackPile<T> {
 
   private int size;
-  Node<T> head, tail;
+  protected Node<T> head, tail;
 
-  public void push(T data) {
+  public Node<T> push(T data) {
     Node<T> node = new Node<>(data);
     if (head == null) {
       head = node;
@@ -25,6 +27,7 @@ public class StackPile<T> {
       oldHead.up = node;
     }
     size++;
+    return node;
   }
 
   public T pop() {
@@ -70,6 +73,10 @@ public class StackPile<T> {
     return size;
   }
 
+  public boolean isEmpty() {
+    return size == 0;
+  }
+
   public static void main(String[] args) {
     StackPile<Integer> instance = new StackPile<>();
 
@@ -91,7 +98,7 @@ public class StackPile<T> {
 //    printQueue(instance);
   }
 
-  static <T> void printQueue(StackPile<T> queue) {
+  public static <T> void printQueue(StackPile<T> queue) {
     Node<T> h = queue.head;
     Node<T> t = queue.tail;
     System.out.println("正序:");

@@ -135,6 +135,7 @@ public class MonotonyStackQueue {
 
         // 返回队列中的最大值
         int max();
+        
     }
 
     static class MonotonicQueueImpl implements MonotonicQueue {
@@ -818,4 +819,6 @@ public class MonotonyStackQueue {
         arr = new int[] { 2, 2, 2, 1 };
         System.out.println(instance.minIncrementForUnique2(arr));
     }
+
+    
 }
