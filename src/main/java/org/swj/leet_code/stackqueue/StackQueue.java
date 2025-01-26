@@ -669,7 +669,7 @@ public class StackQueue {
          */
 
         // 想了好久，试了好几种办法，都没搞定所有用例。
-        // 没办法了，先用笨办法搞一波
+        // 没办法了，先用笨办法搞一波。效率差在两个地方，1、substring，2. toCharArray()
         int maxLen = 0;
         Stack<Character> stack = new Stack<>();
         for (int i = 0; i < s.length(); i++) {
@@ -724,6 +724,7 @@ public class StackQueue {
          */
         while (!stack.isEmpty()) {
             stack.pop();
+            //stack.removeAllElements();
         }
         for (char ch : s.toCharArray()) {
             if (ch == '{' || ch == '[' || ch == '(') {

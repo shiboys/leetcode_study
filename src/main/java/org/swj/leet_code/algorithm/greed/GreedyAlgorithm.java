@@ -1,6 +1,11 @@
 package org.swj.leet_code.algorithm.greed;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 贪心算法
@@ -133,5 +138,18 @@ public class GreedyAlgorithm {
         int[][] intervals = new int[][] { { -2147483646, -2147483645 }, { 2147483646, 2147483647 } };
         GreedyAlgorithm ga = new GreedyAlgorithm();
         System.out.println(ga.intervalScheduleCount(intervals));
+
+        int[] a = { 1, 2, 3, 4, 5 };
+        int[] b = { 1, 2, 3, 4, 5 };
+
+//        List<Integer> a1 = Arrays.asList(1, 2, 3, 4, 5);
+//        List<Integer> b1 = Arrays.asList(1, 2, 3, 4, 5);
+
+        // 调用 Box 方法，将 数组转换为列表
+        List<Integer> a2 = Arrays.stream(a).boxed().collect(Collectors.toList());
+        List<Integer> b2 = Arrays.stream(b).boxed().collect(Collectors.toList());
+
+        System.out.println("a.equals(b)==" + Arrays.equals(a, b));
+        System.out.println("a2.equals(b2)==" + a2.equals(b2));
     }
 }

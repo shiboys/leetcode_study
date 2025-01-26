@@ -59,13 +59,6 @@ public class StackSnake {
     result = instance.eat(0);
     StackPile.printQueue(instance.snake);
     System.out.println("eat result is " + result);
-
-    Stack<Integer> stack = new Stack<>();
-
-
-    ArrayList<Integer> res = new ArrayList<>(stack);
-    int[] a = new int[0];
-    res.toArray(a);
   }
 
 }

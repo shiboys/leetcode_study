@@ -1,0 +1,59 @@
+{
+  "operator": "UNION",
+  "groups": [],
+  "compound_groups": [
+    {
+      "operator": "UNION",
+      "groups": [
+        {
+          "type": "EVENT_MEASURE_BASED",
+          "event_measure_user_group": {
+            "events": {
+              "event_name": "table011",
+              "condition": {
+                "operator": "AND",
+                "conditions": [
+                  {
+                    "function": "IS_SET",
+                    "params": [
+                      {
+                        "param_type": "FIELD",
+                        "field": "event.table011.distinct_id",
+                        "variable": "",
+                        "expression": ""
+                      }
+                    ],
+                    "index": 0
+                  }
+                ],
+                "compound_conditions": [],
+                "index": 0
+              }
+            },
+            "aggregator": "COUNT",
+            "aggregate_field": "",
+            "function": "GREATER_EQUAL",
+            "params": [
+              {
+                "param_type": "VALUE",
+                "field": "",
+                "value": {
+                  "data_type": "NUMBER",
+                  "number_value": 1.0,
+                  "list_value": []
+                },
+                "variable": "",
+                "expression": ""
+              }
+            ]
+          }
+        }
+      ],
+      "compound_groups": [],
+      "limit": 0,
+      "shuffle": false
+    }
+  ],
+  "limit": 0,
+  "shuffle": false
+}

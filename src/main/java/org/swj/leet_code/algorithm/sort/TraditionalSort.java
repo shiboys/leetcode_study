@@ -2,6 +2,8 @@ package org.swj.leet_code.algorithm.sort;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * @author shiweijie
@@ -33,13 +35,13 @@ public class TraditionalSort {
                 // 向后移动元素
                 arr[j + 1] = arr[j];
             }
-             //则j + 1 为insert需要插入的元素
+            // 则j + 1 为insert需要插入的元素
             arr[j + 1] = target;
         }
     }
 
     /**
-     * leetcode 996 烧饼排序法
+     * leetcode 969 烧饼排序法
      * 给你一个整数数组 arr ，请使用 煎饼翻转 完成对数组的排序。
      * 
      * 一次煎饼翻转的执行过程如下：
@@ -88,6 +90,7 @@ public class TraditionalSort {
         for (int val : list) {
             res[i++] = val;
         }
+        list.stream().map(Integer::intValue).collect(Collectors.toList());
         return res;
     }
 
@@ -186,11 +189,11 @@ public class TraditionalSort {
              * 输入：[3,2,4,1]
              * 输出：[4,2,4,3]
              * 但是我这个输出是 2,3,4 我觉得是对着那
-             * 提交 leetcode 之后，是正确的
+             * 提交 leetcode 之后，是正确的. 2,3,4 更简介
              */
-            // 由这两个步骤来反射出 4 次烧饼反转
-            // 前两步将 arr[i] 反转出来，先把 arr[i-1] 翻转到最上面，
-            if (i - 1 > 0) {// 顶部第一个元素没必要反转
+            // 由这两个步骤来反射出 4 次烧饼反转。前两步把 i 翻转到最上面，且 0...i-1 顺序不变
+            // 前两步将 arr[i] 反转出来，先把 arr[i-1] 翻转到最上面，因为 i 在 j 的后面
+            if (i - 1 > 0) {// 顶部第一个元素没必要反转。第一个元素没必要翻转的意思是，如果只翻转第一个元素，就没有必要，至少翻转第 2..个元素才有意义。
                 list.add(i);// 反转 arr[0...i-1]
             }
             list.add(i + 1); // 反转 arr[0...i] 将 i 元素翻转到顶部
