@@ -208,7 +208,7 @@ if (nums[mid] == target) {
 而要收紧右侧边界以锁定左侧边界
 ```
 
-**第三个，寻找右侧编辑的二分查找**
+**第三个，寻找右侧边界的二分查找**
 
 ```py
 因为我们初始化了 right=nums.length
@@ -410,7 +410,7 @@ int solution (int[] nums, int target) {
             //...
         } else if(f(mid) < target) {
             // 问自己，怎么才能让 f(x) 大一点
-        } else if(f(mid) < target) {
+        } else if(f(mid) > target) {
             // 问自己，怎么才能让 f(x) 小一点
         }
     }
@@ -463,6 +463,7 @@ int minEatingSpeed(int[] piles, int H);
 long f_keke_eat_all_bananas_time(int[] bananas, int eat_speed_x) {
         long hours = 0;
         for (int banana_pile : bananas) {
+            // 每堆香蕉吃完的时间。其实用减法更能直接地描述吃香蕉的过程，但是算法效率不高，除法效率更高
             hours += banana_pile / eat_speed_x;
             if (banana_pile % eat_speed_x != 0) {
                 hours += 1;
@@ -714,7 +715,7 @@ boolean[] isSubsequence(String[] sn, String t);
 
 ##### 三、再谈二分查找
 
-在前面的 二分查找详解中，了解了如何正确写出是三种二分查找算法的细节。二分查找分会目标值 `val` 的索引，对于搜索 **左边界**的二分查找，有一个特殊性质：
+在前面的 二分查找详解中，了解了如何正确写出是三种二分查找算法的细节。二分查找分会目标值 `val` 的索引，对于搜索 **左边界** 的二分查找，有一个特殊性质：
 
 **当 `val` 不存在时，得到的索引恰好就是比 `val` 大的最小元素索引**。
 

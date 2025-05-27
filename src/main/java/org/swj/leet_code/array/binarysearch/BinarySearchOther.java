@@ -414,6 +414,7 @@ public class BinarySearchOther {
                 indexList[t.charAt(i)] = list = new ArrayList<>();
             }
             list.add(i);
+            //Math.pow(i, len)
         }
         // j 是 t 上的指针
         int j = 0;

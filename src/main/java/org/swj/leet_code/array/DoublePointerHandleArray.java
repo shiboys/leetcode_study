@@ -96,7 +96,7 @@ public class DoublePointerHandleArray {
      * @return
      */
     int removeElement(int[] nums, int val) {
-        int slow = 0, fast = 0;
+        int slow = 0, fast = 0;// jdk 的 list.removeIf 就能搞定
         while (fast < nums.length) {
             // 3 2 2 3, val=3 => 2,2
             if (nums[fast] != val) {
@@ -178,7 +178,7 @@ public class DoublePointerHandleArray {
             l--;
             r++;
         }
-        if (l + 1 > r) {
+        if (l + 1 > r) { // 为了判断下面的 substring
             return null;
         }
         return s.substring(l + 1, r);
@@ -299,6 +299,7 @@ public class DoublePointerHandleArray {
 
         return slow == 1;
         // 这道题，让我对快慢指针的认知，达到了新的高度
+        // fast 算两次，就相当于链表的快慢指针，快指针跑了两步
     }
 
     boolean oldMethond(int n) {

@@ -90,7 +90,7 @@ public class BinarySearchSkill {
     // 如果严格检查，则返回比对结果，不符合则返回 -1；如果不严格，则返回 大于等于 target 的元素索引
     if (check)
       return nums[pos] == target ? pos : -1; // 或者是 left -1 因为 left == right 是退出条件
-    return nums[pos] == target ? pos :  right;
+    return nums[pos] == target ? pos : right;
   }
 
   int rightBound2(int[] nums, int target) {
@@ -155,7 +155,7 @@ public class BinarySearchSkill {
       } else if (preSum[mid] < target) {
         left = mid + 1;
       } else { // 相等
-        //right = mid - 1;
+        // right = mid - 1;
         return mid;
       }
     }
@@ -166,18 +166,18 @@ public class BinarySearchSkill {
 
   public static void main(String[] args) {
     BinarySearchSkill instance = new BinarySearchSkill();
-    //testIndexWeightWithBinarySearch(instance);
+    // testIndexWeightWithBinarySearch(instance);
 
     testOtherBinarySearch(instance);
     // -1 & 15 == 15 刷新了我的认知，我知道是 15，但是正负不能确定，没想到逻辑与运算把符号位也干掉了
     System.out.println("-1&15=" + (-1 & 15));
 
-    System.out.println((int)Math.ceil(12/10));
+    System.out.println((int) Math.ceil(12 / 10));
   }
 
   private static void testIndexWeightWithBinarySearch(BinarySearchSkill instance) {
     int target = 5;
-    int[] preSum = new int[] {0, 2, 4, 6, 7};
+    int[] preSum = new int[] { 0, 2, 4, 6, 7 };
     int right = instance.rightBoundForWeight(target, preSum);
     System.out.println(right);
 
@@ -186,23 +186,23 @@ public class BinarySearchSkill {
   }
 
   private static void testOtherBinarySearch(BinarySearchSkill instance) {
-//    int[] piles = new int[] {3, 6, 7, 11};
-//    int h = 8;
-//    System.out.println("珂珂吃香蕉的最小速度1是：" + instance.koko_eat_bananas(piles, h));
-//
-//    // 30,11,23,4,20
-//    piles = new int[] {30, 11, 23, 4, 20};
-//    h = 5;
-//    System.out.println("珂珂吃香蕉的最小速度2是：" + instance.koko_eat_bananas(piles, h));
-//
-//    h = 6;
-//    System.out.println("珂珂吃香蕉的最小速度3是：" + instance.koko_eat_bananas(piles, h));
+    // int[] piles = new int[] {3, 6, 7, 11};
+    // int h = 8;
+    // System.out.println("珂珂吃香蕉的最小速度1是：" + instance.koko_eat_bananas(piles, h));
+    //
+    // // 30,11,23,4,20
+    // piles = new int[] {30, 11, 23, 4, 20};
+    // h = 5;
+    // System.out.println("珂珂吃香蕉的最小速度2是：" + instance.koko_eat_bananas(piles, h));
+    //
+    // h = 6;
+    // System.out.println("珂珂吃香蕉的最小速度3是：" + instance.koko_eat_bananas(piles, h));
 
-    //int[] weights = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    // int[] weights = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     // 15 的速度运输，需要 5 天。
-    //System.out.println(instance.f_one_ship_weight(weights, 15));
-    //System.out.println(instance.shipWithinDays(weights, 5));
-    int[] array = {1, 4, 4};
+    // System.out.println(instance.f_one_ship_weight(weights, 15));
+    // System.out.println(instance.shipWithinDays(weights, 5));
+    int[] array = { 1, 4, 4 };
     System.out.println(instance.splitArray(array, 3));
 
     // weights = new int[] {1,2,3,1,1};
@@ -211,7 +211,7 @@ public class BinarySearchSkill {
     // weights = new int[] { 3,2,2,4,1,4};
     // System.out.println(instance.shipWithinDays(weights, 3));
 
-    int[] arr = new int[] {2, 4, 6, 8, 10};
+    int[] arr = new int[] { 2, 4, 6, 8, 10 };
     int idx = instance.leftBound(arr, 5);
     System.out.println(arr[idx]);
 
@@ -268,7 +268,7 @@ public class BinarySearchSkill {
    */
   int f_weight(int[] weights, int x) {
     int days = 0;
-    for (int i = 0; i < weights.length; ) {
+    for (int i = 0; i < weights.length;) {
       if (x < weights[i]) { // 根本运不走这个货物，说明 x 的容量有问题
         return Integer.MAX_VALUE;
       }
@@ -291,20 +291,21 @@ public class BinarySearchSkill {
     int days = 0;
     // 一次船传送的数量
     int ship_cargos_weights = 0;
-//    for (int i = 0; i < weights.length; i++) {
-//      int j = i;
-//
-//      // 将 i 增长为 j;
-//      i = j;
-//    }
+    // for (int i = 0; i < weights.length; i++) {
+    // int j = i;
+    //
+    // // 将 i 增长为 j;
+    // i = j;
+    // }
     for (int j = 0; j < weights.length; j++) {
       if (x < weights[j]) {
-        // 根本运不走这个货物，说明 x 的容量有问题,由于数组是单调递增的，因此至于
+        // 根本运不走这个货物，说明 x 的容量有问题,由于数组是单调递增的，返回天数，这里返回最大天数
         return Integer.MAX_VALUE;
       }
-      if ((ship_cargos_weights += weights[j]) > x) {
-        days++;//增加一天
-        // 货船重量从 weight[j]重新算起
+      if ((ship_cargos_weights += weights[j]) > x) {// 装不下了，第二天再运。这里就只能用 ++, 不能像 珂珂吃香蕉那样使用 /=
+        // 因为需求不一样，吃香蕉是一堆吃完了，只能下一个小时再吃另一堆，这里是一个货物装船之后，还能尝试继续装一下个货物
+        days++;// 增加一天
+        // 货船重量从 weight[j]重新算起。
         ship_cargos_weights = weights[j];
       }
     }
@@ -324,12 +325,12 @@ public class BinarySearchSkill {
    */
   public int shipWithinDays(int[] weights, int days) {
     int left = 1;
-    // 根据题目要求，1 <= weights[i] <= 500，1 <= days <= weights.length <= 5 * 104
+    // 根据题目要求，1 <= weights[i] <= 500，1 <= days <= weights.length <= 5 * 10^4
     int right = 25 * (int) Math.pow(10, 6);
     // 仍然是降序排列, 船的载重越大，则运输的天数越少
     while (left <= right) {
       int mid = left + (right - left) / 2;
-      //int midDays = f_weight(weights, mid);
+      // int midDays = f_weight(weights, mid);
       int midDays = f_one_ship_weight(weights, mid);
       if (midDays > days) {
         left = mid + 1; // 增大运载量
@@ -363,8 +364,7 @@ public class BinarySearchSkill {
     return left;
   }
 
-
-  //子数组和 subSum 可以将 nums 分割成几个子数组
+  // 子数组和 subSum 可以将 nums 分割成几个子数组
   int k_with_target_subsum(int[] nums, int subSum) {
     int totalSum = 0;
     int k = 0;
@@ -375,7 +375,7 @@ public class BinarySearchSkill {
       if ((totalSum += nums[i]) > subSum) {
         // 子数组个数 +1
         k++;
-        //累计和清零之和，改为当前值
+        // 累计和清零之和，改为当前值
         totalSum = nums[i];
       }
     }
